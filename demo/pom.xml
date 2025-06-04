@@ -22,6 +22,11 @@
                 <version>17.0.2</version>
                 <classifier>mac-aarch64</classifier>
             </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.7.1</version> <!-- use latest -->
+            </dependency>
         </dependencies>
     <build>
         <plugins>
