@@ -2,6 +2,7 @@ module com.pekaboo {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.sql;
+    exports com.pekaboo;
 
     // Open FXML-based packages for controller injection
     opens com.pekaboo to javafx.fxml;
