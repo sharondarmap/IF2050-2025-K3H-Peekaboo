@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.pekaboo.auth.AuthController"
+      stylesheets="@/com/pekaboo/auth/auth.css"
+      prefWidth="1200" prefHeight="800"
+      spacing="10"
+      alignment="TOP_CENTER">
+
+    <HBox fx:id="mainContent" spacing="0" VBox.vgrow="ALWAYS">
+        <ImageView fitHeight="800" fitWidth="700" preserveRatio="false" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0">
+            <image>
+                <Image url="@/com/pekaboo/auth/assets/showroom.png"/>
+            </image>
+        </ImageView>
+
+        <VBox layoutX="750" layoutY="200" spacing="20" styleClass="auth-container">
+            <Label text="Sign In" styleClass="auth-title"/>
+            <TextField fx:id="loginUsernameField" promptText="Username"/>
+            <PasswordField fx:id="loginPasswordField" promptText="Password"/>
+            <Button fx:id="loginButton" text="Sign In" onAction="#handleLogin" styleClass="primary-button"/>
+            <Hyperlink text="Sign Up" onAction="#switchToRegister"/>
+        </VBox>
+    </HBox>
+
+    <!-- Footer Section -->
+    <VBox fx:id="footer" alignment="CENTER" spacing="5">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20" />
+        </padding>
+        <ImageView fitHeight="60" preserveRatio="true">
+            <image>
+                <Image url="@/com/pekaboo/auth/assets/footerlogo.png"/>
+            </image>
+        </ImageView>
+        <Label text="Copyright © Peekaboo 2025" />
+    </VBox>
+
+</VBox>
