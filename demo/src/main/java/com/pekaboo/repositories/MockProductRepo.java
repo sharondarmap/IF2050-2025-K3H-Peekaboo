@@ -6,6 +6,9 @@ import java.util.List;
 
 
 public class MockProductRepo implements ProductRepo {
+    private static final String[] NAMA_PRODUK = {"Aviator Classic", "Wayfarer Ease", "Clubmaster Oval", "Hexagonal Flat", "Round Metal", "Erika Classic", "Justin Classic"};
+    private static final String[] NAMA_BRAND = {"Ray-Ban", "Oakley", "Prada", "Gucci", "Celine", "Dior"};
+    private static final String[] NAMA_WARNA = {"Hitam", "Coklat", "Emas", "Perak", "Biru Navy", "Hijau Army"};
     private List<Product> productList = new ArrayList<>();
 
     public MockProductRepo() {
@@ -13,7 +16,23 @@ public class MockProductRepo implements ProductRepo {
         productList.add(new Product(1, 10, 10000, "Kacamata Jennie", "Celine", "Merah", "M", "/com/pekaboo/images/kacamatared.jpg"));
         productList.add(new Product(2, 5, 20000, "Kacamata Kucing", "Dior", "Biru", "L", "/com/pekaboo/images/kacamatablue.jpg"));
         productList.add(new Product(3, 0, 15000, "Kacamata Kambing", "Channel", "Hijau", "S", "/com/pekaboo/images/kacamata1.jpg"));
+
+        for (int i = 4; i <= 23; i++) {
+            productList.add(new Product(
+                i, 
+                (i % 5) + 1,
+                100000 + (i * 15000),
+                NAMA_PRODUK[i % NAMA_PRODUK.length], 
+                NAMA_BRAND[i % NAMA_BRAND.length], 
+                NAMA_WARNA[i % NAMA_WARNA.length], 
+                "M", 
+                "/com/pekaboo/images/kacamatablue.jpg"
+            ));
+        }
     }
+
+
+
 
     @Override
     public List<Product> getAllProduct() {

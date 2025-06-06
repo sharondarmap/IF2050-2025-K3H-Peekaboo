@@ -1,19 +1,21 @@
 package com.pekaboo.layout;
 
+import java.io.IOException;
 import java.net.URL;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.AnchorPane;
 
 public class MainController {
 
     @FXML
-    private BorderPane mainPane;
+    private AnchorPane contentArea;
+    
     @FXML
-    private NavbarController navbarController;
+    private NavbarController navbarController; 
 
     private String currentPageCss = null;
 
@@ -22,15 +24,9 @@ public class MainController {
         navbarController.setMainController(this);
     }
 
-    /**
-     * Memuat halaman FXML dan CSS yang sesuai.
-     * @param fxmlPath Path ke file FXML yang akan dimuat.
-     * @param cssPath Path ke file CSS yang akan diterapkan pada halaman.
-     */
     public void loadPage(String fxmlPath, String cssPath) {
         try {
-            Scene scene = mainPane.getScene();
-            // Jika scene belum siap, tunggu sebentar.
+            Scene scene = contentArea.getScene();
             if (scene == null) {
                 Platform.runLater(() -> loadPage(fxmlPath, cssPath));
                 return;
@@ -41,12 +37,13 @@ public class MainController {
                 if (oldCssUrl != null) {
                     scene.getStylesheets().remove(oldCssUrl.toExternalForm());
                 }
-                currentPageCss = null; 
+                currentPageCss = null;
             }
+            
+            contentArea.getChildren().clear();
 
             if (fxmlPath == null || "placeholder".equalsIgnoreCase(fxmlPath)) {
-                mainPane.setCenter(null); 
-                return; 
+                return;
             }
 
             Parent page = FXMLLoader.load(getClass().getResource(fxmlPath));
@@ -55,16 +52,18 @@ public class MainController {
                 URL newCssUrl = getClass().getResource(cssPath);
                 if (newCssUrl != null) {
                     scene.getStylesheets().add(newCssUrl.toExternalForm());
-                    this.currentPageCss = cssPath; // Simpan path CSS yang baru
-                } else {
-                    System.err.println("Peringatan: File CSS tidak ditemukan di " + cssPath);
+                    this.currentPageCss = cssPath;
                 }
             }
             
-            mainPane.setCenter(page);
+            contentArea.getChildren().add(page);
+            AnchorPane.setTopAnchor(page, 0.0);
+            AnchorPane.setBottomAnchor(page, 0.0);
+            AnchorPane.setLeftAnchor(page, 0.0);
+            AnchorPane.setRightAnchor(page, 0.0);
 
         } catch (Exception e) {
-            System.err.println("Gagal total memuat halaman: " + fxmlPath);
+            System.err.println("Gagal memuat halaman: " + fxmlPath);
             e.printStackTrace();
         }
     }
