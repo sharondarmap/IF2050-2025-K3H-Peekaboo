@@ -1,8 +1,11 @@
 C:\TUBES RPL\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\PrimaryController.java
 C:\TUBES RPL\RPL-Optik-Peekaboo\demo\src\main\java\module-info.java
+C:\TUBES RPL\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\features\home\HomeController.java
 C:\TUBES RPL\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\App.java
 C:\TUBES RPL\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\repositories\ProductRepo.java
 C:\TUBES RPL\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\features\pembelian\CatalogProduct.java
 C:\TUBES RPL\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\entities\Product.java
 C:\TUBES RPL\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\repositories\MockProductRepo.java
+C:\TUBES RPL\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\layout\NavbarController.java
+C:\TUBES RPL\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\layout\MainController.java
 C:\TUBES RPL\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\SecondaryController.java
