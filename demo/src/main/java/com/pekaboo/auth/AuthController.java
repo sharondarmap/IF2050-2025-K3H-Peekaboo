@@ -16,18 +16,18 @@ public class AuthController {
     @FXML private PasswordField loginPasswordField;
     @FXML private Button loginButton;
 
-    @FXML private TextField registerUsernameField;
-    @FXML private PasswordField registerPasswordField;
-    @FXML private TextField emailField;
-    @FXML private ChoiceBox<String> userRoleBox;
-    @FXML private DatePicker birthDatePicker;
+    // @FXML private TextField registerUsernameField;
+    // @FXML private PasswordField registerPasswordField;
+    // @FXML private TextField emailField;
+    // @FXML private ChoiceBox<String> userRoleBox;
+    // @FXML private DatePicker birthDatePicker;
 
     private final UserRepository userRepo = new PostgresUserRepository();
 
-    @FXML
-    public void initialize() {
-        userRoleBox.getItems().addAll("PELANGGAN", "ADMIN", "OPTOMETRIS");
-    }
+    // @FXML
+    // public void initialize() {
+    //     userRoleBox.getItems().addAll("PELANGGAN", "ADMIN", "OPTOMETRIS");
+    // }
 
     @FXML
     private void handleLogin() {
@@ -43,19 +43,19 @@ public class AuthController {
         }
     }
 
-    @FXML
-    private void handleRegister() {
-        User newUser = new User();
-        newUser.setUsername(registerUsernameField.getText());
-        newUser.setPassword(registerPasswordField.getText()); // hash later
-        newUser.setEmail(emailField.getText());
-        newUser.setTanggalLahir(birthDatePicker.getValue());
-        newUser.setUserStatus(userRoleBox.getValue());
-        //more fields later
+    // @FXML
+    // private void handleRegister() {
+    //     User newUser = new User();
+    //     newUser.setUsername(registerUsernameField.getText());
+    //     newUser.setPassword(registerPasswordField.getText()); // hash later
+    //     newUser.setEmail(emailField.getText());
+    //     newUser.setTanggalLahir(birthDatePicker.getValue());
+    //     newUser.setUserStatus(userRoleBox.getValue());
+    //     //more fields later
 
-        userRepo.saveUser(newUser);
-        showAlert("Registration Success", "You can now login.");
-    }
+    //     userRepo.saveUser(newUser);
+    //     showAlert("Registration Success", "You can now login.");
+    // }
 
     private void showAlert(String title, String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -63,4 +63,11 @@ public class AuthController {
         alert.setContentText(msg);
         alert.show();
     }
+
+    @FXML
+    private void switchToRegister() {
+        System.out.println("Switching to register screen...");
+        // TODO: Implement actual scene change or pane toggle
+    }
+
 }
