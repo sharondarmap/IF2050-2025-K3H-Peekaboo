@@ -63,7 +63,7 @@ public class AuthController {
 
         User newUser = new User();
         newUser.setUsername(registerUsernameField.getText());
-        newUser.setPassword(registerPasswordField.getText()); // hash later!
+        newUser.setPassword(registerPasswordField.getText()); // hash nanti (opsional)
         newUser.setEmail(emailField.getText());
         newUser.setTanggalLahir(birthDatePicker.getValue());
         newUser.setUserStatus(userRoleBox.getValue());
@@ -71,7 +71,7 @@ public class AuthController {
         userRepo.saveUser(newUser);
         showAlert("Registration Success", "You can now login.");
 
-        // Navigate back to login screen
+        // Navigate back ke login screen
         switchToLogin();
     }
 
