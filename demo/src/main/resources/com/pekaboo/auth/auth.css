@@ -34,3 +34,12 @@ TextField, PasswordField {
     -fx-font-weight: bold;
     -fx-background-radius: 6;
 }
+
+.choice-box {
+  -fx-background-color: rgb(255, 255, 255);
+  -fx-mark-color: #5a29e4;
+}
+.choice-box .menu-item:focused { -fx-background-color: #5a29e4; }
+.choice-box .menu-item:focused > .label { -fx-text-fill: white; }
+
+.choice-box > .label { -fx-text-fill: black; }

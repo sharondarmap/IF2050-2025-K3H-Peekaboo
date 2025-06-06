@@ -23,7 +23,7 @@
             <TextField fx:id="registerUsernameField" promptText="Username"/>
             <PasswordField fx:id="registerPasswordField" promptText="Password"/>
             <TextField fx:id="emailField" promptText="Email"/>
-            <ChoiceBox fx:id="userRoleBox"/>
+            <ChoiceBox fx:id="userRoleBox" styleClass="choice-box"/>
             <DatePicker fx:id="birthDatePicker"/>
             <Button text="Register" onAction="#handleRegister" styleClass="primary-button"/>
             <Hyperlink text="Back to Login" onAction="#switchToLogin"/>
