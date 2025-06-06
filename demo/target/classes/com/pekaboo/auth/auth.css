@@ -15,11 +15,15 @@
 }
 
 TextField, PasswordField {
-    -fx-pref-width: 400;
-    -fx-pref-height: 40;
-    -fx-background-radius: 6;
-    -fx-border-color: #ccc;
-    -fx-padding: 10;
+    -fx-background-color: white;
+    -fx-border-color: #5a29e4;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-prompt-text-fill: #aaa;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);
 }
 
 .primary-button {
@@ -30,3 +34,12 @@ TextField, PasswordField {
     -fx-font-weight: bold;
     -fx-background-radius: 6;
 }
+
+.choice-box {
+  -fx-background-color: rgb(255, 255, 255);
+  -fx-mark-color: #5a29e4;
+}
+.choice-box .menu-item:focused { -fx-background-color: #5a29e4; }
+.choice-box .menu-item:focused > .label { -fx-text-fill: white; }
+
+.choice-box > .label { -fx-text-fill: black; }
