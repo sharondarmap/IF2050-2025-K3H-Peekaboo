@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" 
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.pekaboo.features.pembelian.CatalogProduct"
+            stylesheets="/com/pekaboo/styles/catalog.css"
+            prefWidth="800" prefHeight="600">
+
+    <!-- ScrollPane agar bisa discroll jika produknya banyak -->
+    <ScrollPane fitToWidth="true" fitToHeight="true" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <VBox spacing="16">
+            <padding>
+                <Insets top="16" right="16" bottom="16" left="16"/>
+            </padding>
+            <children>
+                <Label text="Katalog Produk" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+                <GridPane fx:id="gridPane" hgap="24" vgap="24">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                </GridPane>
+            </children>
+        </VBox>
+    </ScrollPane>
+</AnchorPane>
