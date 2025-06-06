@@ -30,7 +30,7 @@ public class AuthController {
     @FXML
     public void initialize() {
         if (userRoleBox != null) {
-            userRoleBox.getItems().addAll("PELANGGAN", "ADMIN", "OPTOMETRIS");
+            userRoleBox.getItems().addAll("PELANGGAN", "OPTOMETRIS");
         }
     }
 
@@ -43,7 +43,11 @@ public class AuthController {
         if (user != null) {
             Session.setCurrentUser(user);
             showAlert("Success", "Login successful!");
-            // TODO: App.setRoot("dashboard/main"); — kalau dashboard ada scenenya kalo gaada langsung ke page apa aja
+                try {
+                App.setRoot("primary");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } //kalau dashboard ada scenenya kalo gaada langsung ke page apa aja
         } else {
             showAlert("Login failed", "Username or password incorrect");
         }
