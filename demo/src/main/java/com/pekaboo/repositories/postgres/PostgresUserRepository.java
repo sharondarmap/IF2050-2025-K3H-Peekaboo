@@ -5,7 +5,6 @@ import com.pekaboo.repositories.UserRepository;
 import com.pekaboo.util.DatabaseConnector;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

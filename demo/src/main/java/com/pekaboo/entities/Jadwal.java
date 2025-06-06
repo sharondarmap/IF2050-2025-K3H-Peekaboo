@@ -10,19 +10,21 @@ public class Jadwal {
     public static final LocalTime JAM_BUKA_TOKO = LocalTime.of(10, 0); // Default jam buka toko hardcode
 
     // Constructor, getter, setter
-    Jadwal(int idJadwal, User optometris){
+    public Jadwal(int idJadwal, User optometris){
         this.idJadwal = idJadwal;
         this.optometris = optometris;
         this.statusJadwal = StatusJadwal.AVAILABLE;
     }
 
+    public Jadwal (){}
+
     public int getIdJadwal(){
         return idJadwal;
     }
-    public StatusJadwal geStatusJadwal(){
+    public StatusJadwal getStatusJadwal(){
         return statusJadwal;
     }
-    public User getOtometris(){
+    public User getOptometris(){
         return optometris;
     }
     public void setIdJadwal(int idJadwal){
