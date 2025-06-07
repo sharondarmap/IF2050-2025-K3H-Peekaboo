@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 // util/DatabaseConnector.java
 public class DatabaseConnector {
-    private static final String URL = "jdbc:postgresql://localhost:5432/peekaboo";
+    private static final String URL = "jdbc:postgresql://localhost:5432/peekaboo_demo";
     private static final String USER = "postgres";
     private static final String PASS = "";
 
