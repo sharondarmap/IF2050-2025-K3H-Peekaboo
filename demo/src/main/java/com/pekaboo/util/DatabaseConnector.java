@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class DatabaseConnector {
     private static final String URL = "jdbc:postgresql://localhost:5432/peekaboo_demo";
     private static final String USER = "postgres";
-    private static final String PASS = "dindacantik";
+    private static final String PASS = "";
 
     public static Connection connect() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);

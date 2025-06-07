@@ -1,15 +1,8 @@
 package com.pekaboo.features.reservasi;
 
 import javafx.scene.layout.*;
-import javafx.stage.Modality;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.*;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 import java.time.*;
 import java.util.*;
 
@@ -22,76 +15,261 @@ public class CalendarView extends VBox {
     private Label monthLabel;
     private Map<LocalDate, Integer> slotTersedia;
     private JadwalRepository jadwalRepo;
+    private ReservasiController controller;
 
-    public CalendarView(Map<LocalDate, Integer> slotTersedia, JadwalRepository jadwalRepo) {
+    private StackPane mainContainer;
+    private VBox popupContainer;
+    private boolean isPopupVisible = false;
+
+    public CalendarView(Map<LocalDate, Integer> slotTersedia, JadwalRepository jadwalRepo, ReservasiController controller) {
         this.slotTersedia = slotTersedia;
         this.jadwalRepo = jadwalRepo;
+        this.controller = controller;
         this.currentYearMonth = YearMonth.now();
-        this.setSpacing(15);
-        this.setAlignment(Pos.CENTER); 
 
-        this.setStyle(
-            "-fx-background-color: #F5F5F5; " +     
-            "-fx-padding: 12; " +              
-            "-fx-background-radius: 12; " +   
-            "-fx-border-color: #DDDDDD; " +   
-            "-fx-border-width: 1; " +      
-            "-fx-border-radius: 12; " +   
-            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);" // Subtle shadow
-        );
-
-        HBox header = new HBox(15);
-        Button prev = new Button("<");
-        Button next = new Button(">");
-        monthLabel = new Label();
-        prev.setStyle(
-            "-fx-background-color: transparent; " +  
-            "-fx-text-fill: rgba(36, 22, 80, 1); " +  
-            "-fx-font-weight: bold; " +
-            "-fx-font-size: 20px; " +
-            "-fx-border-color: transparent; " +
-            "-fx-pref-width: 30px; " +
-            "-fx-pref-height: 30px; " +
-            "-fx-cursor: hand;"
-        );
-
-        next.setStyle(
-            "-fx-background-color: transparent; " + 
-            "-fx-text-fill: rgba(36, 22, 80, 1); " + 
-            "-fx-font-weight: bold; " +
-            "-fx-font-size: 20px; " + 
-            "-fx-border-color: transparent; " + 
-            "-fx-pref-width: 30px; " +
-            "-fx-pref-height: 30px; " +
-            "-fx-cursor: hand;" 
-        );
-        monthLabel.setStyle(
-            "-fx-font-size: 20px; " +
-            "-fx-font-weight: bold; " +
-            "-fx-text-fill: rgba(36, 22, 80, 1);"
-        );
-
-        header.setAlignment(Pos.CENTER);
-        header.getChildren().addAll(prev, monthLabel, next);
-
-        prev.setOnAction(e -> {
-            currentYearMonth = currentYearMonth.minusMonths(1);
-            updateCalendar();
-        });
-        next.setOnAction(e -> {
-            currentYearMonth = currentYearMonth.plusMonths(1);
-            updateCalendar();
-        });
-
-        calendarGrid = new GridPane();
-        calendarGrid.setHgap(8);
-        calendarGrid.setVgap(8);
-        calendarGrid.setAlignment(Pos.CENTER);
-
-        this.getChildren().addAll(header, calendarGrid);
-        updateCalendar();
+        mainContainer = new StackPane();
+        VBox calendarContainer = createCalendar();
+        popupContainer = createPopup();
+        popupContainer.setVisible(false);
+        
+        mainContainer.getChildren().addAll(calendarContainer, popupContainer);
+        this.getChildren().add(mainContainer);
     }
 
+    public void refreshCalendar() {
+        updateCalendar();
+    }
+    
+    private VBox createCalendar() {
+        VBox container = new VBox(15);
+        container.setAlignment(Pos.CENTER);
+        
+        container.setStyle(
+            "-fx-background-color: #F5F5F5; " +
+            "-fx-padding: 12; " +
+            "-fx-background-radius: 12; " +
+            "-fx-border-color: #DDDDDD; " +
+            "-fx-border-width: 1; " +
+            "-fx-border-radius: 12; " +
+            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);" // Subtle shadow
+            );
+            HBox header = new HBox(15);
+            Button prev = new Button("<");
+            Button next = new Button(">");
+            monthLabel = new Label();
+
+            prev.setStyle(
+                "-fx-background-color: transparent; " +  
+                "-fx-text-fill: rgba(36, 22, 80, 1); " +  
+                "-fx-font-weight: bold; " +
+                "-fx-font-size: 20px; " +
+                "-fx-border-color: transparent; " +
+                "-fx-pref-width: 30px; " +
+                "-fx-pref-height: 30px; " +
+                "-fx-cursor: hand;"
+            );
+            next.setStyle(
+                "-fx-background-color: transparent; " + 
+                "-fx-text-fill: rgba(36, 22, 80, 1); " + 
+                "-fx-font-weight: bold; " +
+                "-fx-font-size: 20px; " + 
+                "-fx-border-color: transparent; " + 
+                "-fx-pref-width: 30px; " +
+                "-fx-pref-height: 30px; " +
+                "-fx-cursor: hand;" 
+            );
+            monthLabel.setStyle(
+                "-fx-font-size: 20px; " +
+                "-fx-font-weight: bold; " +
+                "-fx-text-fill: rgba(36, 22, 80, 1);"
+                );
+                
+            header.setAlignment(Pos.CENTER);
+            header.getChildren().addAll(prev, monthLabel, next);
+
+            prev.setOnAction(e -> {
+                if (!isPopupVisible) {
+                    currentYearMonth = currentYearMonth.minusMonths(1);
+                    updateCalendar();
+                }
+            });
+            next.setOnAction(e -> {
+                if (!isPopupVisible) {
+                    currentYearMonth = currentYearMonth.plusMonths(1);
+                    updateCalendar();
+                }
+            });
+
+            calendarGrid = new GridPane();
+            calendarGrid.setHgap(8);
+            calendarGrid.setVgap(8);
+            calendarGrid.setAlignment(Pos.CENTER);
+
+            container.getChildren().addAll(header, calendarGrid);
+            updateCalendar();
+        
+            return container;
+    }
+
+    private VBox createPopup() {
+        VBox overlay = new VBox();
+        overlay.setAlignment(Pos.CENTER);
+        overlay.setStyle(
+            "-fx-background-color: rgba(0, 0, 0, 0.5);" // semi transparan background
+        );
+        
+        VBox popup = new VBox(15);
+        popup.setAlignment(Pos.CENTER);
+        popup.setPadding(new Insets(20));
+        popup.setMaxWidth(400);
+        popup.setStyle(
+            "-fx-background-color: white; " +
+            "-fx-background-radius: 12; " +
+            "-fx-border-color: #DDDDDD; " +
+            "-fx-border-width: 1; " +
+            "-fx-border-radius: 12; " +
+            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 15, 0, 0, 5);"
+        );
+
+        Label titleLabel = new Label("Confirm Reservation");
+        titleLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        
+        Label warningLabel = new Label("Reservations cannot be canceled! Please choose an appropriate time.");
+        warningLabel.setStyle("-fx-text-fill: #f39c12; -fx-font-size: 12px;");
+        warningLabel.setWrapText(true);
+        warningLabel.setAlignment(Pos.CENTER);
+        warningLabel.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
+        warningLabel.setMaxWidth(Double.MAX_VALUE);
+
+        VBox dateSection = new VBox(5);
+        Label dateFieldLabel = new Label("Date");
+        dateFieldLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        Label dateValueLabel = new Label();
+        dateValueLabel.setStyle("-fx-font-size: 14px;");
+        dateSection.getChildren().addAll(dateFieldLabel, dateValueLabel);
+        
+        VBox timeSection = new VBox(5);
+        Label timeFieldLabel = new Label("Start Time");
+        timeFieldLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        ComboBox<String> timeComboBox = new ComboBox<>();
+        timeComboBox.setPromptText("Select time");
+        timeSection.getChildren().addAll(timeFieldLabel, timeComboBox);
+        
+        VBox optometristSection = new VBox(5);
+        Label optometristFieldLabel = new Label("Optometrist");
+        optometristFieldLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+        Label optometristValueLabel = new Label();
+        optometristValueLabel.setStyle("-fx-font-size: 14px;");
+        optometristSection.getChildren().addAll(optometristFieldLabel, optometristValueLabel);
+        
+        HBox buttonBox = new HBox(16);
+        buttonBox.setAlignment(Pos.CENTER);
+        Button cancelButton = new Button("Cancel");
+        Button reserveButton = new Button("Reserve");
+        
+        cancelButton.setStyle(
+            "-fx-background-color: #ddd; " +
+            "-fx-text-fill: #333; " +
+            "-fx-padding: 8 16; " +
+            "-fx-background-radius: 5;"
+        );
+        
+        reserveButton.setStyle(
+            "-fx-background-color: #5a29e4; " +
+            "-fx-text-fill: white; " +
+            "-fx-padding: 8 16; " +
+            "-fx-background-radius: 5;"
+        );
+        
+        buttonBox.getChildren().addAll(cancelButton, reserveButton);
+        
+        popup.getChildren().addAll(
+            titleLabel, warningLabel, dateSection, 
+            timeSection, optometristSection, buttonBox
+        );
+        
+        popup.setUserData(Map.of(
+            "dateLabel", dateValueLabel,
+            "timeComboBox", timeComboBox,
+            "optometristLabel", optometristValueLabel,
+            "cancelButton", cancelButton,
+            "reserveButton", reserveButton
+        ));
+        
+        overlay.getChildren().add(popup);
+        overlay.setOnMouseClicked(e -> {
+            if (e.getTarget() == overlay) {
+                hidePopup();
+            }
+        });
+        
+        return overlay;
+    }
+
+    private void showReservationDialog(LocalDate selectedDate) {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> components = (Map<String, Object>) popupContainer.getChildren().get(0).getUserData();
+        
+        Label dateLabel = (Label) components.get("dateLabel");
+        ComboBox<String> timeComboBox = (ComboBox<String>) components.get("timeComboBox");
+        Label optometristLabel = (Label) components.get("optometristLabel");
+        Button cancelButton = (Button) components.get("cancelButton");
+        Button reserveButton = (Button) components.get("reserveButton");
+        
+        dateLabel.setText(selectedDate.getDayOfWeek() + ", " + selectedDate.getDayOfMonth() + " " + selectedDate.getMonth());
+        
+        List<Jadwal> availableJadwal = jadwalRepo.getJadwalByTanggal(selectedDate);
+        timeComboBox.getItems().clear();
+        
+        for (Jadwal jadwal : availableJadwal) {
+            if (jadwal.isAvailable()) {
+                String timeSlot = jadwal.getJamMulai() + " - " + jadwal.getJamSelesai();
+                timeComboBox.getItems().add(timeSlot);
+            }
+        }
+        
+        if (!timeComboBox.getItems().isEmpty()) {
+            timeComboBox.setValue(timeComboBox.getItems().get(0));
+            updateOptometristInfo(timeComboBox.getValue(), availableJadwal, optometristLabel);
+        }
+        
+        timeComboBox.setOnAction(e -> {
+            updateOptometristInfo(timeComboBox.getValue(), availableJadwal, optometristLabel);
+        });
+        
+        cancelButton.setOnAction(e -> hidePopup());
+        
+        reserveButton.setOnAction(e -> {
+            if (controller.validateReservation(selectedDate, timeComboBox.getValue())) {
+                if (controller.handleReservation(selectedDate, timeComboBox.getValue(), availableJadwal)) {
+                    hidePopup();
+                }
+            }
+        });
+        
+        isPopupVisible = true;
+        popupContainer.setVisible(true);
+    }
+
+    private void hidePopup() {
+        isPopupVisible = false;
+        popupContainer.setVisible(false);
+    }
+
+    private void updateOptometristInfo(String selectedTime, List<Jadwal> availableJadwal, Label optometristLabel) {
+        if (selectedTime != null && availableJadwal != null) {
+            String jamMulai = selectedTime.split(" - ")[0];
+            
+            for (Jadwal jadwal : availableJadwal) {
+                if (jadwal.getJamMulai().toString().equals(jamMulai)) {
+                    String optometristInfo = String.format("👨‍⚕️ %s", jadwal.getOptometristName());
+                    optometristLabel.setText(optometristInfo);
+                    break;
+                }
+            }
+        }
+    }
+    
     private void updateCalendar() {
         slotTersedia = jadwalRepo.getSlotTersediaBulan(currentYearMonth);
 
@@ -158,7 +336,9 @@ public class CalendarView extends VBox {
                     "-fx-pref-height: 22px;" 
                 );
                 reserveBtn.setOnAction(e -> {
-                    showReservationDialog(date);
+                    if (!isPopupVisible) {
+                        showReservationDialog(date);
+                    }
                 });
                 cell.getChildren().addAll(available, reserveBtn);
             }
@@ -175,31 +355,6 @@ public class CalendarView extends VBox {
                 col = 0;
                 row++;
             }
-        }
-    }
-
-    private void showReservationDialog(LocalDate selectedDate) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pekaboo/reservasi/confirmreservation.fxml"));
-            Parent root = loader.load();
-
-            ConfirmReservController controller = loader.getController();
-            List<Jadwal> availableJadwal = jadwalRepo.getJadwalByTanggal(selectedDate);
-            controller.setDate(selectedDate, availableJadwal);
-
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Confirm Reservation");
-            dialogStage.setScene(new Scene(root));
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.showAndWait();
-            
-            if (controller.isConfirmed()) {
-                // kl berhasil update slot
-                slotTersedia = jadwalRepo.getSlotTersediaBulan(currentYearMonth);
-                updateCalendar();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
