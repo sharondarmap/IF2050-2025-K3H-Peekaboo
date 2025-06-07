@@ -43,11 +43,21 @@ public class AuthController {
         if (user != null) {
             Session.setCurrentUser(user);
             showAlert("Success", "Login successful!");
+            if(Session.getCurrentUser().getUserStatus().equals("PELANGGAN")){
                 try {
                 App.setRoot("primary");
                 } catch (IOException e) {
                     e.printStackTrace();
                 } //kalau dashboard ada scenenya kalo gaada langsung ke page apa aja
+            }
+            else if (Session.getCurrentUser().getUserStatus().equals("OPTOMETRIS")){
+                try {
+                App.setRoot("secondary");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } //kalau dashboard ada scenenya kalo gaada langsung ke page apa aja
+            }
+
         } else {
             showAlert("Login failed", "Username or password incorrect");
         }
