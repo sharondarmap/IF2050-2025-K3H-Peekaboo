@@ -21,11 +21,14 @@ public class CalendarJadwalView extends VBox {
     private YearMonth currentMonth;
     private final GridPane calendarGrid;
     private final Label monthLabel;
+    private final StackPane rootStack;
 
-    public CalendarJadwalView(JadwalRepository jadwalRepo, User currentOptometris) {
+
+    public CalendarJadwalView(JadwalRepository jadwalRepo, User currentOptometris, StackPane rootStack) {
         this.jadwalRepo = jadwalRepo;
         this.currentOptometris = currentOptometris;
         this.currentMonth = YearMonth.now();
+        this.rootStack = rootStack;
 
         this.setSpacing(20);
         this.setPadding(new Insets(20));
@@ -108,17 +111,24 @@ public class CalendarJadwalView extends VBox {
         for (int day = 1; day <= daysInMonth; day++) {
             LocalDate tanggal = currentMonth.atDay(day);
             VBox dayCell = new VBox(5);
+            dayCell.setPickOnBounds(false); //ini ngehindarin kalau diclick bisa berubah stylenya
             dayCell.setPrefSize(140, 120);
             dayCell.setPadding(new Insets(10));
+            dayCell.setFocusTraversable(false);
 
             Label dayLabel = new Label(String.valueOf(day));
             dayLabel.setFont(new Font(20));
+            dayLabel.setFocusTraversable(false);
             dayLabel.setStyle(
                 "-fx-text-fill: #241650;" +
                 "-fx-font-weight: 700;" +
-                "-fx-alignment: center;"
+                "-fx-font-size: 20px;" +
+                "-fx-alignment: center;" +
+                "-fx-background-insets: 0;" +  // prevents extra padding from focus ring
+                "-fx-effect: none;"            // removes glow/focus effects
             );
-            
+
+
             // Create a container for the day label to keep it top-right
             HBox dayLabelContainer = new HBox();
             dayLabelContainer.setAlignment(Pos.CENTER_RIGHT);
@@ -133,7 +143,7 @@ public class CalendarJadwalView extends VBox {
                 "-fx-background-radius: 5;" +
                 "-fx-cursor: hand;"
             );
-            addBtn.setOnAction(e -> openAddJadwalDialog(tanggal));
+            addBtn.setOnAction(e -> openAddJadwalOverlay(tanggal));
 
             List<Jadwal> jadwalHariIni = allJadwal.stream()
                 .filter(j -> j.getTanggal().equals(tanggal) &&
@@ -169,7 +179,7 @@ public class CalendarJadwalView extends VBox {
                         "-fx-font-weight: 400;" +
                         "-fx-pref-width: 89px;"
                     );
-                    detailBtn.setOnAction(e -> openDetailDialog(j));
+                    detailBtn.setOnAction(e -> openDetailOverlay(j));
                     dayCell.getChildren().add(detailBtn);
                 }
             }
@@ -180,6 +190,7 @@ public class CalendarJadwalView extends VBox {
                 "-fx-background-color: " + backgroundColor + ";" +
                 "-fx-background-radius: 8;" +
                 "-fx-border-radius: 8;" +
+                "-fx-font-size: 12px;" +
                 "-fx-border-color: transparent;" +
                 "-fx-position: relative;"
             );
@@ -193,48 +204,63 @@ public class CalendarJadwalView extends VBox {
         }
     }
 
-    private void openAddJadwalDialog(LocalDate tanggal) {
-        Dialog<Jadwal> dialog = new Dialog<>();
-        dialog.setTitle("Add Jadwal - " + tanggal);
+    private void openAddJadwalOverlay(LocalDate tanggal) {
+        VBox overlay = new VBox(10);
+        overlay.setAlignment(Pos.CENTER);
+        overlay.setPadding(new Insets(20));
+        overlay.setStyle("-fx-background-color: white; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
 
-        Label jamMulaiLbl = new Label("Jam Mulai:");
-        TextField jamMulaiField = new TextField("10:00");
-        Label jamSelesaiLbl = new Label("Jam Selesai:");
-        TextField jamSelesaiField = new TextField("11:00");
+        Label title = new Label("Tambah Jadwal - " + tanggal);
+        TextField jamMulai = new TextField("10:00");
+        TextField jamSelesai = new TextField("11:00");
+        Button simpan = new Button("Simpan");
+        Button batal = new Button("Batal");
 
-        VBox content = new VBox(10, jamMulaiLbl, jamMulaiField, jamSelesaiLbl, jamSelesaiField);
-        dialog.getDialogPane().setContent(content);
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        HBox actions = new HBox(10, simpan, batal);
+        actions.setAlignment(Pos.CENTER);
 
-        dialog.setResultConverter(button -> {
-            if (button == ButtonType.OK) {
-                try {
-                    LocalTime mulai = LocalTime.parse(jamMulaiField.getText());
-                    LocalTime selesai = LocalTime.parse(jamSelesaiField.getText());
+        overlay.getChildren().addAll(title, new Label("Jam Mulai:"), jamMulai, new Label("Jam Selesai:"), jamSelesai, actions);
 
-                    Jadwal newJadwal = new Jadwal();
-                    newJadwal.setTanggal(tanggal);
-                    newJadwal.setJamMulai(mulai);
-                    newJadwal.setJamSelesai(selesai);
-                    newJadwal.setOptometris(currentOptometris);
-                    newJadwal.setStatusJadwal(StatusJadwal.AVAILABLE);
+        VBox dimmer = new VBox(overlay);
+        dimmer.setAlignment(Pos.CENTER);
+        dimmer.setStyle("-fx-background-color: rgba(0,0,0,0.5);");
+        dimmer.setPrefSize(rootStack.getWidth(), rootStack.getHeight());
 
-                    jadwalRepo.addJadwal(newJadwal);
-                    updateCalendar();
+        rootStack.getChildren().add(dimmer);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        batal.setOnAction(e -> rootStack.getChildren().remove(dimmer));
+        simpan.setOnAction(e -> {
+            try {
+                Jadwal j = new Jadwal();
+                j.setTanggal(tanggal);
+                j.setJamMulai(LocalTime.parse(jamMulai.getText()));
+                j.setJamSelesai(LocalTime.parse(jamSelesai.getText()));
+                j.setOptometris(currentOptometris);
+                j.setStatusJadwal(StatusJadwal.AVAILABLE);
+
+                jadwalRepo.addJadwal(j);
+                updateCalendar();
+                rootStack.getChildren().remove(dimmer);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            return null;
         });
-
-        dialog.showAndWait();
     }
 
-    private void openDetailDialog(Jadwal jadwal) {
-        Dialog<Void> dialog = new Dialog<>();
-        dialog.setTitle("Detail Jadwal");
+    private void openDetailOverlay(Jadwal jadwal) {
+        VBox overlay = new VBox(12);
+        overlay.setAlignment(Pos.CENTER);
+        overlay.setPadding(new Insets(20));
+        overlay.setMaxWidth(300);
+        overlay.setStyle(
+            "-fx-background-color: white; " +
+            "-fx-border-radius: 8; " +
+            "-fx-background-radius: 8; " +
+            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);"
+        );
+
+        Label title = new Label("Detail Jadwal");
+        title.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #241650;");
 
         Label dateLbl = new Label("Tanggal: " + jadwal.getTanggal());
         Label startLbl = new Label("Jam Mulai:");
@@ -242,35 +268,55 @@ public class CalendarJadwalView extends VBox {
         Label endLbl = new Label("Jam Selesai:");
         TextField endField = new TextField(jadwal.getJamSelesai().toString());
 
-        ButtonType editBtnType = new ButtonType("Simpan", ButtonBar.ButtonData.OK_DONE);
-        ButtonType deleteBtnType = new ButtonType("Hapus", ButtonBar.ButtonData.LEFT);
-        dialog.getDialogPane().getButtonTypes().addAll(editBtnType, deleteBtnType, ButtonType.CANCEL);
+        HBox actionBox = new HBox(10);
+        Button simpanBtn = new Button("Simpan");
+        Button hapusBtn = new Button("Hapus");
+        Button batalBtn = new Button("Batal");
 
-        VBox content = new VBox(10, dateLbl, startLbl, startField, endLbl, endField);
-        dialog.getDialogPane().setContent(content);
+        simpanBtn.setStyle("-fx-background-color: #364C84; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 5;");
+        hapusBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 5;");
+        batalBtn.setStyle("-fx-background-color: #ccc; -fx-text-fill: #333; -fx-padding: 8 16; -fx-background-radius: 5;");
+        actionBox.getChildren().addAll(simpanBtn, hapusBtn, batalBtn);
+        actionBox.setAlignment(Pos.CENTER);
 
-        dialog.setResultConverter(button -> {
-            if (button == editBtnType) {
-                try {
-                    jadwal.setJamMulai(LocalTime.parse(startField.getText()));
-                    jadwal.setJamSelesai(LocalTime.parse(endField.getText()));
-                    jadwalRepo.updateJadwal(jadwal);
-                    updateCalendar();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else if (button == deleteBtnType) {
-                if (jadwal.isAvailable()) {
-                    jadwalRepo.deleteJadwal(jadwal.getIdJadwal());
-                    updateCalendar();
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.WARNING, "Jadwal sudah dipesan dan tidak bisa dihapus.", ButtonType.OK);
-                    alert.showAndWait();
-                }
+        overlay.getChildren().addAll(
+            title, dateLbl,
+            startLbl, startField,
+            endLbl, endField,
+            actionBox
+        );
+
+        VBox dimmer = new VBox(overlay);
+        dimmer.setAlignment(Pos.CENTER);
+        dimmer.setStyle("-fx-background-color: rgba(0,0,0,0.5);");
+        dimmer.setPrefSize(rootStack.getWidth(), rootStack.getHeight());
+
+        rootStack.getChildren().add(dimmer);
+
+        batalBtn.setOnAction(e -> rootStack.getChildren().remove(dimmer));
+
+        simpanBtn.setOnAction(e -> {
+            try {
+                jadwal.setJamMulai(LocalTime.parse(startField.getText()));
+                jadwal.setJamSelesai(LocalTime.parse(endField.getText()));
+                jadwalRepo.updateJadwal(jadwal);
+                updateCalendar();
+                rootStack.getChildren().remove(dimmer);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            return null;
         });
 
-        dialog.showAndWait();
+        hapusBtn.setOnAction(e -> {
+            if (jadwal.isAvailable()) {
+                jadwalRepo.deleteJadwal(jadwal.getIdJadwal());
+                updateCalendar();
+                rootStack.getChildren().remove(dimmer);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Jadwal sudah dipesan dan tidak bisa dihapus.", ButtonType.OK);
+                alert.showAndWait();
+            }
+        });
     }
+
 }

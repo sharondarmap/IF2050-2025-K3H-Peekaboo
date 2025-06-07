@@ -1,6 +1,7 @@
 package com.pekaboo.features.jadwal;
 
 import javafx.fxml.FXML;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import com.pekaboo.entities.User;
@@ -10,8 +11,9 @@ import com.pekaboo.util.Session;
 
 public class JadwalController {
 
-    @FXML
-    private VBox calendarContainer;
+@FXML 
+private StackPane calendarContainer;
+
 
     private JadwalRepository jadwalRepo;
 
@@ -21,10 +23,9 @@ public class JadwalController {
     @FXML
     private void initialize() {
         jadwalRepo = new PostgresJadwalRepository();
-        //ganti ini dengan session user yang logged in
         currentOptometris = getLoggedInUser();
 
-        CalendarJadwalView calendarView = new CalendarJadwalView(jadwalRepo, currentOptometris);
+        CalendarJadwalView calendarView = new CalendarJadwalView(jadwalRepo, currentOptometris, calendarContainer);
         calendarContainer.getChildren().add(calendarView);
     }
 
