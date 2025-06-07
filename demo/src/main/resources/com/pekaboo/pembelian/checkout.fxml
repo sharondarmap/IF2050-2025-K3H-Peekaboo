@@ -34,7 +34,7 @@
     <!-- Daftar Produk di Keranjang -->
     <VBox fx:id="cartItemsContainer">
         <!-- Produk akan ditambahkan secara dinamis di sini -->
-        <Label text="No items in the cart" fx:id="emptyCartLabel" />
+        <Label fx:id="emptyCartLabel" text="No items in the cart" visible="true"/>
     </VBox>
 
     <!-- Total Amount -->

@@ -9,6 +9,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,11 +24,11 @@ public class CheckoutController {
     @FXML private Button removeProductButton;
     @FXML private Button checkoutButton;
     @FXML private Button cancelButton;
-    @FXML private Button addPrescriptionButton; // Button for adding prescription
+    @FXML private Button addPrescriptionButton; 
 
     @FXML private VBox cartItemsContainer;
     @FXML private Label emptyCartLabel;
-    @FXML private VBox productOptionsContainer; // Container for product options
+    @FXML private VBox productOptionsContainer; 
 
     private ObservableList<Product> cartItems;
     private int totalAmount = 0;
@@ -66,28 +68,23 @@ public class CheckoutController {
         HBox productBox = new HBox(10);
         Label nameLabel = new Label(sampleProduct.getName());
         Label priceLabel = new Label("Rp" + sampleProduct.getPrice());
-
-        // Color options
         HBox colorOptions = new HBox(5);
         Label colorLabel = new Label("Color:");
         for (Color color : new Color[]{Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.BLACK}) {
             Circle colorCircle = new Circle(10, color);
-            colorCircle.setStyle("-fx-stroke: black; -fx-stroke-width: 1;"); // Add border to circles
+            colorCircle.setStyle("-fx-stroke: black; -fx-stroke-width: 1;"); 
             colorCircle.setOnMouseClicked(e -> {
-                // Handle color selection
                 System.out.println("Selected color: " + color.toString());
             });
             colorOptions.getChildren().add(colorCircle);
         }
 
-        // Size options
         HBox sizeOptions = new HBox(5);
         Label sizeLabel = new Label("Size:");
         for (String size : new String[]{"S", "M", "XL"}) {
             Button sizeButton = new Button(size);
             sizeButton.setStyle("-fx-font-size: 12px; -fx-padding: 5px;");
             sizeButton.setOnAction(e -> {
-                // Handle size selection
                 System.out.println("Selected size: " + size);
             });
             sizeOptions.getChildren().add(sizeButton);
@@ -113,8 +110,6 @@ public class CheckoutController {
         Product sampleProduct = new Product();
         sampleProduct.setName("Sample Product");
         sampleProduct.setPrice(100);
-
-        // Set quantity menggunakan util.checkout
         checkoutUtil.setQuantity(1);
 
         addProductToCart(sampleProduct);
@@ -123,12 +118,27 @@ public class CheckoutController {
     public void addProductToCart(Product product) {
         emptyCartLabel.setVisible(false);
 
-        HBox productBox = new HBox(10);
+        ImageView productImage = new ImageView(
+            new Image(getClass().getResource(product.getImagePath()).toExternalForm())
+        );
+        productImage.setFitWidth(60);
+        productImage.setFitHeight(60);
+        productImage.getStyleClass().add("product-image");
+
+        //HBox productBox = new HBox(10);
         Label nameLabel      = new Label(product.getName());
         Label priceLabel     = new Label("Rp " + product.getPrice());
         Label quantityLabel  = new Label("1");
         Button minusBtn      = new Button("–");
         Button plusBtn       = new Button("+");
+        HBox productBox = new HBox(10, 
+            productImage, 
+            nameLabel, 
+            priceLabel, 
+            minusBtn, 
+            quantityLabel, 
+            plusBtn
+        );
 
         minusBtn.setDisable(true);
         minusBtn.setOnAction(e -> {
@@ -149,13 +159,13 @@ public class CheckoutController {
             updateTotalAmountLabel();
         });
 
-        productBox.getChildren().addAll(
-            nameLabel,
-            priceLabel,
-            minusBtn,
-            quantityLabel,
-            plusBtn
-        );
+        // productBox.getChildren().addAll(
+        //     nameLabel,
+        //     priceLabel,
+        //     minusBtn,
+        //     quantityLabel,
+        //     plusBtn
+        // );
         cartItemsContainer.getChildren().add(productBox);
         cartItems.add(product);
 
@@ -169,12 +179,11 @@ public class CheckoutController {
     @FXML
     private void handleRemoveProduct() {
         if (!cartItems.isEmpty()) {
-            cartItems.remove(cartItems.size() - 1); // Menghapus produk terakhir sebagai contoh
+            cartItems.remove(cartItems.size() - 1); 
             cartItemsContainer.getChildren().remove(cartItemsContainer.getChildren().size() - 1); // Hapus elemen dari VBox
             calculateTotalAmount();
             updateTotalAmountLabel();
 
-            // Jika keranjang kosong, tampilkan label "No items in the cart"
             if (cartItems.isEmpty()) {
                 emptyCartLabel.setVisible(true);
             }
@@ -189,8 +198,8 @@ public class CheckoutController {
         for (Node node : cartItemsContainer.getChildren()) {
             if (node instanceof HBox) {
                 HBox row = (HBox) node;
-                Label priceL = (Label) row.getChildren().get(1);
-                Label qtyL   = (Label) row.getChildren().get(3);
+                Label priceL = (Label) row.getChildren().get(2);
+                Label qtyL   = (Label) row.getChildren().get(4);
                 int price = Integer.parseInt(priceL.getText().replaceAll("[^0-9]", ""));
                 int qty   = Integer.parseInt(qtyL.getText());
                 totalAmount += price * qty;
@@ -215,8 +224,6 @@ public class CheckoutController {
             return;
         }
 
-        // In a real application, this would handle payment processing,
-        // inventory updates, order creation, etc.
         boolean success = true;
 
         if (success) {

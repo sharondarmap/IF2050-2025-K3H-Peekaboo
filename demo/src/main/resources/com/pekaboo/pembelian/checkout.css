@@ -101,6 +101,13 @@ Label#productPrice {
     -fx-text-fill: #ffffff;
 }
 
+
+.product-image {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.75), 5, 0.5, 0, 0);
+    -fx-padding: 4;
+    -fx-background-radius: 4;
+}
+
 /* Style untuk tombol "Beli Sekarang" */
 Button#buyNowButton {
     -fx-font-size: 16px;
