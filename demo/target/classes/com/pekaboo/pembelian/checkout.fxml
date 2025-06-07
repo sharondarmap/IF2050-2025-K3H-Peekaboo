@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.pembelian.CheckoutController" stylesheets="@checkout.css" spacing="10" alignment="TOP_LEFT" prefWidth="800" prefHeight="600">
+    <!-- Judul Halaman -->
+    <Label text="Checkout Page" />
+
+    <!-- Pilihan Produk -->
+    <VBox fx:id="productOptionsContainer">
+        <!-- Produk akan ditampilkan secara dinamis di sini -->
+        <HBox spacing="10">
+            <Label text="Color:" />
+            <HBox spacing="5">
+                <Rectangle fx:id="colorRed" width="30" height="30" styleClass="color-circle" style="-fx-fill: red; -fx-stroke: black; -fx-stroke-width: 1;" />
+                <Rectangle fx:id="colorBlue" width="30" height="30" styleClass="color-circle" style="-fx-fill: blue; -fx-stroke: black; -fx-stroke-width: 1;" />
+                <Rectangle fx:id="colorGreen" width="30" height="30" styleClass="color-circle" style="-fx-fill: green; -fx-stroke: black; -fx-stroke-width: 1;" />
+                <Rectangle fx:id="colorYellow" width="30" height="30" styleClass="color-circle" style="-fx-fill: yellow; -fx-stroke: black; -fx-stroke-width: 1;" />
+                <Rectangle fx:id="colorBlack" width="30" height="30" styleClass="color-circle" style="-fx-fill: black; -fx-stroke: black; -fx-stroke-width: 1;" />
+            </HBox>
+        </HBox>
+        <HBox spacing="10">
+            <Label text="Size:" />
+            <HBox spacing="5">
+                <Button fx:id="sizeSmall" text="S" styleClass="primaryButton" />
+                <Button fx:id="sizeMedium" text="M" styleClass="primaryButton" />
+                <Button fx:id="sizeXLarge" text="XL" styleClass="primaryButton" />
+            </HBox>
+        </HBox>
+    </VBox>
+
+    <!-- Daftar Produk di Keranjang -->
+    <VBox fx:id="cartItemsContainer">
+        <!-- Produk akan ditambahkan secara dinamis di sini -->
+        <Label text="No items in the cart" fx:id="emptyCartLabel" />
+    </VBox>
+
+    <!-- Total Amount -->
+    <HBox>
+        <Label text="Total Amount:" />
+        <Label fx:id="totalAmountLabel" text="Rp 0" />
+    </HBox>
+
+    <!-- Tombol Aksi -->
+    <HBox spacing="10">
+        <Button fx:id="removeProductButton" text="Remove Product" onAction="#handleRemoveProduct" disable="true" styleClass="primaryButton" />
+        <Button fx:id="checkoutButton" text="Checkout" onAction="#handleCheckout" styleClass="primaryButton" />
+        <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel" styleClass="primaryButton" />
+        <Button fx:id="addPrescriptionButton" text="Add Prescription" styleClass="primaryButton" />
+    </HBox>
+</VBox>

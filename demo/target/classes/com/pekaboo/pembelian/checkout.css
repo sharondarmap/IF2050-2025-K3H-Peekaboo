@@ -1,0 +1,125 @@
+/* Style untuk halaman utama */
+VBox {
+    -fx-background-color: #ffffff;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+}
+
+/* Style untuk judul halaman */
+Label {
+    -fx-font-family: "Arial";
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* Style untuk detail produk */
+Label#productName {
+    -fx-font-family: "Arial";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4A148C;
+}
+
+Label#productPrice {
+    -fx-font-family: "Arial";
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4A148C;
+}
+
+/* Style untuk ukuran yang tersedia */
+.size-button {
+    -fx-font-size: 14px;
+    -fx-padding: 8px 12px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #4A148C;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #4A148C;
+    -fx-cursor: pointer;
+}
+
+.size-button:hover {
+    -fx-background-color: #4A148C;
+    -fx-text-fill: #ffffff;
+}
+
+/* Style untuk warna yang tersedia - seperti primary button */
+.color-circle {
+    -fx-pref-width: 30px;
+    -fx-pref-height: 30px;
+    -fx-stroke: #4A148C;
+    -fx-stroke-width: 2px;
+    -fx-cursor: pointer;
+}
+
+.color-circle:hover {
+    -fx-stroke-width: 3px;
+}
+
+/* Style untuk warna yang dipilih */
+.color-circle-selected {
+    -fx-stroke-width: 4px;
+    -fx-stroke: #4A148C;
+}
+
+/* Style untuk tombol kuantitas */
+.quantity-button {
+    -fx-font-size: 14px;
+    -fx-padding: 8px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #333333;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #333333;
+    -fx-cursor: pointer;
+}
+
+.quantity-button:hover {
+    -fx-border-color: #4A148C;
+    -fx-text-fill: #4A148C;
+}
+
+/* Style untuk tombol "Tambah Resep" */
+.primaryButton {
+    -fx-font-size: 14px;
+    -fx-padding: 8px 12px;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #4A148C;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #4A148C;
+    -fx-cursor: pointer;
+}
+
+.primaryButton:hover {
+    -fx-background-color: #4A148C;
+    -fx-text-fill: #ffffff;
+}
+
+/* Style untuk tombol "Beli Sekarang" */
+Button#buyNowButton {
+    -fx-font-size: 16px;
+    -fx-padding: 10px 20px;
+    -fx-background-color: #4A148C;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-cursor: pointer;
+}
+
+Button#buyNowButton:hover {
+    -fx-background-color: #6A1B9A;
+}
+
+/* Style untuk status ketersediaan */
+Label#availabilityStatus {
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+    -fx-text-fill: #4CAF50;
+}

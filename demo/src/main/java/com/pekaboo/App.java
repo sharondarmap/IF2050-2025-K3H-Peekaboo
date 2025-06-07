@@ -1,12 +1,12 @@
 package com.pekaboo;
 
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 /**
  * JavaFX App
@@ -27,8 +27,11 @@ public class App extends Application {
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
+        System.out.println("Loading FXML: " + fxml + ".fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
+        Parent root = fxmlLoader.load();
+        System.out.println("FXML Loaded Successfully: " + fxml + ".fxml");
+        return root;
     }
 
     public static void main(String[] args) {
