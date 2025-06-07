@@ -1,0 +1,21 @@
+/* Sembunyikan scroll-bar vertikal secara visual */
+.scroll-pane > .scroll-bar:vertical {
+    -fx-pref-width: 0;
+    padding: 0;
+    -fx-padding: 0;
+    opacity: 0; /* Standard CSS for compatibility */
+    -fx-opacity: 0; /* Membuatnya transparan total */
+}
+
+/* Sembunyikan tombol panah atas-bawah */
+.scroll-pane > .scroll-bar:vertical > .increment-button,
+.scroll-pane > .scroll-bar:vertical > .decrement-button {
+    padding: 0;
+    -fx-padding: 0;
+}
+
+/* Sembunyikan 'jempol' atau pegangan scrollbar */
+.scroll-pane > .scroll-bar:vertical > .thumb {
+    background-color: transparent;
+    -fx-background-color: transparent;
+}

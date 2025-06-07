@@ -1,0 +1,18 @@
+ .nav-button {
+    background-color: transparent;
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    font-family: "Violet Sans";
+    -fx-font-family: "Violet Sans";
+    font-size: 24px;
+    -fx-font-size: 24px;
+ }
+
+ .nav-button:hover {
+    -fx-text-fill: #D1C7F0;
+ }
+
+ .nav-button.active {
+     -fx-underline: true;
+     -fx-text-fill: #5B36C9; 
+ }
