@@ -1,4 +1,4 @@
-.card {
+.card-button {
   background-color: transparent;
   -fx-background-color: transparent;
   border-radius: 24px;
@@ -11,6 +11,14 @@
   padding: 0;
   -fx-padding: 0;
   -fx-alignment: center;
+  -fx-pref-width: 280px;
+  -fx-pref-width: 287px;
+}
+
+.card-button:hover {
+  border-color: #5B36C9;
+  -fx-border-color: #5B36C9;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10px, 0.1px, 0px, 2px);
 }
 
 .card-image {
@@ -64,6 +72,62 @@
   font-size: 16px;
   -fx-font-size: 16px;
   font-family: "Violet Sans";
-  -fx-font-family: "Violet Sans";
+font-family: "Violet Sans";
   -fx-alignment: RIGHT;
+}
+
+.size-button {
+  background-color: #FFFFFF;
+  -fx-background-color: #FFFFFF;
+  -fx-text-fill: #5B36C9;
+  font-size: 14px;
+  -fx-font-size: 14px;
+  font-family: "Violet Sans";
+  -fx-font-family: "Violet Sans";
+  border-color: #939698;
+  -fx-border-color: #939698;
+  border-width: 1px;
+  -fx-border-width: 1px;
+  border-radius: 5px;
+  -fx-border-radius: 5px;
+}
+
+.size-button:hover {
+  background-color: #FFFFFF;
+  -fx-background-color: #FFFFFF;
+  border-color: #5B36C9;
+  -fx-border-color: #5B36C9;
+}
+
+/* Style untuk tombol ukuran yang AKTIF */
+.size-button-active {
+  background-color: #5B36C9;
+  -fx-background-color: #5B36C9;
+  -fx-text-fill: white;
+  border-color: #FFFFFF;
+  -fx-border-color: #5B36C9;
+
+
+}
+
+.price-button {
+  background-color: #FFFFFF;
+  -fx-background-color: #FFFFFF;
+  -fx-text-fill: #5B36C9;
+  font-size: 14px;
+  -fx-font-size: 14px;
+  font-family: "Violet Sans";
+  -fx-font-family: "Violet Sans";
+  border-radius: 5px;
+  -fx-border-radius: 5px;
+}
+
+.price-button:pressed {
+  border-color: #5B36C9;
+  -fx-border-color: #5B36C9;
+}
+
+.apply-button:pressed {
+  border-color: #FFFFFF;
+  -x-border-color: #FFFFFF;
 }
