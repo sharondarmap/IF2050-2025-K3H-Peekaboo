@@ -81,7 +81,7 @@ public class PostgresProdukRepository implements ProductRepo {
 
     @Override
     public void addNewProduct(Product product) {
-        String sql = "INSERT INTO produk (namaproduk, brand, harga, stok, warna, ukuran, berat) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO produk (namaproduk, brand, harga, stok, warna, ukuran) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnector.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -92,7 +92,6 @@ public class PostgresProdukRepository implements ProductRepo {
             stmt.setInt(4, product.getStock());
             stmt.setString(5, product.getColor());
             stmt.setString(6, product.getSize());
-            stmt.setDouble(7, 0); // karena `berat` tidak ada di entitas kamu
 
             stmt.executeUpdate();
 
@@ -146,7 +145,7 @@ public class PostgresProdukRepository implements ProductRepo {
         String color = rs.getString("warna");
         String size = rs.getString("ukuran");
 
-        // imagePath tidak disimpan di database, bisa diatur default atau nanti ditambahkan
+        // imagePath masih tidak disimpan di DB
         return new Product(id, stock, price, name, brand, color, size, null);
     }
 }

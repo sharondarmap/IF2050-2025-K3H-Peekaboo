@@ -2,14 +2,12 @@ package com.pekaboo.repositories.postgres;
 
 import com.pekaboo.entities.Jadwal;
 import com.pekaboo.entities.Reservasi;
-import com.pekaboo.entities.StatusJadwal;
 import com.pekaboo.entities.StatusReservasi;
 import com.pekaboo.entities.User;
 import com.pekaboo.repositories.ReservasiRepository;
 import com.pekaboo.util.DatabaseConnector;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
