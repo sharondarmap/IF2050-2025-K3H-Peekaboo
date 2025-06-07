@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.pekaboo.features.reservasi.ConfirmReservController"
+    stylesheets="@/com/pekaboo/reservasi/reservasi.css"
+    spacing="15" alignment="CENTER">
+    <padding>
+        <Insets topRightBottomLeft="20"/>
+    </padding>
+
+    <Label text="Confirm Reservation" styleClass="dialog-title"/>
+    <Label text="Reservations cannot be canceled! Please choose an appropriate time." styleClass="warning-text"/>
+    
+    <VBox spacing="5">
+        <Label text="Date" styleClass="field-label"/>
+        <Label fx:id="dateLabel" text="Monday, 2 October" styleClass="field-value"/>
+    </VBox>
+    
+    <VBox spacing="5">
+        <Label text="Start Time" styleClass="field-label"/>
+        <ComboBox fx:id="timeComboBox" promptText="Select time"/>
+    </VBox>
+    
+    <VBox spacing="5">
+        <Label text="Optometrist" styleClass="field-label"/>
+        <Label fx:id="optometristLabel" text="👨‍⚕️ Dr. Atina Carlina, S.Ked., M.Kes., Sp.M (K)" styleClass="field-value"/>
+    </VBox>
+    
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Cancel" onAction="#handleCancel" styleClass="secondary-button"/>
+        <Button text="Reserve" onAction="#handleReserve" styleClass="primary-button"/>
+    </HBox>
+</VBox>

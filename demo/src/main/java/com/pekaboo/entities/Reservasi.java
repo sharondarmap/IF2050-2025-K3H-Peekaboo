@@ -1,15 +1,18 @@
 package com.pekaboo.entities;
 
+import java.time.LocalDateTime;
+
 public class Reservasi {
     private int idReservasi;
-    private String statusReservasi;
     private User optometris;  // userStatus = "OPTOMETRIS"
     private User pelanggan;   // userStatus = "PELANGGAN"
     private Jadwal jadwal;
+    private StatusReservasi statusReservasi;
+    private LocalDateTime tanggalReservasi;
 
     public Reservasi() {}
 
-    public Reservasi(int idReservasi, String statusReservasi, User optometris, User pelanggan, Jadwal jadwal) {
+    public Reservasi(int idReservasi, StatusReservasi statusReservasi, User optometris, User pelanggan, Jadwal jadwal) {
         this.idReservasi = idReservasi;
         this.statusReservasi = statusReservasi;
         this.optometris = optometris;
@@ -25,11 +28,11 @@ public class Reservasi {
         this.idReservasi = idReservasi;
     }
 
-    public String getStatusReservasi() {
+    public StatusReservasi getStatusReservasi() {
         return statusReservasi;
     }
 
-    public void setStatusReservasi(String statusReservasi) {
+    public void setStatusReservasi(StatusReservasi statusReservasi) {
         this.statusReservasi = statusReservasi;
     }
 
@@ -55,5 +58,13 @@ public class Reservasi {
 
     public void setJadwal(Jadwal jadwal) {
         this.jadwal = jadwal;
+    }
+
+    public LocalDateTime getTanggalReservasi() {
+        return tanggalReservasi;
+    }
+    
+    public void setTanggalReservasi(LocalDateTime tanggalReservasi) {
+        this.tanggalReservasi = tanggalReservasi;
     }
 }
