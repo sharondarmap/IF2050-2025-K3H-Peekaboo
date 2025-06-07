@@ -1,9 +1,17 @@
 package com.pekaboo.features.jadwal;
 
 import com.pekaboo.entities.Jadwal;
+import com.pekaboo.entities.Reservasi;
 import com.pekaboo.entities.StatusJadwal;
+import com.pekaboo.entities.StatusReservasi;
 import com.pekaboo.entities.User;
 import com.pekaboo.repositories.JadwalRepository;
+import com.pekaboo.repositories.ResepRepository;
+import com.pekaboo.repositories.ReservasiRepository;
+import com.pekaboo.repositories.postgres.PostgresResepRepository;
+import com.pekaboo.repositories.postgres.PostgresReservasiRepository;
+import com.pekaboo.features.resep.ResepController;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -23,6 +31,8 @@ public class CalendarJadwalView extends VBox {
     private final Label monthLabel;
     private final StackPane rootStack;
 
+    private final ReservasiRepository reservasiRepo = new PostgresReservasiRepository();
+    private final ResepController resepController = new ResepController();
 
     public CalendarJadwalView(JadwalRepository jadwalRepo, User currentOptometris, StackPane rootStack) {
         this.jadwalRepo = jadwalRepo;
@@ -248,41 +258,236 @@ public class CalendarJadwalView extends VBox {
     }
 
     private void openDetailOverlay(Jadwal jadwal) {
-        VBox overlay = new VBox(12);
+        VBox overlay = new VBox(8);
         overlay.setAlignment(Pos.CENTER);
-        overlay.setPadding(new Insets(20));
-        overlay.setMaxWidth(300);
+        overlay.setPadding(new Insets(24, 40, 24, 40));
+        overlay.setMaxWidth(400);
         overlay.setStyle(
             "-fx-background-color: white; " +
-            "-fx-border-radius: 8; " +
-            "-fx-background-radius: 8; " +
-            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);"
+            "-fx-border-radius: 12; " +
+            "-fx-background-radius: 12; " +
+            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 12, 0, 0, 8);"
         );
 
-        Label title = new Label("Detail Jadwal");
-        title.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #241650;");
+        Label title = new Label("Schedule Details");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: rgba(36, 22, 80, 1);");
 
-        Label dateLbl = new Label("Tanggal: " + jadwal.getTanggal());
-        Label startLbl = new Label("Jam Mulai:");
+        Label dateLbl = new Label("Date: " + jadwal.getTanggal());
+        dateLbl.setStyle(
+            "-fx-font-size: 16px; " +  
+            "-fx-font-weight: 600; " + 
+            "-fx-text-fill: rgba(50, 30, 110, 1); " +
+            "-fx-font-weight: 500; " +
+            "-fx-padding: 0; " +  
+            "-fx-min-height: 12px; " +  
+            "-fx-alignment: center-left;" 
+        );
+
+        VBox timeSection = new VBox(8);
+        timeSection.setAlignment(Pos.CENTER_LEFT);
+        
+        Label startLbl = new Label("Start Time:");
+        startLbl.setStyle(
+            "-fx-font-size: 14px; " +
+            "-fx-font-weight: 600; " +
+            "-fx-text-fill: rgba(36, 22, 80, 1); " +
+            "-fx-padding: 4 0 2 0;" 
+        );
+        
         TextField startField = new TextField(jadwal.getJamMulai().toString());
-        Label endLbl = new Label("Jam Selesai:");
+        startField.setStyle(
+            "-fx-font-size: 14px; " +
+            "-fx-text-fill: rgba(36, 22, 80, 1); " +
+            "-fx-padding: 10 12; " + 
+            "-fx-min-height: 36px; " + 
+            "-fx-background-color: #F8FAFC; " +
+            "-fx-border-color: #E2E8F0; " +
+            "-fx-border-width: 1; " +
+            "-fx-border-radius: 6; " +
+            "-fx-background-radius: 6;"
+        );
+        
+        Label endLbl = new Label("End Time:");
+        endLbl.setStyle(
+            "-fx-font-size: 14px; " +
+            "-fx-font-weight: 600; " +  
+            "-fx-text-fill: rgba(36, 22, 80, 1); " +
+            "-fx-padding: 4 0 2 0;"  
+        );
+        
         TextField endField = new TextField(jadwal.getJamSelesai().toString());
+        endField.setStyle(
+            "-fx-font-size: 14px; " +
+            "-fx-text-fill: rgba(36, 22, 80, 1); " +
+            "-fx-padding: 10 12; " +   
+            "-fx-min-height: 36px; " + 
+            "-fx-background-color: #F8FAFC; " +
+            "-fx-border-color: #E2E8F0; " +
+            "-fx-border-width: 1; " +
+            "-fx-border-radius: 6; " +
+            "-fx-background-radius: 6;"
+        );
+        
+        timeSection.getChildren().addAll(startLbl, startField, endLbl, endField);
 
-        HBox actionBox = new HBox(10);
-        Button simpanBtn = new Button("Simpan");
-        Button hapusBtn = new Button("Hapus");
-        Button batalBtn = new Button("Batal");
+        Reservasi reservasi = reservasiRepo.getReservasiByJadwal(jadwal);
+    
+        VBox reservationSection = new VBox(15);
+        if (reservasi != null && reservasi.getStatusReservasi() != StatusReservasi.CANCELLED) {
+            Label reservationTitle = new Label("📋 Reservation Details");
+            reservationTitle.setStyle(
+                "-fx-font-weight: 600; " +
+                "-fx-font-size: 16px; " +
+                "-fx-text-fill: rgba(36, 22, 80, 1);"
+            );
 
-        simpanBtn.setStyle("-fx-background-color: #364C84; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 5;");
-        hapusBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 8 16; -fx-background-radius: 5;");
-        batalBtn.setStyle("-fx-background-color: #ccc; -fx-text-fill: #333; -fx-padding: 8 16; -fx-background-radius: 5;");
+            VBox infoContainer = new VBox(8);
+            infoContainer.setPadding(new Insets(8, 16, 8, 16));
+            infoContainer.setStyle(
+                "-fx-background-color: #F8FAFC; " +
+                "-fx-background-radius: 10; " +
+                "-fx-border-color: #E2E8F0; " +
+                "-fx-border-width: 1; " +
+                "-fx-border-radius: 10; " +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 4, 0, 0, 2);"
+            );
+            
+            VBox customerInfo = new VBox(0);
+            Label customerLabel = new Label("Customer");
+            customerLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #6B7280; -fx-font-weight: 500;");
+
+            Label customerName = new Label(reservasi.getPelanggan().getUsername());
+            customerName.setStyle("-fx-font-size: 14px; -fx-text-fill: rgba(36, 22, 80, 1); -fx-font-weight: 600;");
+            customerInfo.getChildren().addAll(customerLabel, customerName);
+
+            VBox statusInfo = new VBox(0);
+            Label statusLabel = new Label("Status");
+            statusLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #6B7280; -fx-font-weight: 500;");
+
+            Label statusValue = new Label(reservasi.getStatusReservasi().name());
+            statusValue.setStyle("-fx-font-size: 14px; -fx-text-fill: #10B981; -fx-font-weight: 600;");
+            statusInfo.getChildren().addAll(statusLabel, statusValue);
+
+            VBox dateInfo = new VBox(0);
+            Label dateLabel = new Label("Reservation Date");
+            dateLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #6B7280; -fx-font-weight: 500;");
+
+            Label dateValue = new Label(reservasi.getTanggalReservasi().toLocalDate().toString());
+            dateValue.setStyle("-fx-font-size: 14px; -fx-text-fill: rgba(36, 22, 80, 1); -fx-font-weight: 600;");
+            dateInfo.getChildren().addAll(dateLabel, dateValue);
+
+            infoContainer.getChildren().addAll(customerInfo, statusInfo, dateInfo);
+            
+            // prescription button
+            Button addPrescriptionBtn = new Button("+ Add Prescription");
+            addPrescriptionBtn.setPrefWidth(350); // 🔧 Increase to match container width
+            addPrescriptionBtn.setPrefHeight(45);
+            addPrescriptionBtn.setStyle(
+                "-fx-background-color: rgba(91, 54, 201, 1); " +
+                "-fx-text-fill: rgba(255, 255, 255, 1); " +
+                "-fx-padding: 8 24; " +
+                "-fx-background-radius: 10; " +
+                "-fx-font-weight: 700; " +
+                "-fx-font-size: 14px; "
+            );
+
+            addPrescriptionBtn.setOnAction(e -> {
+                rootStack.getChildren().removeIf(node -> node.getStyle().contains("rgba(0,0,0,0.5)"));
+                resepController.showAddPrescriptionOverlay(reservasi, rootStack, currentOptometris);
+            });
+
+            HBox buttonContainer = new HBox();
+            buttonContainer.setAlignment(Pos.CENTER);
+            buttonContainer.setPadding(new Insets(8, 0, 4, 0));
+            buttonContainer.getChildren().add(addPrescriptionBtn);
+
+            reservationSection.getChildren().addAll(reservationTitle, infoContainer, buttonContainer);
+            
+        } else {
+            VBox emptyState = new VBox(10);
+            emptyState.setAlignment(Pos.CENTER);
+            emptyState.setPadding(new Insets(25));
+            emptyState.setStyle(
+                "-fx-background-color: #F9FAFB; " +
+                "-fx-background-radius: 10; " +
+                "-fx-border-color: #E5E7EB; " +
+                "-fx-border-width: 1; " +
+                "-fx-border-radius: 10; " +
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 4, 0, 0, 2);"
+            );
+            
+            Label emptyIcon = new Label("📭");
+            emptyIcon.setStyle("-fx-font-size: 28px;");
+            
+            Label emptyTitle = new Label("No Reservations Yet");
+            emptyTitle.setStyle(
+                "-fx-font-weight: 600; " +
+                "-fx-font-size: 16px; " +
+                "-fx-text-fill: rgba(36, 22, 80, 1);"
+            );
+            
+            Label emptyDesc = new Label("This schedule is not yet booked");
+            emptyDesc.setStyle(
+                "-fx-font-size: 13px; " +
+                "-fx-text-fill: #9CA3AF; " +
+                "-fx-text-alignment: center;"
+            );
+            emptyDesc.setWrapText(true);
+            
+            emptyState.getChildren().addAll(emptyIcon, emptyTitle, emptyDesc);
+            reservationSection.getChildren().add(emptyState);
+        }
+
+        HBox actionBox = new HBox(8);
+        Button simpanBtn = new Button("Save");
+        Button hapusBtn = new Button("Delete");
+        Button batalBtn = new Button("Cancel");
+
+        simpanBtn.setPrefWidth(110);
+        simpanBtn.setPrefHeight(36);
+        simpanBtn.setStyle(
+            "-fx-background-color: rgba(36, 22, 80, 1); " +
+            "-fx-text-fill: white; " +
+            "-fx-padding: 10 20; " +
+            "-fx-background-radius: 8; " +
+            "-fx-font-weight: 600; " +
+            "-fx-font-size: 14px; "
+        );
+
+        hapusBtn.setPrefWidth(110);
+        hapusBtn.setPrefHeight(36);
+        hapusBtn.setStyle(
+            "-fx-background-color: #DC2626; " + 
+            "-fx-text-fill: white; " +
+            "-fx-padding: 10 20; " +
+            "-fx-background-radius: 8; " +
+            "-fx-font-weight: 600; " +
+            "-fx-font-size: 14px; "
+        );
+
+        batalBtn.setPrefWidth(110);
+        batalBtn.setPrefHeight(36);
+        batalBtn.setStyle(
+            "-fx-background-color: #F3F4F6; " + 
+            "-fx-text-fill: #6B7280; " +
+            "-fx-padding: 10 20; " +
+            "-fx-background-radius: 8; " +
+            "-fx-font-weight: 600; " +
+            "-fx-font-size: 14px; " +
+            "-fx-cursor: hand; " +
+            "-fx-border-color: #E5E7EB; " + 
+            "-fx-border-width: 1; " +
+            "-fx-border-radius: 8;"
+        );
         actionBox.getChildren().addAll(simpanBtn, hapusBtn, batalBtn);
         actionBox.setAlignment(Pos.CENTER);
 
         overlay.getChildren().addAll(
             title, dateLbl,
-            startLbl, startField,
-            endLbl, endField,
+            timeSection,
+            new Region() {{ setPrefHeight(8); }},
+            new Separator(),
+            reservationSection,
             actionBox
         );
 

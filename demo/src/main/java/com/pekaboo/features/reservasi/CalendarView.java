@@ -138,7 +138,7 @@ public class CalendarView extends VBox {
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: rgba(36, 22, 80, 1);");
         
         Label warningLabel = new Label("Reservations cannot be canceled! Please choose an appropriate time.");
-        warningLabel.setStyle("-fx-text-fill: #ECB94B; -fx-font-size: 14px; -fx-font-weight: 500;");
+        warningLabel.setStyle("-fx-text-fill: #ECB94B; -fx-font-size: 14px; -fx-font-weight: 600;");
         warningLabel.setWrapText(true);
         warningLabel.setAlignment(Pos.CENTER);
         warningLabel.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);

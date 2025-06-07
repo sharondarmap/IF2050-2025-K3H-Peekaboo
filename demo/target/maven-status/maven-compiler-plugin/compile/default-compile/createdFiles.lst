@@ -10,12 +10,14 @@ com\pekaboo\features\reservasi\ReservasiController.class
 com\pekaboo\repositories\JadwalRepository.class
 com\pekaboo\SecondaryController.class
 com\pekaboo\util\Session.class
+com\pekaboo\features\jadwal\CalendarJadwalView$1.class
 com\pekaboo\repositories\ReservasiRepository.class
 com\pekaboo\repositories\ResepRepository.class
 com\pekaboo\repositories\UserRepository.class
 com\pekaboo\features\pembelian\ProdukController.class
 com\pekaboo\entities\User.class
 com\pekaboo\entities\StatusReservasi.class
+com\pekaboo\features\jadwal\CalendarJadwalView.class
 com\pekaboo\PrimaryController.class
 com\pekaboo\auth\AuthController.class
 com\pekaboo\entities\Jadwal.class
@@ -24,3 +26,4 @@ com\pekaboo\repositories\postgres\PostgresReservasiRepository.class
 com\pekaboo\util\DatabaseConnector.class
 com\pekaboo\entities\StatusJadwal.class
 com\pekaboo\repositories\ProductRepo.class
+com\pekaboo\features\resep\ResepController.class
