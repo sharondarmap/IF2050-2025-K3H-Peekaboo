@@ -11,4 +11,7 @@ module com.pekaboo {
     opens com.pekaboo.entities to javafx.base;
     
     exports com.pekaboo;
+
+    // buat test driver
+    exports com.pekaboo.layout;
 }

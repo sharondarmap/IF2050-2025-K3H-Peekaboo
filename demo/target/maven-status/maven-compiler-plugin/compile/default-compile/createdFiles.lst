@@ -7,6 +7,7 @@ com\pekaboo\features\home\HomeController.class
 com\pekaboo\layout\NavbarController.class
 com\pekaboo\features\pembelian\CatalogProduct.class
 com\pekaboo\repositories\MockProductRepo.class
+com\pekaboo\features\pembelian\CatalogDriver.class
 com\pekaboo\PrimaryController.class
 com\pekaboo\layout\FooterController.class
 com\pekaboo\repositories\ProductRepo.class
