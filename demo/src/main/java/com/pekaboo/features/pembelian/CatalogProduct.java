@@ -40,11 +40,11 @@ public class CatalogProduct implements Initializable {
             ImageView imageView;
             try {
                 // Load image berdasarkan id
-                String imagePath = "/assets/img/" + product.getId() + ".jpg";
+                String imagePath = "/com/pekaboo/pembelian/assets/" + product.getId() + ".jpg";
                 imageView = new ImageView(new Image(getClass().getResourceAsStream(imagePath)));
             } catch (Exception e) {
                 // Fallback logic ke default image
-                imageView = new ImageView(new Image(getClass().getResourceAsStream("/assets/img/placeholder.png")));
+                imageView = new ImageView(new Image(getClass().getResourceAsStream("/com/pekaboo/pembelian/assets/5.jpg")));
             }
 
             imageView.setFitWidth(160);

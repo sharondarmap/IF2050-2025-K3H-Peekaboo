@@ -17,7 +17,6 @@
                 <VBox>
                     <children>
                         <AnchorPane fx:id="contentArea" />
-                        
                         <fx:include source="/com/pekaboo/footer/Footer.fxml" />
                     </children>
                 </VBox>

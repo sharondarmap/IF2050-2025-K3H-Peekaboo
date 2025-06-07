@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import com.pekaboo.auth.*;
+import com.pekaboo.features.home.MainController;
 
 import java.io.IOException;
 
@@ -32,6 +33,16 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }
+    public static void navigateToMain(String homePageFxml) throws IOException {
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("/com/pekaboo/home/main.fxml"));
+        Parent root = loader.load();
+
+        MainController controller = loader.getController();
+        controller.loadPage(homePageFxml, null);
+
+        scene.setRoot(root);
+    }
+
 
     public static void main(String[] args) {
         launch();

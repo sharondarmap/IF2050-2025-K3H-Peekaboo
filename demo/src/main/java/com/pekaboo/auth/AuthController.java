@@ -45,14 +45,14 @@ public class AuthController {
             showAlert("Success", "Login successful!");
             if(Session.getCurrentUser().getUserStatus().equals("PELANGGAN")){
                 try {
-                App.setRoot("primary");
+                App.navigateToMain("/com/pekaboo/primary.fxml");
                 } catch (IOException e) {
                     e.printStackTrace();
                 } //kalau dashboard ada scenenya kalo gaada langsung ke page apa aja
             }
             else if (Session.getCurrentUser().getUserStatus().equals("OPTOMETRIS")){
                 try {
-                App.setRoot("secondary");
+                App.navigateToMain("/com/pekaboo/secondary.fxml");
                 } catch (IOException e) {
                     e.printStackTrace();
                 } //kalau dashboard ada scenenya kalo gaada langsung ke page apa aja

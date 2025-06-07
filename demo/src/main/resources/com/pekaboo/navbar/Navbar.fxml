@@ -29,8 +29,8 @@
                 <Button fx:id="reservationButton" onAction="#handleNavigation" styleClass="nav-button" text="Reservation">
                      <userData>
                         <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="placeholder" />
-                            <String fx:value="null" />
+                            <String fx:value="/com/pekaboo/reservasi/reservasi.fxml" />
+                            <String fx:value="/com/pekaboo/reservasi/reservasi.css" />
                         </FXCollections>
                     </userData>
                 </Button>
@@ -38,7 +38,7 @@
                      <userData>
                         <FXCollections fx:factory="observableArrayList">
                             <String fx:value="/com/pekaboo/pembelian/CatalogProduct.fxml" />
-                            <String fx:value="/com/pekaboo/pembelian/catalog.css" />
+                            <String fx:value="/com/pekaboo/pembelian/catalog.css"/>
                         </FXCollections>
                     </userData>
                 </Button>

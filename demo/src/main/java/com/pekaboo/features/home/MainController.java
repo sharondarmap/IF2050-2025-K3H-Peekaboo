@@ -3,6 +3,7 @@ package com.pekaboo.features.home;
 //import java.io.IOException;
 import java.net.URL;
 
+import com.pekaboo.PrimaryController;
 import com.pekaboo.features.navbar.NavbarController;
 
 import javafx.application.Platform;
@@ -25,9 +26,29 @@ public class MainController {
     @FXML
     public void initialize() {
         navbarController.setMainController(this);
+
+        // Add global navbar CSS once
+        Scene scene = contentArea.getScene();
+        if (scene != null) {
+            URL navbarCss = getClass().getResource("/com/pekaboo/navbar/navbar.css");
+            if (navbarCss != null) {
+                scene.getStylesheets().add(navbarCss.toExternalForm());
+            }
+        } else {
+            Platform.runLater(() -> {
+                Scene laterScene = contentArea.getScene();
+                if (laterScene != null) {
+                    URL navbarCss = getClass().getResource("/com/pekaboo/navbar/navbar.css");
+                    if (navbarCss != null) {
+                        laterScene.getStylesheets().add(navbarCss.toExternalForm());
+                    }
+                }
+            });
+        }
     }
 
     public void loadPage(String fxmlPath, String cssPath) {
+        System.out.println(">> Memuat halaman: " + fxmlPath + " dengan CSS: " + cssPath);
         try {
             Scene scene = contentArea.getScene();
             if (scene == null) {
@@ -49,7 +70,14 @@ public class MainController {
                 return;
             }
 
-            Parent page = FXMLLoader.load(getClass().getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent page = loader.load();
+
+            // Inject mainController if applicable
+            Object controller = loader.getController();
+            if (controller instanceof PrimaryController) {
+                ((PrimaryController) controller).setMainController(this);
+            }
 
             if (cssPath != null && !"null".equalsIgnoreCase(cssPath)) {
                 URL newCssUrl = getClass().getResource(cssPath);
@@ -58,6 +86,12 @@ public class MainController {
                     this.currentPageCss = cssPath;
                 }
             }
+            // URL navbarCss = getClass().getResource("/com/pekaboo/navbar/navbar.css");
+            // if (navbarCss != null) {
+            //     scene.getStylesheets().add(navbarCss.toExternalForm());
+            // } else {
+            //     System.err.println("⚠️ navbar.css not found!");
+            // }
             
             contentArea.getChildren().add(page);
             AnchorPane.setTopAnchor(page, 0.0);
