@@ -1,8 +1,8 @@
 package com.pekaboo.features.jadwal;
 
 import com.pekaboo.entities.Jadwal;
-import com.pekaboo.entities.User;
 import com.pekaboo.entities.StatusJadwal;
+import com.pekaboo.entities.User;
 import com.pekaboo.repositories.JadwalRepository;
 
 import javafx.geometry.Insets;
@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CalendarJadwalView extends VBox {
     private final JadwalRepository jadwalRepo;
@@ -46,7 +47,7 @@ public class CalendarJadwalView extends VBox {
     private void updateCalendar() {
         calendarGrid.getChildren().clear();
         LocalDate firstDay = currentMonth.atDay(1);
-        int dayOfWeek = firstDay.getDayOfWeek().getValue() % 7; // Sunday = 0
+        int dayOfWeek = firstDay.getDayOfWeek().getValue() % 7;
         int daysInMonth = currentMonth.lengthOfMonth();
 
         List<Jadwal> allJadwal = jadwalRepo.getAllJadwal();
@@ -54,11 +55,11 @@ public class CalendarJadwalView extends VBox {
         int row = 0, col = dayOfWeek;
         for (int day = 1; day <= daysInMonth; day++) {
             LocalDate tanggal = currentMonth.atDay(day);
-
             VBox dayCell = new VBox(5);
             dayCell.setPrefSize(140, 120);
             dayCell.setPadding(new Insets(10));
             dayCell.setStyle("-fx-border-color: #ccc; -fx-background-radius: 6; -fx-border-radius: 6;");
+            dayCell.setAlignment(Pos.TOP_LEFT);
 
             Label dayLabel = new Label(String.valueOf(day));
             dayLabel.setFont(new Font(16));
@@ -68,13 +69,17 @@ public class CalendarJadwalView extends VBox {
             addBtn.setOnAction(e -> openAddJadwalDialog(tanggal));
             dayCell.getChildren().add(addBtn);
 
-            long countJadwal = allJadwal.stream()
-                .filter(j -> j.getTanggal().equals(tanggal) && j.getOptometris().getIdUser() == currentOptometris.getIdUser())
-                .count();
+            List<Jadwal> jadwalHariIni = allJadwal.stream()
+                .filter(j -> j.getTanggal().equals(tanggal) &&
+                             j.getOptometris().getIdUser() == currentOptometris.getIdUser())
+                .collect(Collectors.toList());
 
-            Label info = new Label("Jadwal: " + countJadwal);
-            info.setStyle("-fx-font-size: 11px; -fx-text-fill: #555;");
-            dayCell.getChildren().add(info);
+            for (Jadwal j : jadwalHariIni) {
+                Button detailBtn = new Button(j.getJamMulai() + " - " + j.getJamSelesai());
+                detailBtn.setStyle("-fx-font-size: 10px;");
+                detailBtn.setOnAction(e -> openDetailDialog(j));
+                dayCell.getChildren().add(detailBtn);
+            }
 
             calendarGrid.add(dayCell, col, row);
             col++;
@@ -116,6 +121,48 @@ public class CalendarJadwalView extends VBox {
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+            }
+            return null;
+        });
+
+        dialog.showAndWait();
+    }
+
+    private void openDetailDialog(Jadwal jadwal) {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Detail Jadwal");
+
+        Label dateLbl = new Label("Tanggal: " + jadwal.getTanggal());
+        Label startLbl = new Label("Jam Mulai:");
+        TextField startField = new TextField(jadwal.getJamMulai().toString());
+        Label endLbl = new Label("Jam Selesai:");
+        TextField endField = new TextField(jadwal.getJamSelesai().toString());
+
+        ButtonType editBtnType = new ButtonType("Simpan", ButtonBar.ButtonData.OK_DONE);
+        ButtonType deleteBtnType = new ButtonType("Hapus", ButtonBar.ButtonData.LEFT);
+        dialog.getDialogPane().getButtonTypes().addAll(editBtnType, deleteBtnType, ButtonType.CANCEL);
+
+        VBox content = new VBox(10, dateLbl, startLbl, startField, endLbl, endField);
+        dialog.getDialogPane().setContent(content);
+
+        dialog.setResultConverter(button -> {
+            if (button == editBtnType) {
+                try {
+                    jadwal.setJamMulai(LocalTime.parse(startField.getText()));
+                    jadwal.setJamSelesai(LocalTime.parse(endField.getText()));
+                    jadwalRepo.updateJadwal(jadwal);
+                    updateCalendar();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (button == deleteBtnType) {
+                if (jadwal.isAvailable()) {
+                    jadwalRepo.deleteJadwal(jadwal.getIdJadwal());
+                    updateCalendar();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Jadwal sudah dipesan dan tidak bisa dihapus.", ButtonType.OK);
+                    alert.showAndWait();
                 }
             }
             return null;
