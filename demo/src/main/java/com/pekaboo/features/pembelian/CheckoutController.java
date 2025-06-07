@@ -16,101 +16,95 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Rectangle;
 
 public class CheckoutController {
     @FXML private Label totalAmountLabel;
-    @FXML private Button removeProductButton;
+    //@FXML private Button removeProductButton;
     @FXML private Button checkoutButton;
-    @FXML private Button cancelButton;
     @FXML private Button addPrescriptionButton; 
+    @FXML private Button plusPrescriptionButton;
+    @FXML private Button minusPrescriptionButton;
+    @FXML private Label prescriptionQuantityLabel; // jika ingin tampilkan jumlah prescription
+    @FXML private Label productPriceLabel;
+    @FXML private Label productNameLabel;
+    @FXML private Label productBrandLabel; // Tambahkan field untuk brand produk
 
     @FXML private VBox cartItemsContainer;
     @FXML private Label emptyCartLabel;
-    @FXML private VBox productOptionsContainer; 
+    @FXML private VBox imageContainer;
+    @FXML private VBox buttonContainer;
+    @FXML private ImageView productImageView;
+
+    @FXML private Rectangle colorBlack;
+    @FXML private Rectangle colorBrown;
 
     private ObservableList<Product> cartItems;
     private int totalAmount = 0;
+    private int prescriptionQuantity = 1;
 
     private checkout checkoutUtil = new checkout();
+
+    // Tambahkan field untuk produk aktif
+    private Product activeProduct;
 
     @FXML
     private void initialize() {
         cartItems = FXCollections.observableArrayList();
-        updateTotalAmountLabel();
-
-        if (removeProductButton != null) {
-            removeProductButton.setDisable(true);
+        if (totalAmountLabel != null) {
+            totalAmountLabel.setVisible(false); // Sembunyikan dari display, logic tetap jalan
         }
+
+        // if (removeProductButton != null) {
+        //     removeProductButton.setDisable(true);
+        // }
 
         addInitialProductToCart();
 
         if (addPrescriptionButton != null) {
             addPrescriptionButton.setOnAction(e -> handleAddPrescription());
         }
+
+        // Ganti path gambar dengan yang pasti ada, dan tambahkan pengecekan null
+        String imagePath = "/com/pekaboo/pembelian/assets/gambar.png";
+        java.io.InputStream imgStream = getClass().getResourceAsStream(imagePath);
+        if (imgStream != null) {
+            Image img = new Image(imgStream);
+            productImageView.setImage(img);
+        } else {
+            System.err.println("Image not found: " + imagePath);
+            productImageView.setImage(null);
+        }
+
+        // Logic prescription +/-
+        if (plusPrescriptionButton != null) {
+            plusPrescriptionButton.setOnAction(e -> {
+                prescriptionQuantity++;
+                updatePrescriptionQuantityLabel();
+                calculateTotalAmount();
+                // updateTotalAmountLabel();
+            });
+        }
+        if (minusPrescriptionButton != null) {
+            minusPrescriptionButton.setOnAction(e -> {
+                if (prescriptionQuantity > 1) {
+                    prescriptionQuantity--;
+                    updatePrescriptionQuantityLabel();
+                    calculateTotalAmount();
+                    // updateTotalAmountLabel();
+                }
+            });
+        }
+        updatePrescriptionQuantityLabel();
     }
 
     private void addInitialProductToCart() {
         Product sampleProduct = new Product();
         sampleProduct.setName("Sample Product");
+        sampleProduct.setBrand("Brand Contoh"); // Tambahkan brand di sini
         sampleProduct.setPrice(100);
         sampleProduct.setImagePath("/com/pekaboo/pembelian/assets/gambar.png");
-
-        addProductToCart(sampleProduct);
-    }
-
-    private void displayProductOptions() {
-        Product sampleProduct = new Product();
-        sampleProduct.setName("Sample Product");
-        sampleProduct.setPrice(100);
-
-        HBox productBox = new HBox(10);
-        Label nameLabel = new Label(sampleProduct.getName());
-        Label priceLabel = new Label("Rp" + sampleProduct.getPrice());
-        HBox colorOptions = new HBox(5);
-        Label colorLabel = new Label("Color:");
-        for (Color color : new Color[]{Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.BLACK}) {
-            Circle colorCircle = new Circle(10, color);
-            colorCircle.setStyle("-fx-stroke: black; -fx-stroke-width: 1;"); 
-            colorCircle.setOnMouseClicked(e -> {
-                System.out.println("Selected color: " + color.toString());
-            });
-            colorOptions.getChildren().add(colorCircle);
-        }
-
-        HBox sizeOptions = new HBox(5);
-        Label sizeLabel = new Label("Size:");
-        for (String size : new String[]{"S", "M", "XL"}) {
-            Button sizeButton = new Button(size);
-            sizeButton.setStyle("-fx-font-size: 12px; -fx-padding: 5px;");
-            sizeButton.setOnAction(e -> {
-                System.out.println("Selected size: " + size);
-            });
-            sizeOptions.getChildren().add(sizeButton);
-        }
-
-        productBox.getChildren().addAll(
-            nameLabel,
-            priceLabel,
-            colorLabel,
-            colorOptions,
-            sizeLabel,
-            sizeOptions
-        );
-
-        productOptionsContainer.getChildren().add(productBox);
-    }
-
-    /**
-     * Add a product to the checkout cart
-     */
-    @FXML
-    private void handleAddProduct() {
-        Product sampleProduct = new Product();
-        sampleProduct.setName("Sample Product");
-        sampleProduct.setPrice(100);
-        checkoutUtil.setQuantity(1);
 
         addProductToCart(sampleProduct);
     }
@@ -118,59 +112,43 @@ public class CheckoutController {
     public void addProductToCart(Product product) {
         emptyCartLabel.setVisible(false);
 
-        ImageView productImage = new ImageView(
-            new Image(getClass().getResource(product.getImagePath()).toExternalForm())
-        );
-        productImage.setFitWidth(60);
-        productImage.setFitHeight(60);
-        productImage.getStyleClass().add("product-image");
+        // Set produk aktif
+        activeProduct = product;
 
-        //HBox productBox = new HBox(10);
+        // Set nama produk pada label
+        if (productBrandLabel != null) {
+            productBrandLabel.setText(product.getBrand());
+        }
+        if (productNameLabel != null) {
+            productNameLabel.setText(product.getName());
+        }
+
+        // Set image ke productImageView yang sudah ada di FXML
+        Image img = new Image(getClass().getResource(product.getImagePath()).toExternalForm());
+        productImageView.setImage(img);
+
+        // Tampilkan harga produk pada label di buttonContainer
+        if (productPriceLabel != null) {
+            productPriceLabel.setText("Rp " + product.getPrice());
+        }
+
+        // Hapus logic minusBtn dan plusBtn di cart
         Label nameLabel      = new Label(product.getName());
         Label priceLabel     = new Label("Rp " + product.getPrice());
         Label quantityLabel  = new Label("1");
-        Button minusBtn      = new Button("–");
-        Button plusBtn       = new Button("+");
+        HBox qtyBox = new HBox(10, quantityLabel); // hanya label quantity
+
         HBox productBox = new HBox(10, 
-            productImage, 
             nameLabel, 
             priceLabel, 
-            minusBtn, 
-            quantityLabel, 
-            plusBtn
+            qtyBox
         );
 
-        minusBtn.setDisable(true);
-        minusBtn.setOnAction(e -> {
-            int q = Integer.parseInt(quantityLabel.getText());
-            if (q > 1) {
-                q--;
-                quantityLabel.setText(String.valueOf(q));
-                minusBtn.setDisable(q == 1);
-                calculateTotalAmount();
-                updateTotalAmountLabel();
-            }
-        });
-        plusBtn.setOnAction(e -> {
-            int q = Integer.parseInt(quantityLabel.getText()) + 1;
-            quantityLabel.setText(String.valueOf(q));
-            minusBtn.setDisable(false);
-            calculateTotalAmount();
-            updateTotalAmountLabel();
-        });
-
-        // productBox.getChildren().addAll(
-        //     nameLabel,
-        //     priceLabel,
-        //     minusBtn,
-        //     quantityLabel,
-        //     plusBtn
-        // );
         cartItemsContainer.getChildren().add(productBox);
         cartItems.add(product);
 
         calculateTotalAmount();
-        updateTotalAmountLabel();
+        updateTotalAmountLabel(); // Tetap update logic, hanya label tidak tampil
     }
 
     /**
@@ -180,10 +158,9 @@ public class CheckoutController {
     private void handleRemoveProduct() {
         if (!cartItems.isEmpty()) {
             cartItems.remove(cartItems.size() - 1); 
-            cartItemsContainer.getChildren().remove(cartItemsContainer.getChildren().size() - 1); // Hapus elemen dari VBox
+            cartItemsContainer.getChildren().remove(cartItemsContainer.getChildren().size() - 1);
             calculateTotalAmount();
-            updateTotalAmountLabel();
-
+            updateTotalAmountLabel(); // Tetap update logic, hanya label tidak tampil
             if (cartItems.isEmpty()) {
                 emptyCartLabel.setVisible(true);
             }
@@ -198,12 +175,15 @@ public class CheckoutController {
         for (Node node : cartItemsContainer.getChildren()) {
             if (node instanceof HBox) {
                 HBox row = (HBox) node;
-                Label priceL = (Label) row.getChildren().get(2);
-                Label qtyL   = (Label) row.getChildren().get(4);
+                // Index 1 = priceLabel
+                Label priceL = (Label) row.getChildren().get(1); // priceLabel
                 int price = Integer.parseInt(priceL.getText().replaceAll("[^0-9]", ""));
-                int qty   = Integer.parseInt(qtyL.getText());
-                totalAmount += price * qty;
+                totalAmount += price; // quantity produk selalu 1
             }
+        }
+        // Prescription: hanya tambahkan jika prescriptionQuantity > 1
+        if (activeProduct != null && prescriptionQuantity > 1) {
+            totalAmount += activeProduct.getPrice() * (prescriptionQuantity - 1);
         }
     }
 
@@ -211,7 +191,9 @@ public class CheckoutController {
      * Update the total amount label
      */
     private void updateTotalAmountLabel() {
-        totalAmountLabel.setText(String.format("Total: Rp %d", totalAmount));
+        if (totalAmountLabel != null) {
+            totalAmountLabel.setText(String.format("Total: Rp %d", totalAmount));
+        }
     }
 
     /**
@@ -251,7 +233,7 @@ public class CheckoutController {
         cartItems.clear();
         cartItemsContainer.getChildren().clear();
         totalAmount = 0;
-        updateTotalAmountLabel();
+        updateTotalAmountLabel(); // Tetap update logic, hanya label tidak tampil
         emptyCartLabel.setVisible(true);
     }
 
@@ -273,5 +255,27 @@ public class CheckoutController {
     @FXML
     private void switchToMainMenu() throws IOException {
         //import com.pekaboo.App;
+    }
+
+    private void updatePrescriptionQuantityLabel() {
+        if (prescriptionQuantityLabel != null) {
+            prescriptionQuantityLabel.setText(String.valueOf(prescriptionQuantity));
+        }
+    }
+
+    public void handleColorBlackClicked(MouseEvent event) {
+        selectColor(colorBlack);
+    }
+
+    public void handleColorBrownClicked(MouseEvent event) {
+        selectColor(colorBrown);
+    }
+
+    private void selectColor(Rectangle selected) {
+        colorBlack.getStyleClass().remove("selected");
+        colorBrown.getStyleClass().remove("selected");
+        if (!selected.getStyleClass().contains("selected")) {
+            selected.getStyleClass().add("selected");
+        }
     }
 }

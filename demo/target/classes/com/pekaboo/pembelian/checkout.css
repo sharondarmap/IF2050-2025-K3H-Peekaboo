@@ -1,31 +1,18 @@
-/* Style untuk halaman utama */
-VBox {
-    -fx-background-color: #ffffff;
-    -fx-padding: 20px;
-    -fx-spacing: 15px;
-}
-
-/* Style untuk judul halaman */
-Label {
-    -fx-font-family: "Arial";
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
-}
-
 /* Style untuk detail produk */
-Label#productName {
-    -fx-font-family: "Arial";
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #4A148C;
-}
 
 Label#productPrice {
     -fx-font-family: "Arial";
-    -fx-font-size: 18px;
+    -fx-font-size: 24px;
     -fx-font-weight: bold;
     -fx-text-fill: #4A148C;
+}
+
+/* Style untuk harga produk */
+.product-price-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4A148C;
+    -fx-padding: 0 0 10 0;
 }
 
 /* Style untuk ukuran yang tersedia */
@@ -60,27 +47,39 @@ Label#productPrice {
 }
 
 /* Style untuk warna yang dipilih */
-.color-circle-selected {
-    -fx-stroke-width: 4px;
-    -fx-stroke: #4A148C;
+.color-circle.selected {
+    -fx-stroke: #6C3DD1;
+    -fx-stroke-width: 3;
+}
+
+.color-circle:hover,
+.color-circle.selected {
+    -fx-stroke: #6C3DD1;
+    -fx-stroke-width: 3;
+    -fx-cursor: hand;
 }
 
 /* Style untuk tombol kuantitas */
 .quantity-button {
-    -fx-font-size: 14px;
-    -fx-padding: 8px;
+    -fx-pref-width: 46px;
+    -fx-pref-height: 46px;
+    -fx-padding: 8px 12px;
     -fx-background-color: #ffffff;
-    -fx-border-color: #333333;
-    -fx-border-width: 1px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-    -fx-text-fill: #333333;
-    -fx-cursor: pointer;
+    -fx-text-fill: #4A148C;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-border-color: #4A148C;
+    -fx-border-width: 2px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-alignment: center;
+    -fx-cursor: hand;
+    -fx-spacing: 10px;
 }
 
 .quantity-button:hover {
-    -fx-border-color: #4A148C;
-    -fx-text-fill: #4A148C;
+    -fx-background-color: #4A148C;
+    -fx-text-fill: #fff;
 }
 
 /* Style untuk tombol "Tambah Resep" */
@@ -129,4 +128,132 @@ Label#availabilityStatus {
     -fx-font-size: 14px;
     -fx-font-style: italic;
     -fx-text-fill: #4CAF50;
+}
+
+.main-container {
+    -fx-pref-width: 800px;
+    -fx-pref-height: 600px;
+    -fx-spacing: 20px;
+}
+
+.image-container {
+    -fx-pref-width: 610px;
+    -fx-pref-height: 537px;
+    -fx-alignment: center;
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 20px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}
+
+.button-container {
+    -fx-pref-width: 640px;
+    -fx-spacing: 40px;
+    -fx-alignment: top_left;
+    -fx-padding: 20px 0 0 0;
+    -fx-background-color: transparent;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+    -fx-effect: null;
+
+}
+
+/* Button Checkout */
+#checkoutButton {
+    -fx-pref-height: 46px;
+    -fx-padding: 8px 12px;
+    -fx-background-color: #4A148C;
+    -fx-text-fill: #fff;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, #4A148C, 4, 0.2, 0, 2);
+    -fx-max-width: Infinity;
+    -fx-cursor: hand;
+    -fx-spacing: 10px;
+}
+
+/* Button Add Prescription */
+#addPrescriptionButton {
+    -fx-pref-width: 9999;         /* biarkan besar, akan dibatasi parent */
+    -fx-max-width: Infinity;      /* agar bisa melebar penuh */
+    -fx-pref-height: 46px;
+    -fx-padding: 8px 12px;
+    -fx-background-color: #fff;
+    -fx-text-fill: #4A148C;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-border-color: #4A148C;
+    -fx-border-width: 2px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-alignment: center;
+    -fx-cursor: hand;
+    -fx-spacing: 10px;
+}
+
+/* Button Add Prescription Hover */
+#addPrescriptionButton:hover {
+    -fx-background-color: #4A148C;
+    -fx-text-fill: #fff;
+}
+
+/* Style untuk tombol bulat dan label kuantitas */
+.round-button {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #222;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-min-width: 46px;
+    -fx-min-height: 46px;
+    -fx-pref-width: 46px;
+    -fx-pref-height: 46px;
+    -fx-max-width: 46px;
+    -fx-max-height: 46px;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1.5px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 2, 0.2, 0, 1);
+    -fx-padding: 0;
+}
+
+.round-button:hover {
+    -fx-background-color: #cccccc;
+}
+
+.quantity-box-label {
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1.5px;
+    -fx-background-color: #fff;
+    -fx-padding: 0 5px;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-min-width: 46px; /* Ensure minimum size */
+    -fx-pref-width: 46px; /* Preferred size */
+    -fx-pref-height: 46px;
+    -fx-text-fill: #222; /* Ensure text color is visible */
+    -fx-alignment: center; /* Align text to center */
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+}
+
+/* Style untuk nama produk */
+.product-name-label {
+    -fx-font-size: 48px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #222;
+    -fx-padding: 0;
+}
+
+.product-brand-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6C3DD1;
+    -fx-padding: 0;
 }
