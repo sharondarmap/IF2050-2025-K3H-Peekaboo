@@ -6,3 +6,4 @@ com\pekaboo\entities\User.class
 com\pekaboo\PrimaryController.class
 com\pekaboo\SecondaryController.class
 module-info.class
+com\pekaboo\features\pembelian\CheckoutDriver.class

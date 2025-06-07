@@ -48,7 +48,8 @@
                         <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.pekaboo.App</mainClass>
+                            <!-- Ini di run pake driver sendiri jadi kalo pake main tinggal ubah aja ya -->
+                            <mainClass>com.pekaboo.features.pembelian.CheckoutDriver</mainClass>
                         </configuration>
                     </execution>
                 </executions>
