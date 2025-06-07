@@ -5,43 +5,51 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.pekaboo.auth.AuthController"
             stylesheets="@/com/pekaboo/auth/auth.css"
-            prefWidth="1200" prefHeight="800">
+            minWidth="600" minHeight="400">
 
-    <HBox spacing="0" VBox.vgrow="ALWAYS">
-        <ImageView fitHeight="800" fitWidth="700" preserveRatio="false" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0">
-            <image>
-                <Image url="@/com/pekaboo/auth/assets/showroom.png"/>
-            </image>
-        </ImageView>
+    <center>
+         <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED">
+            <HBox spacing="0" alignment="TOP_LEFT">
+                <!-- Left Image as Background -->
+                <StackPane minWidth="400" maxWidth="800" HBox.hgrow="ALWAYS"
+                        style="-fx-background-image: url('/com/pekaboo/auth/assets/showroom.png');
+                                -fx-background-size: cover;
+                                -fx-background-position: center;
+                                -fx-background-repeat: no-repeat;">
+                </StackPane>
+                <!-- Right Register Form -->
+                <VBox spacing="15" styleClass="auth-container"
+                    AnchorPane.topAnchor="120" AnchorPane.rightAnchor="50">
+                    <Label text="Register" styleClass="auth-title"/>
+                    <TextField fx:id="registerUsernameField" promptText="Username"/>
+                    <PasswordField fx:id="registerPasswordField" promptText="Password"/>
+                    <TextField fx:id="emailField" promptText="Email"/>
+                    <ChoiceBox fx:id="userRoleBox" styleClass="choice-box"/>
+                    <DatePicker fx:id="birthDatePicker"/>
+                    <Button text="Register" onAction="#handleRegister" styleClass="primary-button"/>
+                    <Hyperlink text="Back to Login" onAction="#switchToLogin"/>
+                </VBox>
 
-        <VBox spacing="15" styleClass="auth-container"
-            AnchorPane.topAnchor="120" AnchorPane.rightAnchor="50">
-            <Label text="Register" styleClass="auth-title"/>
-            <TextField fx:id="registerUsernameField" promptText="Username"/>
-            <PasswordField fx:id="registerPasswordField" promptText="Password"/>
-            <TextField fx:id="emailField" promptText="Email"/>
-            <ChoiceBox fx:id="userRoleBox" styleClass="choice-box"/>
-            <DatePicker fx:id="birthDatePicker"/>
-            <Button text="Register" onAction="#handleRegister" styleClass="primary-button"/>
-            <Hyperlink text="Back to Login" onAction="#switchToLogin"/>
+            </HBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <VBox fx:id="footer" alignment="CENTER" spacing="5"
+            AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20" />
+            </padding>
+            <ImageView fitHeight="60" preserveRatio="true">
+                <image>
+                    <Image url="@/com/pekaboo/auth/assets/footerlogo.png"/>
+                </image>
+            </ImageView>
+            <Label text="Copyright © Peekaboo 2025" />
         </VBox>
-    </HBox>
+    </bottom>
 
-    <!-- Footer Section -->
-    <VBox fx:id="footer" alignment="CENTER" spacing="5"
-          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
-        <padding>
-            <Insets top="20" right="20" bottom="20" left="20" />
-        </padding>
-        <ImageView fitHeight="60" preserveRatio="true">
-            <image>
-                <Image url="@/com/pekaboo/auth/assets/footerlogo.png"/>
-            </image>
-        </ImageView>
-        <Label text="Copyright © Peekaboo 2025" />
-    </VBox>
-
-</AnchorPane>
+</BorderPane>
