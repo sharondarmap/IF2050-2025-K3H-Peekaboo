@@ -5,37 +5,40 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.image.*?>
 
-<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.pembelian.CheckoutController" stylesheets="@checkout.css" spacing="10" alignment="TOP_LEFT" prefWidth="800" prefHeight="600">
-    <Region minHeight="120"/>
-    <HBox fx:id="mainContainer" styleClass="main-container" spacing="20" alignment="CENTER">
-    <!-- IMAGE -->
-        <VBox fx:id="imageContainer" styleClass="image-container" prefWidth="610" prefHeight="537">
-            <ImageView fx:id="productImageView" fitWidth="600" fitHeight="500" preserveRatio="true"/>
-        </VBox>
-    <!-- BUTTON -->
-        <VBox fx:id="buttonContainer" styleClass="button-container" prefWidth="640" spacing="40" alignment="TOP_LEFT">
-            <VBox spacing="0" alignment="CENTER_LEFT">
-                <Label fx:id="productBrandLabel" styleClass="product-brand-label" text="Brand"/>
-                <Label fx:id="productNameLabel" styleClass="product-name-label" text="Nama Produk"/>
+<!-- Ganti root VBox dengan StackPane agar overlay bisa menimpa seluruh halaman -->
+<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.pembelian.CheckoutController" stylesheets="@checkout.css" prefWidth="800" prefHeight="600">
+    <VBox spacing="10" alignment="TOP_LEFT">
+        <Region minHeight="120"/>
+        <HBox fx:id="mainContainer" styleClass="main-container" spacing="20" alignment="CENTER">
+            <!-- IMAGE -->
+            <VBox fx:id="imageContainer" styleClass="image-container" prefWidth="610" prefHeight="537">
+                <ImageView fx:id="productImageView" fitWidth="600" fitHeight="500" preserveRatio="true"/>
             </VBox>
-            <Label fx:id="productPriceLabel" styleClass="product-price-label" text="Rp 0" />
-            <HBox spacing="50" alignment="CENTER_LEFT">
-                <VBox spacing="5" alignment="TOP_LEFT">
-                    <Label text="Size" styleClass="section-title"/>
-                    <Label fx:id="productSizeLabel" styleClass="product-size-label" text="" alignment="CENTER" mouseTransparent="true" focusTraversable="false"/>
+            <!-- BUTTON -->
+            <VBox fx:id="buttonContainer" styleClass="button-container" prefWidth="640" spacing="40" alignment="TOP_LEFT">
+                <VBox spacing="0" alignment="CENTER_LEFT">
+                    <Label fx:id="productBrandLabel" styleClass="product-brand-label" text="Brand"/>
+                    <Label fx:id="productNameLabel" styleClass="product-name-label" text="Nama Produk"/>
                 </VBox>
-                <VBox spacing="5" alignment="TOP_LEFT">
-                    <Label text="Color" styleClass="section-title"/>
-                    <Rectangle fx:id="productColorRectangle" styleClass="color-box" width="60" height="60" mouseTransparent="true" focusTraversable="false"/>
-                </VBox>
-            </HBox>
-            <HBox spacing="20" alignment="CENTER_LEFT">
-                <Button fx:id="minusPrescriptionButton" text="–" styleClass="round-button" prefHeight="46" />
-                <Label fx:id="prescriptionQuantityLabel" text="1" styleClass="quantity-box-label" alignment="CENTER" />
-                <Button fx:id="plusPrescriptionButton" text="+" styleClass="round-button" prefHeight="46" />
-                <Button fx:id="addPrescriptionButton" text="Add Prescription" styleClass="primaryButton" prefHeight="46" />
-            </HBox>
-            <Button fx:id="checkoutButton" text="Checkout" onAction="#handleCheckout" styleClass="primaryButton" />
-        </VBox>
-    </HBox>
-</VBox>
+                <Label fx:id="productPriceLabel" styleClass="product-price-label" text="Rp 0" />
+                <HBox spacing="50" alignment="CENTER_LEFT">
+                    <VBox spacing="5" alignment="TOP_LEFT">
+                        <Label text="Size" styleClass="section-title"/>
+                        <Label fx:id="productSizeLabel" styleClass="product-size-label" text="" alignment="CENTER" mouseTransparent="true" focusTraversable="false"/>
+                    </VBox>
+                    <VBox spacing="5" alignment="TOP_LEFT">
+                        <Label text="Color" styleClass="section-title"/>
+                        <Rectangle fx:id="productColorRectangle" styleClass="color-box" width="60" height="60" mouseTransparent="true" focusTraversable="false"/>
+                    </VBox>
+                </HBox>
+                <HBox spacing="20" alignment="CENTER_LEFT">
+                    <Button fx:id="minusPrescriptionButton" text="–" styleClass="round-button" prefHeight="46" />
+                    <Label fx:id="prescriptionQuantityLabel" text="1" styleClass="quantity-box-label" alignment="CENTER" />
+                    <Button fx:id="plusPrescriptionButton" text="+" styleClass="round-button" prefHeight="46" />
+                    <Button fx:id="addPrescriptionButton" text="Add Prescription" styleClass="primaryButton" prefHeight="46" />
+                </HBox>
+                <Button fx:id="checkoutButton" text="Checkout" onAction="#handleCheckout" styleClass="primaryButton" />
+            </VBox>
+        </HBox>
+    </VBox>
+</StackPane>
