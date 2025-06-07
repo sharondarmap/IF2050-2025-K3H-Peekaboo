@@ -12,10 +12,10 @@ public class CatalogDriver extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("CatalogProduct.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pekaboo/pembelian/CatalogProduct.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root, 1280, 720);
-            String catalogCss = getClass().getResource("/com/pekaboo/styles/catalog.css").toExternalForm();
+            String catalogCss = getClass().getResource("/com/pekaboo/pembelian/catalog.css").toExternalForm();
             scene.getStylesheets().add(catalogCss);
             primaryStage.setTitle("Test Driver - Katalog Produk");
             primaryStage.setScene(scene);
