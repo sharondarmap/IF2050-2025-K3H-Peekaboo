@@ -13,9 +13,9 @@ public class MockProductRepo implements ProductRepo {
 
     public MockProductRepo() {
         // Inisialisasi dengan beberapa produk contoh
-        productList.add(new Product(1, 10, 10000, "Kacamata Jennie", "Celine", "Merah", "M", "/com/pekaboo/images/kacamatared.jpg"));
-        productList.add(new Product(2, 5, 20000, "Kacamata Kucing", "Dior", "Biru", "L", "/com/pekaboo/images/kacamatablue.jpg"));
-        productList.add(new Product(3, 0, 15000, "Kacamata Kambing", "Channel", "Hijau", "S", "/com/pekaboo/images/kacamata1.jpg"));
+        productList.add(new Product(1, 10, 10000, "Kacamata Jennie", "Celine", "Merah", "M", "/com/pekaboo/pembelian/assets/kacamatared.jpg"));
+        productList.add(new Product(2, 5, 20000, "Kacamata Kucing", "Dior", "Biru", "L", "/com/pekaboo/pembelian/assets/kacamatablue.jpg"));
+        productList.add(new Product(3, 0, 15000, "Kacamata Kambing", "Channel", "Hijau", "S", "/com/pekaboo/pembelian/assets/kacamata1.jpg"));
 
         for (int i = 4; i <= 23; i++) {
             productList.add(new Product(
@@ -26,7 +26,7 @@ public class MockProductRepo implements ProductRepo {
                 NAMA_BRAND[i % NAMA_BRAND.length], 
                 NAMA_WARNA[i % NAMA_WARNA.length], 
                 "M", 
-                "/com/pekaboo/images/kacamatablue.jpg"
+                "/com/pekaboo/pembelian/assets/kacamatablue.jpg"
             ));
         }
     }
