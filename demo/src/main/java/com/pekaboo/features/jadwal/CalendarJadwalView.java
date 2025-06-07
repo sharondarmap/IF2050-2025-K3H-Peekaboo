@@ -4,13 +4,11 @@ import com.pekaboo.entities.Jadwal;
 import com.pekaboo.entities.StatusJadwal;
 import com.pekaboo.entities.User;
 import com.pekaboo.repositories.JadwalRepository;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
@@ -19,33 +17,87 @@ import java.util.stream.Collectors;
 
 public class CalendarJadwalView extends VBox {
     private final JadwalRepository jadwalRepo;
-    private final YearMonth currentMonth;
     private final User currentOptometris;
+    private YearMonth currentMonth;
     private final GridPane calendarGrid;
+    private final Label monthLabel;
 
     public CalendarJadwalView(JadwalRepository jadwalRepo, User currentOptometris) {
         this.jadwalRepo = jadwalRepo;
         this.currentOptometris = currentOptometris;
         this.currentMonth = YearMonth.now();
+
         this.setSpacing(20);
         this.setPadding(new Insets(20));
         this.setAlignment(Pos.TOP_CENTER);
+        this.setStyle(
+            "-fx-background-color: #F5F5F5;" +
+            "-fx-padding: 12;" +
+            "-fx-background-radius: 12;" +
+            "-fx-border-color: #DDDDDD;" +
+            "-fx-border-width: 1;" +
+            "-fx-border-radius: 12;" +
+            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);"
+        );
 
-        Label title = new Label("Manage Jadwal - " + currentMonth.getMonth() + " " + currentMonth.getYear());
-        title.setFont(new Font(20));
-        this.getChildren().add(title);
+        // Header navigation
+        HBox header = new HBox(15);
+        Button prev = new Button("<");
+        Button next = new Button(">");
+        monthLabel = new Label();
+        monthLabel.setFont(new Font(18));
+        prev.setStyle(
+            "-fx-background-color: transparent; " +  
+            "-fx-text-fill: rgba(36, 22, 80, 1); " +  
+            "-fx-font-weight: bold; " +
+            "-fx-font-size: 20px; " +
+            "-fx-border-color: transparent; " +
+            "-fx-pref-width: 30px; " +
+            "-fx-pref-height: 30px; " +
+            "-fx-cursor: hand;"
+        );
+
+        next.setStyle(
+            "-fx-background-color: transparent; " + 
+            "-fx-text-fill: rgba(36, 22, 80, 1); " + 
+            "-fx-font-weight: bold; " +
+            "-fx-font-size: 20px; " + 
+            "-fx-border-color: transparent; " + 
+            "-fx-pref-width: 30px; " +
+            "-fx-pref-height: 30px; " +
+            "-fx-cursor: hand;" 
+        );
+        monthLabel.setStyle(
+            "-fx-font-size: 20px; " +
+            "-fx-font-weight: bold; " +
+            "-fx-text-fill: rgba(36, 22, 80, 1);"
+        );
+
+        prev.setOnAction(e -> {
+            currentMonth = currentMonth.minusMonths(1);
+            updateCalendar();
+        });
+        next.setOnAction(e -> {
+            currentMonth = currentMonth.plusMonths(1);
+            updateCalendar();
+        });
+
+        header.setAlignment(Pos.CENTER);
+        header.getChildren().addAll(prev, monthLabel, next);
 
         calendarGrid = new GridPane();
         calendarGrid.setHgap(10);
         calendarGrid.setVgap(10);
         calendarGrid.setAlignment(Pos.CENTER);
 
-        this.getChildren().add(calendarGrid);
+        this.getChildren().addAll(header, calendarGrid);
         updateCalendar();
     }
 
     private void updateCalendar() {
         calendarGrid.getChildren().clear();
+        monthLabel.setText(currentMonth.getMonth().toString() + " " + currentMonth.getYear());
+
         LocalDate firstDay = currentMonth.atDay(1);
         int dayOfWeek = firstDay.getDayOfWeek().getValue() % 7;
         int daysInMonth = currentMonth.lengthOfMonth();
@@ -58,28 +110,79 @@ public class CalendarJadwalView extends VBox {
             VBox dayCell = new VBox(5);
             dayCell.setPrefSize(140, 120);
             dayCell.setPadding(new Insets(10));
-            dayCell.setStyle("-fx-border-color: #ccc; -fx-background-radius: 6; -fx-border-radius: 6;");
-            dayCell.setAlignment(Pos.TOP_LEFT);
 
             Label dayLabel = new Label(String.valueOf(day));
-            dayLabel.setFont(new Font(16));
-            dayCell.getChildren().add(dayLabel);
+            dayLabel.setFont(new Font(20));
+            dayLabel.setStyle(
+                "-fx-text-fill: #241650;" +
+                "-fx-font-weight: 700;" +
+                "-fx-alignment: center;"
+            );
+            
+            // Create a container for the day label to keep it top-right
+            HBox dayLabelContainer = new HBox();
+            dayLabelContainer.setAlignment(Pos.CENTER_RIGHT);
+            dayLabelContainer.getChildren().add(dayLabel);
+            dayCell.getChildren().add(dayLabelContainer);
 
             Button addBtn = new Button("+ Jadwal");
+            addBtn.setStyle(
+                "-fx-font-size: 11px;" +
+                "-fx-background-color: #ddd;" +
+                "-fx-text-fill: #333;" +
+                "-fx-background-radius: 5;" +
+                "-fx-cursor: hand;"
+            );
             addBtn.setOnAction(e -> openAddJadwalDialog(tanggal));
-            dayCell.getChildren().add(addBtn);
 
             List<Jadwal> jadwalHariIni = allJadwal.stream()
                 .filter(j -> j.getTanggal().equals(tanggal) &&
-                             j.getOptometris().getIdUser() == currentOptometris.getIdUser())
+                            j.getOptometris().getIdUser() == currentOptometris.getIdUser())
                 .collect(Collectors.toList());
 
-            for (Jadwal j : jadwalHariIni) {
-                Button detailBtn = new Button(j.getJamMulai() + " - " + j.getJamSelesai());
-                detailBtn.setStyle("-fx-font-size: 10px;");
-                detailBtn.setOnAction(e -> openDetailDialog(j));
-                dayCell.getChildren().add(detailBtn);
+            if (jadwalHariIni.isEmpty()) {
+                // When no schedules exist, center the add button
+                dayCell.setAlignment(Pos.TOP_CENTER);
+                
+                // Add spacer to push the add button to center
+                Region spacer = new Region();
+                VBox.setVgrow(spacer, Priority.ALWAYS);
+                dayCell.getChildren().add(spacer);
+                
+                dayCell.getChildren().add(addBtn); // Add button in center
+                
+                Region spacer2 = new Region(); // Add another spacer to balance
+                VBox.setVgrow(spacer2, Priority.ALWAYS);
+                dayCell.getChildren().add(spacer2);
+            } else {
+                dayCell.setAlignment(Pos.TOP_LEFT);// When schedules exist, align content to top
+                dayCell.getChildren().add(addBtn);
+                
+                for (Jadwal j : jadwalHariIni) {
+                    Button detailBtn = new Button(j.getJamMulai() + " - " + j.getJamSelesai());
+                    detailBtn.setStyle(
+                        "-fx-padding: 12 16 12 16;" +
+                        "-fx-background-color: #364C84;" +
+                        "-fx-background-radius: 4;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 12px;" +
+                        "-fx-font-weight: 400;" +
+                        "-fx-pref-width: 89px;"
+                    );
+                    detailBtn.setOnAction(e -> openDetailDialog(j));
+                    dayCell.getChildren().add(detailBtn);
+                }
             }
+
+            // Set background color based on whether there are schedules
+            String backgroundColor = jadwalHariIni.isEmpty() ? "#FFFFFF" : "#E2E2E2";
+            dayCell.setStyle(
+                "-fx-background-color: " + backgroundColor + ";" +
+                "-fx-background-radius: 8;" +
+                "-fx-border-radius: 8;" +
+                "-fx-border-color: transparent;" +
+                "-fx-position: relative;"
+            );
 
             calendarGrid.add(dayCell, col, row);
             col++;
