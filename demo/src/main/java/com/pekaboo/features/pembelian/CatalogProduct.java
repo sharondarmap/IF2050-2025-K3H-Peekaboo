@@ -21,7 +21,6 @@ import javafx.scene.layout.VBox;
 public class CatalogProduct implements Initializable {
     @FXML private GridPane gridPane;
 
-    // Use the actual PostgreSQL-backed repository
     private final ProductRepo productRepo = new PostgresProdukRepository();
 
     @Override
@@ -40,10 +39,11 @@ public class CatalogProduct implements Initializable {
 
             ImageView imageView;
             try {
-                // If imagePath is stored as absolute or file path, load accordingly
-                imageView = new ImageView(new Image("file:" + product.getImagePath()));
+                // Load image berdasarkan id
+                String imagePath = "/assets/img/" + product.getId() + ".jpg";
+                imageView = new ImageView(new Image(getClass().getResourceAsStream(imagePath)));
             } catch (Exception e) {
-                // Fallback image in case of error or null
+                // Fallback logic ke default image
                 imageView = new ImageView(new Image(getClass().getResourceAsStream("/assets/img/placeholder.png")));
             }
 
@@ -78,7 +78,7 @@ public class CatalogProduct implements Initializable {
     }
 
     public void showProductDetail(Product product) {
-        // TODO: Detail produk (misal popup atau navigasi ke halaman detail dari halaman Nakei)
+        // TODO: tampilkan popup atau halaman detail
     }
 
     public List<Product> catalogFilter(String keyword) {
