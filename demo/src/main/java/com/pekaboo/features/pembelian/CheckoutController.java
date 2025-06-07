@@ -35,21 +35,15 @@ public class CheckoutController {
 
     @FXML
     private void initialize() {
-        // Initialize cart items list
         cartItems = FXCollections.observableArrayList();
-
-        // Initialize the total amount label
         updateTotalAmountLabel();
 
-        // Disable remove button initially (only if it exists)
         if (removeProductButton != null) {
             removeProductButton.setDisable(true);
         }
 
-        // Automatically add product to cart on page load
         addInitialProductToCart();
 
-        // Set up prescription button action (only if it exists)
         if (addPrescriptionButton != null) {
             addPrescriptionButton.setOnAction(e -> handleAddPrescription());
         }
@@ -59,6 +53,7 @@ public class CheckoutController {
         Product sampleProduct = new Product();
         sampleProduct.setName("Sample Product");
         sampleProduct.setPrice(100);
+        sampleProduct.setImagePath("/com/pekaboo/pembelian/assets/gambar.png");
 
         addProductToCart(sampleProduct);
     }
@@ -69,8 +64,8 @@ public class CheckoutController {
         sampleProduct.setPrice(100);
 
         HBox productBox = new HBox(10);
-        Label nameLabel = new Label("Name: " + sampleProduct.getName());
-        Label priceLabel = new Label("Price: Rp " + sampleProduct.getPrice());
+        Label nameLabel = new Label(sampleProduct.getName());
+        Label priceLabel = new Label("Rp" + sampleProduct.getPrice());
 
         // Color options
         HBox colorOptions = new HBox(5);
@@ -129,8 +124,8 @@ public class CheckoutController {
         emptyCartLabel.setVisible(false);
 
         HBox productBox = new HBox(10);
-        Label nameLabel      = new Label("Name: " + product.getName());
-        Label priceLabel     = new Label("Price: Rp " + product.getPrice());
+        Label nameLabel      = new Label(product.getName());
+        Label priceLabel     = new Label("Rp " + product.getPrice());
         Label quantityLabel  = new Label("1");
         Button minusBtn      = new Button("–");
         Button plusBtn       = new Button("+");
