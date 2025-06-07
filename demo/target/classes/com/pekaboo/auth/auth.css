@@ -1,0 +1,32 @@
+.auth-container {
+    -fx-padding: 20;
+    -fx-pref-width: 400;
+    -fx-alignment: top-left;
+}
+
+.auth-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.auth-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6b46c1;
+}
+
+TextField, PasswordField {
+    -fx-pref-width: 400;
+    -fx-pref-height: 40;
+    -fx-background-radius: 6;
+    -fx-border-color: #ccc;
+    -fx-padding: 10;
+}
+
+.primary-button {
+    -fx-pref-width: 400;
+    -fx-pref-height: 40;
+    -fx-background-color: #5a29e4;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+}
