@@ -102,7 +102,7 @@ public class PostgresJadwalRepository implements JadwalRepository{
             stmt.setDate(2, Date.valueOf(jadwal.getTanggal()));
             stmt.setTime(3, Time.valueOf(jadwal.getJamMulai()));
             stmt.setTime(4, Time.valueOf(jadwal.getJamSelesai()));
-            stmt.setString(5, jadwal.getStatusJadwal().name());
+            stmt.setObject(5, jadwal.getStatusJadwal(), java.sql.Types.OTHER);
             stmt.setInt(6, jadwal.getIdJadwal());
 
             stmt.executeUpdate();
