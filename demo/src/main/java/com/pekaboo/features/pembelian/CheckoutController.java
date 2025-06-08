@@ -31,6 +31,8 @@ public class CheckoutController {
     private int totalAmount = 0;
     private int prescriptionQuantity = 1;
     private Product activeProduct;
+    private boolean prescriptionFilled = false; 
+    private Label checkoutErrorLabel = new Label();
 
     @FXML
     private void initialize() {
@@ -58,6 +60,26 @@ public class CheckoutController {
         if (activeProduct != null) {
             setActiveProduct(activeProduct);
         }
+        checkoutErrorLabel.setStyle(
+            "-fx-text-fill: #D32F2F;" +
+            "-fx-font-size: 13px;" +
+            "-fx-padding: 0 0 0 0;" +
+            "-fx-max-width: 1000px;" + 
+            "-fx-label-padding: 0 0 0 0;" +
+            "-fx-wrap-text: false;"
+        );
+        checkoutErrorLabel.setVisible(false);
+        checkoutErrorLabel.setMaxWidth(1000); 
+        checkoutErrorLabel.setWrapText(false); 
+        if (buttonContainer != null) {
+            buttonContainer.getChildren().remove(checkoutErrorLabel);
+            int idx = buttonContainer.getChildren().indexOf(checkoutButton);
+            if (idx >= 0) {
+                buttonContainer.getChildren().add(idx + 1, checkoutErrorLabel);
+            } else {
+                buttonContainer.getChildren().add(checkoutErrorLabel);
+            }
+        }
     }
 
     private void calculateTotalAmount() {
@@ -76,10 +98,17 @@ public class CheckoutController {
 
     @FXML
     private void handleCheckout() {
+        if (!prescriptionFilled) {
+            checkoutErrorLabel.setText("Silakan isi prescription terlebih dahulu sebelum checkout.");
+            checkoutErrorLabel.setVisible(true);
+            return;
+        }
+        checkoutErrorLabel.setVisible(false);
         boolean success = true;
         if (success) {
             showAlert("Success", "Checkout Complete", "Your order has been processed successfully!");
             clearCart();
+            prescriptionFilled = false;
         }
     }
 
@@ -162,7 +191,6 @@ public class CheckoutController {
     }
 
     private void showPrescriptionPopup() {
-        // Create overlay
         VBox overlay = new VBox();
         overlay.setStyle("-fx-background-color: rgba(0,0,0,0.3);");
         overlay.setAlignment(javafx.geometry.Pos.CENTER);
@@ -171,7 +199,6 @@ public class CheckoutController {
         overlay.setPrefWidth(scene.getWidth());
         overlay.setPrefHeight(scene.getHeight());
 
-        // Create popup content (bigger, but not too big)
         VBox popup = new VBox(24);
         popup.setStyle(
             "-fx-background-color: white;" +
@@ -179,14 +206,12 @@ public class CheckoutController {
             "-fx-background-radius: 28;" +
             "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 24, 0, 0, 12);"
         );
-        popup.setMaxWidth(600); // bigger width
+        popup.setMaxWidth(600); 
         popup.setMinWidth(480);
 
-        // Title
         Label title = new Label("Add Prescription");
         title.setStyle("-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #222;");
 
-        // Section builder (adjust input width)
         VBox sphereSection = createPrescriptionSection("Sphere (±)", "#7B61FF", 160);
         VBox cylinderSection = createPrescriptionSection("Cylinder (Cyl)", "#7B61FF", 160);
         VBox axisSection = createPrescriptionSection("Axis", "#7B61FF", 160);
@@ -196,7 +221,7 @@ public class CheckoutController {
         errorLabel.setStyle("-fx-text-fill: #D32F2F; -fx-font-size: 13px; -fx-padding: 4 0 0 0;");
         errorLabel.setVisible(false);
 
-        javafx.scene.layout.HBox buttonBox = new javafx.scene.layout.HBox(32); // <-- tambahkan spacing, misal 32px
+        javafx.scene.layout.HBox buttonBox = new javafx.scene.layout.HBox(32); 
         buttonBox.setAlignment(javafx.geometry.Pos.CENTER);
         buttonBox.setFillHeight(true);
 
@@ -229,10 +254,6 @@ public class CheckoutController {
         );
 
         buttonBox.getChildren().addAll(cancelBtn, saveBtn);
-        // Jarak antara Cancel dan Save adalah seluruh ruang kosong di antara kedua button,
-        // diisi oleh spacer (Region) di tengah. Jika popup diperlebar, jarak di antara kedua button juga melebar.
-
-        // Add errorLabel above buttonBox if needed
         javafx.scene.layout.VBox errorAndButtons = new javafx.scene.layout.VBox(8);
         errorAndButtons.setFillWidth(true);
         errorAndButtons.getChildren().addAll(errorLabel, buttonBox);
@@ -246,12 +267,10 @@ public class CheckoutController {
             errorAndButtons
         );
 
-        // Add errorLabel below PD section
         ((VBox) pdSection).getChildren().add(errorLabel);
 
         overlay.getChildren().add(popup);
 
-        // Add overlay to root pane
         javafx.scene.Parent root = scene.getRoot();
         if (root instanceof javafx.scene.layout.Pane) {
             javafx.scene.layout.Pane pane = (javafx.scene.layout.Pane) root;
@@ -263,7 +282,6 @@ public class CheckoutController {
                 if (ev.getTarget() == overlay) pane.getChildren().remove(overlay);
             });
         } else {
-            // If root is VBox/BorderPane, wrap with StackPane for overlay support
             javafx.scene.layout.StackPane stackPane = new javafx.scene.layout.StackPane();
             stackPane.getChildren().add(root);
             stackPane.getChildren().add(overlay);
@@ -276,7 +294,6 @@ public class CheckoutController {
             });
         }
 
-        // --- VALIDATION LOGIC ON SAVE ---
         saveBtn.setOnAction(ev -> {
             java.util.List<javafx.scene.control.TextField> fields = new java.util.ArrayList<>();
             collectTextFields(sphereSection, fields);
@@ -298,6 +315,7 @@ public class CheckoutController {
                 return;
             }
             errorLabel.setVisible(false);
+            prescriptionFilled = true;
 
             javafx.scene.Parent currentRoot = buttonContainer.getScene().getRoot();
             if (currentRoot instanceof javafx.scene.layout.Pane) {
@@ -318,7 +336,7 @@ public class CheckoutController {
         row.setFillHeight(true);
 
         if (label.toLowerCase().contains("sphere")) {
-            double boxWidth = (inputWidth * 2 + 40) / 4.0; // 40 for spacing, adjust as needed
+            double boxWidth = (inputWidth * 2 + 40) / 4.0;
 
             VBox rightPlusBox = new VBox(2);
             Label rightPlusLabel = new Label("Right +");
@@ -360,7 +378,6 @@ public class CheckoutController {
             leftMinusBox.setFillWidth(true);
             leftMinusBox.getChildren().addAll(leftMinusLabel, leftMinusField);
 
-            // Make all boxes expand equally
             javafx.scene.layout.HBox.setHgrow(rightPlusBox, javafx.scene.layout.Priority.ALWAYS);
             javafx.scene.layout.HBox.setHgrow(leftPlusBox, javafx.scene.layout.Priority.ALWAYS);
             javafx.scene.layout.HBox.setHgrow(rightMinusBox, javafx.scene.layout.Priority.ALWAYS);
@@ -368,7 +385,6 @@ public class CheckoutController {
 
             row.getChildren().addAll(rightPlusBox, leftPlusBox, rightMinusBox, leftMinusBox);
         } else {
-            // ...existing code for non-sphere (2 input)...
             VBox rightBox = new VBox(2);
             Label rightLabel = new Label("Right");
             rightLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #444;");
@@ -410,7 +426,6 @@ public class CheckoutController {
         return section;
     }
 
-    // Helper to collect all TextFields recursively from a parent node
     private void collectTextFields(javafx.scene.Parent parent, java.util.List<javafx.scene.control.TextField> fields) {
         for (javafx.scene.Node node : parent.getChildrenUnmodifiable()) {
             if (node instanceof javafx.scene.control.TextField) {

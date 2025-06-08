@@ -7,15 +7,22 @@
 
 <!-- Ganti root VBox dengan StackPane agar overlay bisa menimpa seluruh halaman -->
 <StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.pembelian.CheckoutController" stylesheets="@checkout.css" prefWidth="800" prefHeight="600">
-    <VBox spacing="10" alignment="TOP_LEFT">
+    <VBox spacing="10" alignment="TOP_LEFT" style="-fx-background-color: #F5F6FA;">
         <Region minHeight="120"/>
-        <HBox fx:id="mainContainer" styleClass="main-container" spacing="20" alignment="CENTER">
+        <HBox fx:id="mainContainer" styleClass="main-container" spacing="20" alignment="CENTER" style="-fx-background-color: #E3E6F3;">
             <!-- IMAGE -->
-            <VBox fx:id="imageContainer" styleClass="image-container" prefWidth="610" prefHeight="537">
-                <ImageView fx:id="productImageView" fitWidth="600" fitHeight="500" preserveRatio="true"/>
+            <VBox fx:id="imageContainer" styleClass="image-container" prefWidth="610" prefHeight="537" style="-fx-background-color: #FFF;">
+                <StackPane prefWidth="610" prefHeight="537">
+                    <ImageView fx:id="productImageView"
+                               fitWidth="610"
+                               fitHeight="537"
+                               preserveRatio="false"
+                               pickOnBounds="true"
+                               style="-fx-background-color: transparent;"/>
+                </StackPane>
             </VBox>
             <!-- BUTTON -->
-            <VBox fx:id="buttonContainer" styleClass="button-container" prefWidth="640" spacing="40" alignment="TOP_LEFT">
+            <VBox fx:id="buttonContainer" styleClass="button-container" prefWidth="640" spacing="24" alignment="CENTER_LEFT" style="-fx-background-color: #F8F5FF;">
                 <VBox spacing="0" alignment="CENTER_LEFT">
                     <Label fx:id="productBrandLabel" styleClass="product-brand-label" text="Brand"/>
                     <Label fx:id="productNameLabel" styleClass="product-name-label" text="Nama Produk"/>
