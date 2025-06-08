@@ -5,7 +5,9 @@ import java.net.URL;
 
 import com.pekaboo.PrimaryController;
 import com.pekaboo.features.navbar.NavbarController;
+import com.pekaboo.features.profile.ProfileController;
 
+import java.net.URL;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +15,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * Controller ini HANYA BERTUGAS sebagai pemuat halaman.
+ * Tidak ada logika sesi, login, atau user di sini.
+ */
 public class MainController {
 
     @FXML
@@ -58,16 +64,14 @@ public class MainController {
 
             if (currentPageCss != null && !currentPageCss.isEmpty()) {
                 URL oldCssUrl = getClass().getResource(currentPageCss);
-                if (oldCssUrl != null) {
-                    scene.getStylesheets().remove(oldCssUrl.toExternalForm());
-                }
+                if (oldCssUrl != null) scene.getStylesheets().remove(oldCssUrl.toExternalForm());
                 currentPageCss = null;
             }
             
             contentArea.getChildren().clear();
 
             if (fxmlPath == null || "placeholder".equalsIgnoreCase(fxmlPath)) {
-                return;
+                return; 
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
