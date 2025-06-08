@@ -14,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -25,218 +24,89 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.control.Button;
 
 public class CatalogProduct implements Initializable {
-    
-    @FXML
-    private Button product01Button;
-    @FXML
-    private Button product02Button;
-    @FXML
-    private Button product03Button;
-    @FXML
-    private Button product04Button;
-    @FXML
-    private Button product05Button;
-    @FXML
-    private Button product06Button;
-    @FXML
-    private Button product07Button;
-    @FXML
-    private Button product08Button;
-    @FXML
-    private Button product09Button;
-    @FXML
-    private Button product10Button;
-    @FXML
-    private Button product11Button;
-    @FXML
-    private Button product12Button;
-    @FXML
-    private Button product13Button;
-    @FXML
-    private Button product14Button;
-    @FXML
-    private Button product15Button;
-    @FXML
-    private Button product16Button;
-    @FXML
-    private Button product17Button;
-    @FXML
-    private Button product18Button;
-    @FXML
-    private Button product19Button;
-
-    @FXML
-    private TextField searchTextField;
-    @FXML 
-    private Button searchButton;
-    @FXML
-    private TextField minPriceTextField;
-    @FXML
-    private TextField maxPriceTextField;
-    @FXML
-    private Button applyfilterButton;
-    @FXML
-    private Button cancelFilterButton;
-    @FXML
-    private CheckBox brandCheckBoxHMIF;
-    @FXML
-    private CheckBox brandCheckBoxASSIST;
-    @FXML
-    private CheckBox brandCheckBoxIF;
-    @FXML
-    private CheckBox brandCheckBoxSTI;
-    @FXML
-    private Button sizeSButton;
-    @FXML
-    private Button sizeMButton;
-    @FXML
-    private Button sizeLButton;
-    @FXML
-    private Button colorRedButton;
-    @FXML
-    private Button colorOrangeButton;
-    @FXML
-    private Button colorYellowButton;
-    @FXML 
-    private Button colorGreenButton;
-    @FXML 
-    private Button colorBlueButton;
-    @FXML 
-    private Button colorPurpleButton;
-    @FXML 
-    private Button colorBrownButton;
-    @FXML 
-    private Button colorBlackButton;
-
     @FXML private GridPane gridPane;
+    @FXML private TextField searchTextField;
+    @FXML private Button searchButton;
+    @FXML private TextField minPriceTextField;
+    @FXML private TextField maxPriceTextField;
+    @FXML private Button applyfilterButton;
+    @FXML private Button cancelFilterButton;
+    @FXML private CheckBox brandCheckBoxHMIF;
+    @FXML private CheckBox brandCheckBoxASSIST;
+    @FXML private CheckBox brandCheckBoxIF;
+    @FXML private CheckBox brandCheckBoxSTI;
+    @FXML private Button sizeSButton;
+    @FXML private Button sizeMButton;
+    @FXML private Button sizeLButton;
+    @FXML private Button colorRedButton;
+    @FXML private Button colorOrangeButton;
+    @FXML private Button colorYellowButton;
+    @FXML private Button colorGreenButton;
+    @FXML private Button colorBlueButton;
+    @FXML private Button colorPurpleButton;
+    @FXML private Button colorBrownButton;
+    @FXML private Button colorBlackButton;
 
     private final ProductRepo productRepo = new PostgresProdukRepository();
-    private ProductRepo productRepo = new MockProductRepo();
     private List<Product> allProducts;
-
     private String selectedColor = null;
     private String selectedSize = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
- // --- Menambahkan aksi untuk semua tombol filter ---
-        applyfilterButton.setOnAction(e -> applyFilters());
-        searchButton.setOnAction(e -> applyFilters());
+        allProducts = productRepo.getAllProduct();
+        showCatalogProduct(allProducts);
 
-        this.allProducts = productRepo.getAllProduct();
-        showCatalogProduct(this.allProducts);
-        
-        // Menambahkan listener agar filter berjalan saat mengetik
+        // Search functionality
+        searchButton.setOnAction(e -> applyFilters());
         searchTextField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
 
-        // Aksi untuk checkbox
-        brandCheckBoxHMIF.setOnAction(e -> applyFilters());
-        brandCheckBoxASSIST.setOnAction(e -> applyFilters());
-        brandCheckBoxIF.setOnAction(e -> applyFilters());
-        brandCheckBoxSTI.setOnAction(e -> applyFilters());
-        
-        // Aksi untuk tombol cancel
-        cancelFilterButton.setOnAction(e -> {
-            minPriceTextField.clear();
-            maxPriceTextField.clear();
-            showCatalogProduct(this.allProducts);
-        });
-
-        applyfilterButton.setOnAction(e -> applyFilters());
-
-        // Setup untuk tombol warna dan ukuran
-        setupFilterButton(sizeSButton, "S");
-        setupFilterButton(sizeMButton, "M");
-        setupFilterButton(sizeLButton, "L");
-
-        setupColorButton(colorRedButton, "Merah");
-        setupColorButton(colorOrangeButton, "Oranye");
-        setupColorButton(colorYellowButton, "Kuning");
-        setupColorButton(colorGreenButton, "Hijau");
-        setupColorButton(colorBlueButton, "Biru");
-        setupColorButton(colorPurpleButton, "Ungu");
-        setupColorButton(colorBrownButton, "Coklat");
-        setupColorButton(colorBlackButton, "Hitam");
-    }
-
-    public void showCatalogProduct(List<Product> allProduct) {
-        gridPane.getChildren().clear();
-        int column = 0;
-        int row = 0;
-
-        for (Product product : allProduct) {
-            VBox card = new VBox();
-            card.getStyleClass().add("card-content");
-
-            ImageView imageView;
-            try {
-                // Load image berdasarkan id
-                String imagePath = "/com/pekaboo/pembelian/assets/" + product.getId() + ".jpg";
-                imageView = new ImageView(new Image(getClass().getResourceAsStream(imagePath)));
-            } catch (Exception e) {
-                // Fallback logic ke default image
-                imageView = new ImageView(new Image(getClass().getResourceAsStream("/com/pekaboo/pembelian/assets/5.jpg")));
-            }
-
-            imageView.setFitWidth(160);
-            ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(product.getImagePath())));
-            imageView.setFitWidth(280);
-            imageView.setPreserveRatio(true);
-            imageView.setFitHeight(160);
-            imageView.getStyleClass().add("card-image");
-            StackPane imageContainer = new StackPane(imageView);
-            imageContainer.setPrefHeight(160);
-            imageContainer.setStyle(
-                "-fx-background-radius: 12 12 0 0;"
-            );
-            Rectangle clip = new Rectangle(280, 160); 
-            clip.setArcWidth(12);
-            clip.setArcHeight(12);
-            imageView.setClip(clip);
-
-            VBox cardBody = new VBox();
-            cardBody.getStyleClass().add("card-body");
-
-            Label nameLabel = new Label(product.getName());
-            nameLabel.getStyleClass().add("card-title");
-            nameLabel.setAlignment(Pos.CENTER_LEFT); // Align text to left
-
-            Label brandLabel = new Label(product.getBrand());
-            brandLabel.getStyleClass().add("card-subtitle");
-            brandLabel.setAlignment(Pos.CENTER_LEFT); // Align text to left
-
-            Label priceLabel = new Label("Rp" + product.getPrice());
-            priceLabel.getStyleClass().add("card-price");
-            
-            // Create HBox to position price label to the right
-            HBox priceContainer = new HBox();
-            priceContainer.setAlignment(Pos.CENTER_RIGHT);
-            priceContainer.getChildren().add(priceLabel);
-
-            cardBody.getChildren().addAll(nameLabel, brandLabel, priceContainer);
-            card.getChildren().addAll(imageView, cardBody);
-
-            Button productButton = new Button();
-            productButton.setGraphic(card);
-            productButton.getStyleClass().add("card-button");
-            productButton.setOnAction(event -> handleProductClick(product));
-
-            GridPane.setMargin(productButton, new Insets(10));
-            gridPane.add(productButton, column, row);
-            column++;
-
-            if (column == 3) {
-                column = 0;
-                row++;
-            }
+        // Filter buttons
+        if (applyfilterButton != null) applyfilterButton.setOnAction(e -> applyFilters());
+        if (cancelFilterButton != null) {
+            cancelFilterButton.setOnAction(e -> {
+                if (minPriceTextField != null) minPriceTextField.clear();
+                if (maxPriceTextField != null) maxPriceTextField.clear();
+                selectedColor = null;
+                selectedSize = null;
+                updateColorButtonStyles();
+                updateSizeButtonStyles();
+                if (brandCheckBoxHMIF != null) brandCheckBoxHMIF.setSelected(false);
+                if (brandCheckBoxASSIST != null) brandCheckBoxASSIST.setSelected(false);
+                if (brandCheckBoxIF != null) brandCheckBoxIF.setSelected(false);
+                if (brandCheckBoxSTI != null) brandCheckBoxSTI.setSelected(false);
+                showCatalogProduct(allProducts);
+            });
         }
+
+        // Brand checkboxes
+        if (brandCheckBoxHMIF != null) brandCheckBoxHMIF.setOnAction(e -> applyFilters());
+        if (brandCheckBoxASSIST != null) brandCheckBoxASSIST.setOnAction(e -> applyFilters());
+        if (brandCheckBoxIF != null) brandCheckBoxIF.setOnAction(e -> applyFilters());
+        if (brandCheckBoxSTI != null) brandCheckBoxSTI.setOnAction(e -> applyFilters());
+
+        // Size buttons
+        if (sizeSButton != null) setupFilterButton(sizeSButton, "S");
+        if (sizeMButton != null) setupFilterButton(sizeMButton, "M");
+        if (sizeLButton != null) setupFilterButton(sizeLButton, "L");
+
+        // Color buttons
+        if (colorRedButton != null) setupColorButton(colorRedButton, "Merah");
+        if (colorOrangeButton != null) setupColorButton(colorOrangeButton, "Oranye");
+        if (colorYellowButton != null) setupColorButton(colorYellowButton, "Kuning");
+        if (colorGreenButton != null) setupColorButton(colorGreenButton, "Hijau");
+        if (colorBlueButton != null) setupColorButton(colorBlueButton, "Biru");
+        if (colorPurpleButton != null) setupColorButton(colorPurpleButton, "Ungu");
+        if (colorBrownButton != null) setupColorButton(colorBrownButton, "Coklat");
+        if (colorBlackButton != null) setupColorButton(colorBlackButton, "Hitam");
     }
 
     private void applyFilters() {
-        List<Product> filteredList = this.allProducts.stream()
-            // 1. Filter berdasarkan Keyword Pencarian
+        List<Product> filteredList = allProducts.stream()
+            //Filter by search keyword
             .filter(p -> {
                 String keyword = searchTextField.getText();
                 if (keyword == null || keyword.trim().isEmpty()) return true;
@@ -244,8 +114,9 @@ public class CatalogProduct implements Initializable {
                 return p.getName().toLowerCase().contains(lowerKeyword) ||
                        p.getBrand().toLowerCase().contains(lowerKeyword);
             })
-            // 2. Filter berdasarkan Harga Minimum
+            //Filter by minimum price
             .filter(p -> {
+                if (minPriceTextField == null) return true;
                 try {
                     String minText = minPriceTextField.getText().replaceAll("[^\\d]", "");
                     if (minText.isEmpty()) return true;
@@ -255,8 +126,9 @@ public class CatalogProduct implements Initializable {
                     return true;
                 }
             })
-            // 3. Filter berdasarkan Harga Maksimum
+            //Filter by maximum price
             .filter(p -> {
+                if (maxPriceTextField == null) return true;
                 try {
                     String maxText = maxPriceTextField.getText().replaceAll("[^\\d]", "");
                     if (maxText.isEmpty()) return true;
@@ -266,27 +138,120 @@ public class CatalogProduct implements Initializable {
                     return true;
                 }
             })
-            // 4. Filter berdasarkan Brand (Checkbox)
+            //Filter by brand checkboxes
             .filter(p -> {
                 List<String> selectedBrands = new ArrayList<>();
-                if (brandCheckBoxHMIF.isSelected()) selectedBrands.add("HMIF");
-                if (brandCheckBoxASSIST.isSelected()) selectedBrands.add("ASSIST");
-                if (brandCheckBoxIF.isSelected()) selectedBrands.add("IF");
-                if (brandCheckBoxSTI.isSelected()) selectedBrands.add("STI");
+                if (brandCheckBoxHMIF != null && brandCheckBoxHMIF.isSelected()) selectedBrands.add("HMIF");
+                if (brandCheckBoxASSIST != null && brandCheckBoxASSIST.isSelected()) selectedBrands.add("ASSIST");
+                if (brandCheckBoxIF != null && brandCheckBoxIF.isSelected()) selectedBrands.add("IF");
+                if (brandCheckBoxSTI != null && brandCheckBoxSTI.isSelected()) selectedBrands.add("STI");
                 return selectedBrands.isEmpty() || selectedBrands.contains(p.getBrand());
             })
-            // 5. Filter berdasarkan Warna
+            //Filter by color
             .filter(p -> selectedColor == null || p.getColor().equalsIgnoreCase(selectedColor))
-            // 6. Filter berdasarkan Ukuran
+            //Filter by size
             .filter(p -> selectedSize == null || p.getSize().equalsIgnoreCase(selectedSize))
             .collect(Collectors.toList());
 
         showCatalogProduct(filteredList);
     }
 
-        private void setupColorButton(Button button, String color) {
+    public void showCatalogProduct(List<Product> products) {
+        gridPane.getChildren().clear();
+        gridPane.setAlignment(Pos.CENTER); //Center the grid
+        
+        int column = 0;
+        int row = 0;
+
+        for (Product product : products) {
+            // Create the main card container
+            VBox card = new VBox();
+            card.getStyleClass().add("card-content");
+            card.setAlignment(Pos.CENTER); // Center content within card
+
+            // Create and setup the image with proper centering and fitting
+            ImageView imageView;
+            try {
+                String path = "/com/pekaboo/pembelian/assets/" + product.getId() + ".jpg";
+                imageView = new ImageView(new Image(getClass().getResourceAsStream(path)));
+            } catch (Exception e) {
+                imageView = new ImageView(new Image(getClass().getResourceAsStream("/com/pekaboo/pembelian/assets/5.jpg")));
+            }
+
+            // Set image dimensions and properties for proper fitting
+            imageView.setFitWidth(280);
+            imageView.setFitHeight(160);
+            imageView.setPreserveRatio(true);
+            imageView.setSmooth(true);
+            imageView.getStyleClass().add("card-image");
+
+            // Create image container with centered alignment and clipping
+            StackPane imageContainer = new StackPane(imageView);
+            imageContainer.setPrefSize(280, 160);
+            imageContainer.setMaxSize(280, 160);
+            imageContainer.setMinSize(280, 160);
+            imageContainer.setAlignment(Pos.CENTER);
+            imageContainer.setStyle("-fx-background-radius: 12 12 0 0; -fx-background-color: #f5f5f5;");
+            
+            // Apply clipping for rounded corners
+            Rectangle clip = new Rectangle(280, 160);
+            clip.setArcWidth(12);
+            clip.setArcHeight(12);
+            imageContainer.setClip(clip);
+
+            // Create the card body
+            VBox cardBody = new VBox();
+            cardBody.getStyleClass().add("card-body");
+            cardBody.setAlignment(Pos.CENTER); // Center the text content
+
+            // Create labels with proper styling
+            Label nameLabel = new Label(product.getName());
+            nameLabel.getStyleClass().add("card-title");
+            nameLabel.setAlignment(Pos.CENTER);
+
+            Label brandLabel = new Label(product.getBrand());
+            brandLabel.getStyleClass().add("card-subtitle");
+            brandLabel.setAlignment(Pos.CENTER);
+
+            // Fix the price formatting issue by converting int to double
+            double priceValue = (double) product.getPrice();
+            Label priceLabel = new Label("Rp" + String.format("%,.0f", priceValue));
+            priceLabel.getStyleClass().add("card-price");
+
+            // Create HBox to position price label to the center (or right if preferred)
+            HBox priceContainer = new HBox();
+            priceContainer.setAlignment(Pos.CENTER); // Changed from CENTER_RIGHT to CENTER
+            priceContainer.getChildren().add(priceLabel);
+
+            // Add all elements to card body
+            cardBody.getChildren().addAll(nameLabel, brandLabel, priceContainer);
+            
+            // Add image container and body to main card
+            card.getChildren().addAll(imageContainer, cardBody);
+
+            // Create the clickable button that wraps the card
+            Button productButton = new Button();
+            productButton.setGraphic(card);
+            productButton.getStyleClass().add("card-button");
+            productButton.setOnAction(event -> handleProductClick(product));
+
+            // Add to grid with margin and center alignment
+            GridPane.setMargin(productButton, new Insets(10));
+            GridPane.setHalignment(productButton, javafx.geometry.HPos.CENTER);
+            GridPane.setValignment(productButton, javafx.geometry.VPos.CENTER);
+            gridPane.add(productButton, column, row);
+
+            column++;
+            if (column == 3) {
+                column = 0;
+                row++;
+            }
+        }
+    }
+
+    private void setupColorButton(Button button, String color) {
         button.setOnAction(e -> {
-            // Jika warna yang sama diklik lagi, batalkan filter
+            // If same color clicked again, cancel filter
             selectedColor = color.equals(selectedColor) ? null : color;
             updateColorButtonStyles();
             applyFilters();
@@ -301,52 +266,48 @@ public class CatalogProduct implements Initializable {
         });
     }
 
-     private void updateColorButtonStyles() {
-    
-        colorRedButton.setStyle(colorRedButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
-        colorOrangeButton.setStyle(colorOrangeButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
-        colorYellowButton.setStyle(colorYellowButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
-        colorGreenButton.setStyle(colorGreenButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
-        colorBlueButton.setStyle(colorBlueButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
-        colorPurpleButton.setStyle(colorPurpleButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
-        colorBrownButton.setStyle(colorBrownButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
-        colorBlackButton.setStyle(colorBlackButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
+    private void updateColorButtonStyles() {
+        if (colorRedButton == null) return;
         
-        // Terapkan style aktif pada yang dipilih
+        // Reset all color button styles
+        colorRedButton.setStyle(colorRedButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
+        if (colorOrangeButton != null) colorOrangeButton.setStyle(colorOrangeButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
+        if (colorYellowButton != null) colorYellowButton.setStyle(colorYellowButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
+        if (colorGreenButton != null) colorGreenButton.setStyle(colorGreenButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
+        if (colorBlueButton != null) colorBlueButton.setStyle(colorBlueButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
+        if (colorPurpleButton != null) colorPurpleButton.setStyle(colorPurpleButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
+        if (colorBrownButton != null) colorBrownButton.setStyle(colorBrownButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
+        if (colorBlackButton != null) colorBlackButton.setStyle(colorBlackButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
+        
+        // Apply active style to selected color
         String activeStyle = "-fx-border-color: #5B36C9; -fx-border-width: 2; -fx-border-radius: 2;";
         if ("Merah".equals(selectedColor)) colorRedButton.setStyle(colorRedButton.getStyle() + activeStyle);
-        if ("Oranye".equals(selectedColor)) colorOrangeButton.setStyle(colorOrangeButton.getStyle() + activeStyle);
-        if ("Kuning".equals(selectedColor)) colorYellowButton.setStyle(colorYellowButton.getStyle() + activeStyle);
-        if ("Hijau".equals(selectedColor)) colorGreenButton.setStyle(colorGreenButton.getStyle() + activeStyle);
-        if ("Biru".equals(selectedColor)) colorBlueButton.setStyle(colorBlueButton.getStyle() + activeStyle);
-        if ("Ungu".equals(selectedColor)) colorPurpleButton.setStyle(colorPurpleButton.getStyle() + activeStyle);
-        if ("Coklat".equals(selectedColor)) colorBrownButton.setStyle(colorBrownButton.getStyle() + activeStyle);
-        if ("Hitam".equals(selectedColor)) colorBlackButton.setStyle(colorBlackButton.getStyle() + activeStyle);
+        if ("Oranye".equals(selectedColor) && colorOrangeButton != null) colorOrangeButton.setStyle(colorOrangeButton.getStyle() + activeStyle);
+        if ("Kuning".equals(selectedColor) && colorYellowButton != null) colorYellowButton.setStyle(colorYellowButton.getStyle() + activeStyle);
+        if ("Hijau".equals(selectedColor) && colorGreenButton != null) colorGreenButton.setStyle(colorGreenButton.getStyle() + activeStyle);
+        if ("Biru".equals(selectedColor) && colorBlueButton != null) colorBlueButton.setStyle(colorBlueButton.getStyle() + activeStyle);
+        if ("Ungu".equals(selectedColor) && colorPurpleButton != null) colorPurpleButton.setStyle(colorPurpleButton.getStyle() + activeStyle);
+        if ("Coklat".equals(selectedColor) && colorBrownButton != null) colorBrownButton.setStyle(colorBrownButton.getStyle() + activeStyle);
+        if ("Hitam".equals(selectedColor) && colorBlackButton != null) colorBlackButton.setStyle(colorBlackButton.getStyle() + activeStyle);
     }
 
     private void updateSizeButtonStyles() {
-        // Reset semua style dulu
+        if (sizeSButton == null) return;
+        
+        // Reset all size button styles
         sizeSButton.getStyleClass().remove("size-button-active");
-        sizeMButton.getStyleClass().remove("size-button-active");
-        sizeLButton.getStyleClass().remove("size-button-active");
+        if (sizeMButton != null) sizeMButton.getStyleClass().remove("size-button-active");
+        if (sizeLButton != null) sizeLButton.getStyleClass().remove("size-button-active");
 
-        // Terapkan style aktif
+        // Apply active style to selected size
         if ("S".equals(selectedSize)) sizeSButton.getStyleClass().add("size-button-active");
-        if ("M".equals(selectedSize)) sizeMButton.getStyleClass().add("size-button-active");
-        if ("L".equals(selectedSize)) sizeLButton.getStyleClass().add("size-button-active");
+        if ("M".equals(selectedSize) && sizeMButton != null) sizeMButton.getStyleClass().add("size-button-active");
+        if ("L".equals(selectedSize) && sizeLButton != null) sizeLButton.getStyleClass().add("size-button-active");
     }
 
     private void handleProductClick(Product product) {
-        showProductDetail(product);
-    }
-
-    public void showProductDetail(Product product) {
-        // TODO: tampilkan popup atau halaman detail
-    }
-
-    public List<Product> catalogFilter(String keyword) {
-        return productRepo.getAllProduct().stream()
-            .filter(product -> product.getName().toLowerCase().contains(keyword.toLowerCase()))
-            .collect(Collectors.toList());
+        // Handle product click - navigate to detail page or show popup
+        System.out.println("Clicked on product: " + product.getName());
+        // TODO: Implement product detail navigation
     }
 }

@@ -1,117 +1,118 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: #FFFFFF;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.pembelian.CatalogProduct">
-   <left>
-      <VBox spacing="15.0" BorderPane.alignment="CENTER">
-         <padding>
-            <Insets left="72.0" top="50.0" />
-         </padding>
-         <children>
-            <Label style="-fx-font-size: 20.0; -fx-font-weight: bold; -fx-text-fill: black;" text="Filter">
-               <padding>
-                  <Insets left="4.0" />
-               </padding>
-            </Label>
-            <VBox prefWidth="272.0" spacing="24.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #E2E2E2; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
-               <padding>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-               </padding>
-               <children>
-                  <VBox spacing="10.0">
-                     <children>
-                        <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Price" />
-                        <HBox spacing="16.0">
-                           <children>
-                              <TextField fx:id="minPriceTextField" prefHeight="30.0" prefWidth="110.0" promptText="0" style="-fx-border-color: #E2E2E2; -fx-border-width: 1px; -fx-border-radius: 4;" />
-                              <TextField fx:id="maxPriceTextField" prefHeight="30.0" prefWidth="110.0" promptText="1.000.000" style="-fx-border-color: #E2E2E2; -fx-border-width: 1px; -fx-border-radius: 4;" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="16.0">
-                           <children>
-                              <Button fx:id="cancelFilterButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="110.0" style="-fx-border-color: #939698; -fx-border-radius: 4; -fx-background-color: white ; -fx-text-fill: #5B36C9;" text="Cancel" />
-                              <Button fx:id="applyfilterButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="110.0" style="-fx-background-color: #5B36C9; -fx-background-radius: 4; -fx-text-fill: white;" text="Apply" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-                  <HBox prefWidth="200.0" prefHeight="1.0" style="-fx-background-color: #E2E2E2;" />
-                  <VBox spacing="10.0">
-                     <children>
-                        <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Brands" />
-                        <CheckBox fx:id="brandCheckBoxHMIF" mnemonicParsing="false" style="-fx-text-fill: black;" text="HMIF" />
-                        <CheckBox fx:id="brandCheckBoxASSIST" mnemonicParsing="false" style="-fx-text-fill: black;" text="ASSIST" />
-                        <CheckBox fx:id="brandCheckBoxIF" mnemonicParsing="false" style="-fx-text-fill: black;" text="IF" />
-                        <CheckBox fx:id="brandCheckBoxSTI" mnemonicParsing="false" style="-fx-text-fill: black;" text="STI" />
-                     </children>
-                  </VBox>
-                  <HBox prefWidth="200.0" prefHeight="1.0" style="-fx-background-color: #E2E2E2;" />
-                  <VBox spacing="10.0">
-                     <children>
-                        <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Colors" />
-                        <FlowPane hgap="20.0" vgap="17.0">
-                           <children>
-                              <Button fx:id="colorRedButton" mnemonicParsing="false" style="-fx-background-color: #FF5454; -fx-min-width: 40; -fx-min-height: 40;" />
-                              <Button fx:id="colorOrangeButton" mnemonicParsing="false" style="-fx-background-color: #FFAA55; -fx-min-width: 40; -fx-min-height: 40;" />
-                              <Button fx:id="colorYellowButton" mnemonicParsing="false" style="-fx-background-color: #EFEA72; -fx-min-width: 40; -fx-min-height: 40;" />
-                              <Button fx:id="colorGreenButton" mnemonicParsing="false" style="-fx-background-color: #51A532; -fx-min-width: 40; -fx-min-height: 40;" />
-                              <Button fx:id="colorBlueButton" mnemonicParsing="false" style="-fx-background-color: #0118AB; -fx-min-width: 40; -fx-min-height: 40;" />
-                              <Button fx:id="colorPurpleButton" mnemonicParsing="false" style="-fx-background-color: #622C92; -fx-min-width: 40; -fx-min-height: 40;" />
-                              <Button fx:id="colorBrownButton" mnemonicParsing="false" style="-fx-background-color: #764B00; -fx-min-width: 40; -fx-min-height: 40;" />
-                              <Button fx:id="colorBlackButton" mnemonicParsing="false" style="-fx-background-color: #000000; -fx-min-width: 40; -fx-min-height: 40;" />
-                           </children>
-                        </FlowPane>
-                     </children>
-                  </VBox>
-                 <HBox prefWidth="200.0" prefHeight="1.0" style="-fx-background-color: #E2E2E2;" />
-                  <VBox spacing="10.0">
-                     <children>
-                        <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Size" />
-                        <HBox spacing="12.0">
-                           <children>
-                              <Button fx:id="sizeSButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" styleClass="size-button" text="S" />
-                              <Button fx:id="sizeMButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" styleClass="size-button" text="M" />
-                              <Button fx:id="sizeLButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="66.0" styleClass="size-button" text="L" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children>
-            </VBox>
-         </children>
-      </VBox>
-   </left>
-   <center>
-      <VBox spacing="20.0" BorderPane.alignment="CENTER">
-         <padding>
-            <Insets bottom="40.0" left="24.0" right="72.0" top="40.0" />
-         </padding>
-         <children>
-            <Label style="-fx-font-size: 24.0; -fx-font-weight: bold; -fx-text-fill: black;" text="Catalog" />
-            <HBox>
-               <children>
-                  <TextField fx:id="searchTextField" prefHeight="48.0" promptText="Search" style="-fx-border-radius: 8 0 0 8; -fx-background-radius: 8 0 0 8; -fx-border-color: #E2E2E2; -fx-border-width: 1.5px; -fx-padding: 10 10 10 20;" HBox.hgrow="ALWAYS" />
-                  <Button fx:id="searchButton" mnemonicParsing="false" prefHeight="48.0" prefWidth="120.0" style="-fx-background-color: #5B36C9; -fx-text-fill: white; -fx-border-radius: 0 8 8 0; -fx-background-radius: 0 8 8 0; -fx-font-size: 14; -fx-font-weight: bold;" text="Search" />
-               </children>
-            </HBox>
-            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;">
-               <content>
-                  <GridPane fx:id="gridPane" alignment="CENTER" hgap="12" vgap="12.0" />
-               </content>
-            </ScrollPane>
-         </children>
-      </VBox>
-   </center>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
+            fx:controller="com.pekaboo.features.pembelian.CatalogProduct"
+            prefWidth="1280.0" prefHeight="800.0"
+            style="-fx-background-color: #FFFFFF;">
+
+    <left>
+        <VBox spacing="15.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets left="72.0" top="50.0" />
+            </padding>
+            <children>
+                <Label style="-fx-font-size: 20.0; -fx-font-weight: bold; -fx-text-fill: black;" text="Filter">
+                    <padding>
+                        <Insets left="4.0" />
+                    </padding>
+                </Label>
+                <VBox prefWidth="272.0" spacing="24.0"
+                      style="-fx-background-color: #FFFFFF; -fx-border-color: #E2E2E2; -fx-border-width: 1; -fx-border-radius: 12; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
+                    <children>
+                        <VBox spacing="10.0">
+                            <children>
+                                <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Price" />
+                                <HBox spacing="16.0">
+                                    <children>
+                                        <TextField fx:id="minPriceTextField" prefHeight="30.0" prefWidth="110.0" promptText="0" style="-fx-border-color: #E2E2E2; -fx-border-width: 1px; -fx-border-radius: 4;" />
+                                        <TextField fx:id="maxPriceTextField" prefHeight="30.0" prefWidth="110.0" promptText="1.000.000" style="-fx-border-color: #E2E2E2; -fx-border-width: 1px; -fx-border-radius: 4;" />
+                                    </children>
+                                </HBox>
+                                <HBox spacing="16.0">
+                                    <children>
+                                        <Button fx:id="cancelFilterButton" prefHeight="30.0" prefWidth="110.0" style="-fx-border-color: #939698; -fx-border-radius: 4; -fx-background-color: white ; -fx-text-fill: #5B36C9;" text="Cancel" />
+                                        <Button fx:id="applyfilterButton" prefHeight="30.0" prefWidth="110.0" style="-fx-background-color: #5B36C9; -fx-background-radius: 4; -fx-text-fill: white;" text="Apply" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                        <HBox prefWidth="200.0" prefHeight="1.0" style="-fx-background-color: #E2E2E2;" />
+                        <VBox spacing="10.0">
+                            <children>
+                                <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Brands" />
+                                <CheckBox fx:id="brandCheckBoxHMIF" style="-fx-text-fill: black;" text="HMIF" />
+                                <CheckBox fx:id="brandCheckBoxASSIST" style="-fx-text-fill: black;" text="ASSIST" />
+                                <CheckBox fx:id="brandCheckBoxIF" style="-fx-text-fill: black;" text="IF" />
+                                <CheckBox fx:id="brandCheckBoxSTI" style="-fx-text-fill: black;" text="STI" />
+                            </children>
+                        </VBox>
+                        <HBox prefWidth="200.0" prefHeight="1.0" style="-fx-background-color: #E2E2E2;" />
+                        <VBox spacing="10.0">
+                            <children>
+                                <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Colors" />
+                                <FlowPane hgap="20.0" vgap="17.0">
+                                    <children>
+                                        <Button fx:id="colorRedButton" style="-fx-background-color: #FF5454; -fx-min-width: 40; -fx-min-height: 40;" />
+                                        <Button fx:id="colorOrangeButton" style="-fx-background-color: #FFAA55; -fx-min-width: 40; -fx-min-height: 40;" />
+                                        <Button fx:id="colorYellowButton" style="-fx-background-color: #EFEA72; -fx-min-width: 40; -fx-min-height: 40;" />
+                                        <Button fx:id="colorGreenButton" style="-fx-background-color: #51A532; -fx-min-width: 40; -fx-min-height: 40;" />
+                                        <Button fx:id="colorBlueButton" style="-fx-background-color: #0118AB; -fx-min-width: 40; -fx-min-height: 40;" />
+                                        <Button fx:id="colorPurpleButton" style="-fx-background-color: #622C92; -fx-min-width: 40; -fx-min-height: 40;" />
+                                        <Button fx:id="colorBrownButton" style="-fx-background-color: #764B00; -fx-min-width: 40; -fx-min-height: 40;" />
+                                        <Button fx:id="colorBlackButton" style="-fx-background-color: #000000; -fx-min-width: 40; -fx-min-height: 40;" />
+                                    </children>
+                                </FlowPane>
+                            </children>
+                        </VBox>
+                        <HBox prefWidth="200.0" prefHeight="1.0" style="-fx-background-color: #E2E2E2;" />
+                        <VBox spacing="10.0">
+                            <children>
+                                <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Size" />
+                                <HBox spacing="12.0">
+                                    <children>
+                                        <Button fx:id="sizeSButton" prefHeight="30.0" prefWidth="66.0" styleClass="size-button" text="S" />
+                                        <Button fx:id="sizeMButton" prefHeight="30.0" prefWidth="66.0" styleClass="size-button" text="M" />
+                                        <Button fx:id="sizeLButton" prefHeight="30.0" prefWidth="66.0" styleClass="size-button" text="L" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="20.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="40.0" left="24.0" right="72.0" top="40.0" />
+            </padding>
+            <children>
+                <Label style="-fx-font-size: 24.0; -fx-font-weight: bold; -fx-text-fill: black;" text="Catalog" />
+                <HBox>
+                    <children>
+                        <TextField fx:id="searchTextField" prefHeight="48.0" promptText="Search" style="-fx-border-radius: 8 0 0 8; -fx-background-radius: 8 0 0 8; -fx-border-color: #E2E2E2; -fx-border-width: 1.5px; -fx-padding: 10 10 10 20;" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="searchButton" prefHeight="48.0" prefWidth="120.0" style="-fx-background-color: #5B36C9; -fx-text-fill: white; -fx-border-radius: 0 8 8 0; -fx-background-radius: 0 8 8 0; -fx-font-size: 14; -fx-font-weight: bold;" text="Search" />
+                    </children>
+                </HBox>
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;">
+                    <content>
+                        <GridPane fx:id="gridPane" alignment="CENTER" hgap="12" vgap="12.0">
+                            <!-- Produk akan dimuat dinamis dari controller -->
+                        </GridPane>
+                    </content>
+                </ScrollPane>
+            </children>
+        </VBox>
+    </center>
+
 </BorderPane>
