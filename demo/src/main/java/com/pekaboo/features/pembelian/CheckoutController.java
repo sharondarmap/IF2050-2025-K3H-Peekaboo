@@ -2,14 +2,16 @@ package com.pekaboo.features.pembelian;
 
 import java.io.IOException;
 
+import com.pekaboo.entities.Pesanan;
 import com.pekaboo.entities.Product;
+
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.shape.Rectangle;
 
 public class CheckoutController {
@@ -27,15 +29,44 @@ public class CheckoutController {
     @FXML private VBox buttonContainer;
     @FXML private ImageView productImageView;
     @FXML private Rectangle productColorRectangle;
+    @FXML private HBox mainContainer; 
 
     private int totalAmount = 0;
     private int prescriptionQuantity = 1;
     private Product activeProduct;
     private boolean prescriptionFilled = false; 
     private Label checkoutErrorLabel = new Label();
+    private com.pekaboo.entities.User user;
+    private Pesanan pesanan;
 
     @FXML
     private void initialize() {
+        // // --- BACK BUTTON ---
+        // ImageView backIcon = new ImageView(
+        //     new Image(getClass().getResourceAsStream("/com/pekaboo/pembelian/assets/back.png"))
+        // );
+        // backIcon.setFitWidth(18);
+        // backIcon.setFitHeight(18);
+
+        // Label backLabel = new Label("Back");
+        // backLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #222;");
+
+        // javafx.scene.layout.HBox backBox = new javafx.scene.layout.HBox(8, backIcon, backLabel);
+        // backBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        // backBox.setStyle("-fx-cursor: hand; -fx-padding: 18 0 18 0;");
+
+        // backBox.setOnMouseClicked(e -> {
+        //     try {
+        //         switchToMainMenu();
+        //     } catch (IOException ex) {
+        //         ex.printStackTrace();
+        //     }
+        // });
+
+        // if (mainContainer != null) {
+        //     mainContainer.getChildren().add(0, backBox);
+        // }
+
         if (addPrescriptionButton != null) {
             addPrescriptionButton.setOnAction(e -> showPrescriptionPopup());
         }
@@ -60,24 +91,39 @@ public class CheckoutController {
         if (activeProduct != null) {
             setActiveProduct(activeProduct);
         }
-        checkoutErrorLabel.setStyle(
-            "-fx-text-fill: #D32F2F;" +
-            "-fx-font-size: 13px;" +
-            "-fx-padding: 0 0 0 0;" +
-            "-fx-max-width: 1000px;" + 
-            "-fx-label-padding: 0 0 0 0;" +
-            "-fx-wrap-text: false;"
+
+        javafx.scene.layout.HBox infoRow = new javafx.scene.layout.HBox(12);
+        infoRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        ImageView checklistIcon = new ImageView(
+            new Image(getClass().getResourceAsStream("/com/pekaboo/pembelian/assets/checklist.png"))
         );
+        checklistIcon.setFitWidth(22);
+        checklistIcon.setFitHeight(22);
+
+        Label availableStockLabel = new Label("Available in Stock");
+        availableStockLabel.setStyle("-fx-text-fill: #7B61FF; -fx-font-size: 15px; -fx-font-weight: bold;");
+
+        javafx.scene.layout.HBox availableStockBox = new javafx.scene.layout.HBox(6, checklistIcon, availableStockLabel);
+        availableStockBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        checkoutErrorLabel.setText("Silakan isi prescription terlebih dahulu sebelum checkout.");
+        checkoutErrorLabel.setStyle("-fx-text-fill: #D32F2F; -fx-font-size: 13px; -fx-padding: 0; -fx-max-width: 1000px; -fx-label-padding: 0; -fx-wrap-text: false;");
         checkoutErrorLabel.setVisible(false);
-        checkoutErrorLabel.setMaxWidth(1000); 
-        checkoutErrorLabel.setWrapText(false); 
+
+        javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
+        javafx.scene.layout.HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+
+        infoRow.getChildren().addAll(availableStockBox, spacer, checkoutErrorLabel);
+
         if (buttonContainer != null) {
-            buttonContainer.getChildren().remove(checkoutErrorLabel);
+            buttonContainer.getChildren().remove(checkoutErrorLabel); 
+            buttonContainer.getChildren().removeIf(node -> node instanceof javafx.scene.layout.HBox && ((javafx.scene.layout.HBox) node).getChildren().contains(availableStockBox));
             int idx = buttonContainer.getChildren().indexOf(checkoutButton);
             if (idx >= 0) {
-                buttonContainer.getChildren().add(idx + 1, checkoutErrorLabel);
+                buttonContainer.getChildren().add(idx + 1, infoRow);
             } else {
-                buttonContainer.getChildren().add(checkoutErrorLabel);
+                buttonContainer.getChildren().add(infoRow);
             }
         }
     }
@@ -87,6 +133,9 @@ public class CheckoutController {
             totalAmount = activeProduct.getPrice() * prescriptionQuantity;
         } else {
             totalAmount = 0;
+        }
+        if (pesanan != null) {
+            pesanan.setTotalPesanan(totalAmount);
         }
     }
 
@@ -99,17 +148,11 @@ public class CheckoutController {
     @FXML
     private void handleCheckout() {
         if (!prescriptionFilled) {
-            checkoutErrorLabel.setText("Silakan isi prescription terlebih dahulu sebelum checkout.");
             checkoutErrorLabel.setVisible(true);
             return;
         }
         checkoutErrorLabel.setVisible(false);
-        boolean success = true;
-        if (success) {
-            showAlert("Success", "Checkout Complete", "Your order has been processed successfully!");
-            clearCart();
-            prescriptionFilled = false;
-        }
+        showOrderConfirmationPopup();
     }
 
     @FXML
@@ -126,20 +169,9 @@ public class CheckoutController {
         updateTotalAmountLabel();
     }
 
-    private void handleAddPrescription() {
-        showAlert("Prescription", "Add Prescription", "Prescription functionality is not yet implemented.");
-    }
-
-    private void showAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
     @FXML
     private void switchToMainMenu() throws IOException {
+        //ini buat ke page menu back sebelumnya ntar diisi
     }
 
     private void updatePrescriptionQuantityLabel() {
@@ -223,7 +255,6 @@ public class CheckoutController {
 
         javafx.scene.layout.HBox buttonBox = new javafx.scene.layout.HBox(32); 
         buttonBox.setAlignment(javafx.geometry.Pos.CENTER);
-        buttonBox.setFillHeight(true);
 
         Button cancelBtn = new Button("Cancel");
         Button saveBtn = new Button("Save");
@@ -240,7 +271,6 @@ public class CheckoutController {
             "-fx-font-weight: bold; " +
             "-fx-background-radius: 8; " +
             "-fx-border-radius: 8; " +
-            "-fx-padding: 0 0 0 0; " +
             "-fx-font-size: 15px;"
         );
         saveBtn.setStyle(
@@ -249,14 +279,11 @@ public class CheckoutController {
             "-fx-font-weight: bold; " +
             "-fx-background-radius: 8; " +
             "-fx-border-radius: 8; " +
-            "-fx-padding: 0 0 0 0; " +
             "-fx-font-size: 15px;"
         );
 
         buttonBox.getChildren().addAll(cancelBtn, saveBtn);
-        javafx.scene.layout.VBox errorAndButtons = new javafx.scene.layout.VBox(8);
-        errorAndButtons.setFillWidth(true);
-        errorAndButtons.getChildren().addAll(errorLabel, buttonBox);
+        VBox errorAndButtons = new VBox(8, errorLabel, buttonBox);
 
         popup.getChildren().addAll(
             title,
@@ -267,19 +294,44 @@ public class CheckoutController {
             errorAndButtons
         );
 
-        ((VBox) pdSection).getChildren().add(errorLabel);
-
         overlay.getChildren().add(popup);
 
         javafx.scene.Parent root = scene.getRoot();
         if (root instanceof javafx.scene.layout.Pane) {
-            javafx.scene.layout.Pane pane = (javafx.scene.layout.Pane) root;
-            pane.getChildren().add(overlay);
+            ((javafx.scene.layout.Pane) root).getChildren().add(overlay);
             overlay.toFront();
-            cancelBtn.setOnAction(ev -> pane.getChildren().remove(overlay));
-            saveBtn.setOnAction(ev -> pane.getChildren().remove(overlay));
+            cancelBtn.setOnAction(ev -> ((javafx.scene.layout.Pane) root).getChildren().remove(overlay));
+            saveBtn.setOnAction(ev -> {
+                java.util.List<javafx.scene.control.TextField> fields = new java.util.ArrayList<>();
+                collectTextFields(sphereSection, fields);
+                collectTextFields(cylinderSection, fields);
+                collectTextFields(axisSection, fields);
+                collectTextFields(pdSection, fields);
+
+                boolean allNumeric = true;
+                for (javafx.scene.control.TextField tf : fields) {
+                    String text = tf.getText();
+                    if (text == null || text.trim().isEmpty() || !text.matches("-?\\d+(\\.\\d+)?")) {
+                        allNumeric = false;
+                        break;
+                    }
+                }
+                if (!allNumeric) {
+                    errorLabel.setText("Semua input prescription harus berupa angka.");
+                    errorLabel.setVisible(true);
+                    return;
+                }
+                errorLabel.setVisible(false);
+                prescriptionFilled = true;
+
+                if (root instanceof javafx.scene.layout.Pane) {
+                    ((javafx.scene.layout.Pane) root).getChildren().remove(overlay);
+                } else if (root instanceof javafx.scene.layout.StackPane) {
+                    ((javafx.scene.layout.StackPane) root).getChildren().remove(overlay);
+                }
+            });
             overlay.setOnMouseClicked(ev -> {
-                if (ev.getTarget() == overlay) pane.getChildren().remove(overlay);
+                if (ev.getTarget() == overlay) ((javafx.scene.layout.Pane) root).getChildren().remove(overlay);
             });
         } else {
             javafx.scene.layout.StackPane stackPane = new javafx.scene.layout.StackPane();
@@ -293,37 +345,6 @@ public class CheckoutController {
                 if (ev.getTarget() == overlay) stackPane.getChildren().remove(overlay);
             });
         }
-
-        saveBtn.setOnAction(ev -> {
-            java.util.List<javafx.scene.control.TextField> fields = new java.util.ArrayList<>();
-            collectTextFields(sphereSection, fields);
-            collectTextFields(cylinderSection, fields);
-            collectTextFields(axisSection, fields);
-            collectTextFields(pdSection, fields);
-
-            boolean allNumeric = true;
-            for (javafx.scene.control.TextField tf : fields) {
-                String text = tf.getText();
-                if (text == null || text.trim().isEmpty() || !text.matches("-?\\d+(\\.\\d+)?")) {
-                    allNumeric = false;
-                    break;
-                }
-            }
-            if (!allNumeric) {
-                errorLabel.setText("Semua input prescription harus berupa angka.");
-                errorLabel.setVisible(true);
-                return;
-            }
-            errorLabel.setVisible(false);
-            prescriptionFilled = true;
-
-            javafx.scene.Parent currentRoot = buttonContainer.getScene().getRoot();
-            if (currentRoot instanceof javafx.scene.layout.Pane) {
-                ((javafx.scene.layout.Pane) currentRoot).getChildren().remove(overlay);
-            } else if (currentRoot instanceof javafx.scene.layout.StackPane) {
-                ((javafx.scene.layout.StackPane) currentRoot).getChildren().remove(overlay);
-            }
-        });
     }
 
     private VBox createPrescriptionSection(String label, String color, double inputWidth) {
@@ -434,5 +455,263 @@ public class CheckoutController {
                 collectTextFields((javafx.scene.Parent) node, fields);
             }
         }
+    }
+
+    private void showOrderConfirmationPopup() {
+        javafx.scene.Scene scene = buttonContainer.getScene();
+        if (scene == null) return;
+
+        VBox overlay = new VBox();
+        overlay.setStyle("-fx-background-color: rgba(0,0,0,0.3);");
+        overlay.setAlignment(javafx.geometry.Pos.CENTER);
+        overlay.setPrefWidth(scene.getWidth());
+        overlay.setPrefHeight(scene.getHeight());
+
+        VBox popup = new VBox(22);
+        popup.setStyle(
+            "-fx-background-color: white;" +
+            "-fx-padding: 56px 48px;" +
+            "-fx-background-radius: 32;" +
+            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 28, 0, 0, 14);"
+        );
+        popup.setMaxWidth(700); 
+        popup.setMinWidth(540);
+        popup.setAlignment(javafx.geometry.Pos.TOP_LEFT);
+
+        Label addressTitle = new Label("Delivery Address");
+        addressTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #222;");
+
+        VBox addressBox = new VBox(6);
+        addressBox.setStyle("-fx-background-color: #F8F6FF; -fx-border-color: #E0D7FF; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 12 18 12 18;");
+        javafx.scene.layout.HBox namePhoneRow = new javafx.scene.layout.HBox();
+        Label nameLabel = new Label(user != null && user.getUsername() != null ? user.getUsername() : "");
+        nameLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #7B61FF;");
+        Label phoneLabel = new Label(user != null && user.getNoTelepon() != null ? user.getNoTelepon() : "");
+        phoneLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #7B61FF;");
+
+        phoneLabel.setMaxWidth(Double.MAX_VALUE);
+        phoneLabel.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        namePhoneRow.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        javafx.scene.layout.HBox.setHgrow(phoneLabel, javafx.scene.layout.Priority.ALWAYS);
+        namePhoneRow.getChildren().addAll(nameLabel, phoneLabel);
+        javafx.scene.layout.HBox.setHgrow(nameLabel, javafx.scene.layout.Priority.ALWAYS);
+        namePhoneRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        Label addressDetail = new Label(pesanan != null && pesanan.getAlamatPesanan() != null ? pesanan.getAlamatPesanan() : "");
+        addressDetail.setStyle("-fx-font-size: 14px; -fx-text-fill: #444;");
+        addressBox.getChildren().addAll(namePhoneRow, addressDetail);
+
+        Label deliveryTitle = new Label("Delivery Option");
+        deliveryTitle.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #222;");
+
+        VBox deliveryBox = new VBox(3);
+        deliveryBox.setStyle("-fx-background-color: #F8F6FF; -fx-border-color: #E0D7FF; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 16 20 16 20;");
+        javafx.scene.layout.HBox shippingRow = new javafx.scene.layout.HBox(10);
+        Label shippingType = new Label("Regular shipping");
+        shippingType.setStyle("-fx-font-size: 18px; -fx-text-fill: #7B61FF; -fx-font-weight: bold;");
+        Label shippingPrice = new Label("Rp20.000");
+        shippingPrice.setStyle("-fx-font-size: 18px; -fx-text-fill: #7B61FF; -fx-font-weight: bold;");
+        shippingPrice.setMaxWidth(Double.MAX_VALUE);
+        shippingPrice.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        shippingRow.getChildren().addAll(shippingType, new Label(), shippingPrice);
+        javafx.scene.layout.HBox.setHgrow(shippingType, javafx.scene.layout.Priority.ALWAYS);
+        javafx.scene.layout.HBox.setHgrow(shippingPrice, javafx.scene.layout.Priority.ALWAYS);
+
+        javafx.scene.layout.HBox etaRow = new javafx.scene.layout.HBox(8);
+        javafx.scene.control.Label etaIcon = new javafx.scene.control.Label("\u25CF");
+        etaIcon.setStyle("-fx-text-fill: #B0B0B0; -fx-font-size: 12px;");
+        Label etaText = new Label("Estimated arrival : 2 - 3 Days");
+        etaText.setStyle("-fx-font-size: 14px; -fx-text-fill: #B0B0B0;");
+        etaRow.getChildren().addAll(etaIcon, etaText);
+
+        deliveryBox.getChildren().addAll(shippingRow, etaRow);
+
+        VBox priceBox = new VBox(10);
+        priceBox.setStyle("-fx-background-color: #F8F6FF; -fx-border-color: #E0D7FF; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 18 18 18 18;");
+
+        javafx.scene.layout.HBox subtotalRow = new javafx.scene.layout.HBox();
+        Label subtotalLabel = new Label("Subtotal");
+        subtotalLabel.setStyle("-fx-font-size: 17px; -fx-text-fill: #888;");
+        Label subtotalValue = new Label(String.format("Rp%,d", pesanan.getTotalPesanan()).replace(',', '.'));
+        subtotalValue.setStyle("-fx-font-size: 17px; -fx-text-fill: #7B61FF; -fx-font-weight: bold;");
+        subtotalValue.setMaxWidth(Double.MAX_VALUE);
+        subtotalValue.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        subtotalRow.getChildren().addAll(subtotalLabel, subtotalValue);
+        javafx.scene.layout.HBox.setHgrow(subtotalLabel, javafx.scene.layout.Priority.ALWAYS);
+        javafx.scene.layout.HBox.setHgrow(subtotalValue, javafx.scene.layout.Priority.ALWAYS);
+
+        javafx.scene.layout.HBox shippingCostRow = new javafx.scene.layout.HBox();
+        Label shippingCostLabel = new Label("Shipping Cost");
+        shippingCostLabel.setStyle("-fx-font-size: 17px; -fx-text-fill: #888;");
+        Label shippingCostValue = new Label("Rp20.000");
+        shippingCostValue.setStyle("-fx-font-size: 17px; -fx-text-fill: #7B61FF; -fx-font-weight: bold;");
+        shippingCostValue.setMaxWidth(Double.MAX_VALUE);
+        shippingCostValue.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        shippingCostRow.getChildren().addAll(shippingCostLabel, shippingCostValue);
+        javafx.scene.layout.HBox.setHgrow(shippingCostLabel, javafx.scene.layout.Priority.ALWAYS);
+        javafx.scene.layout.HBox.setHgrow(shippingCostValue, javafx.scene.layout.Priority.ALWAYS);
+
+        priceBox.getChildren().addAll(subtotalRow, shippingCostRow);
+
+        javafx.scene.layout.HBox totalRow = new javafx.scene.layout.HBox();
+        Label totalLabel = new Label("Total");
+        totalLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #222;");
+        int subtotal = (activeProduct != null ? activeProduct.getPrice() * prescriptionQuantity : 0);
+        int shipping = 20000;
+        Label totalValue = new Label(String.format("Rp%,d", subtotal + shipping).replace(',', '.'));
+        totalValue.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #7B61FF;");
+        totalValue.setMaxWidth(Double.MAX_VALUE);
+        totalValue.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        totalRow.getChildren().addAll(totalLabel, totalValue);
+        javafx.scene.layout.HBox.setHgrow(totalLabel, javafx.scene.layout.Priority.ALWAYS);
+        javafx.scene.layout.HBox.setHgrow(totalValue, javafx.scene.layout.Priority.ALWAYS);
+
+        javafx.scene.layout.HBox buttonRow = new javafx.scene.layout.HBox(10);
+        buttonRow.setAlignment(javafx.geometry.Pos.CENTER);
+
+        javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
+        spacer.setMaxWidth(48); 
+        javafx.scene.layout.HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+
+        Button cancelBtn = new Button("Cancel");
+        Button placeOrderBtn = new Button("Place Order");
+
+        cancelBtn.setPrefWidth(260); 
+        placeOrderBtn.setPrefWidth(260);
+        cancelBtn.setPrefHeight(52);
+        placeOrderBtn.setPrefHeight(52);
+
+        cancelBtn.setStyle(
+            "-fx-background-color: white; " +
+            "-fx-border-color: #7B61FF; " +
+            "-fx-text-fill: #7B61FF; " +
+            "-fx-font-weight: bold; " +
+            "-fx-background-radius: 10; " +
+            "-fx-border-radius: 10; " +
+            "-fx-font-size: 17px;"
+        );
+        placeOrderBtn.setStyle(
+            "-fx-background-color: #7B61FF; " +
+            "-fx-text-fill: white; " +
+            "-fx-font-weight: bold; " +
+            "-fx-background-radius: 10; " +
+            "-fx-border-radius: 10; " +
+            "-fx-font-size: 17px;"
+        );
+
+        buttonRow.getChildren().addAll(cancelBtn, spacer, placeOrderBtn);
+
+        popup.getChildren().addAll(
+            addressTitle, addressBox,
+            deliveryTitle, deliveryBox,
+            priceBox, totalRow,
+            buttonRow
+        );
+        overlay.getChildren().add(popup);
+
+        javafx.scene.Parent root = scene.getRoot();
+        if (root instanceof javafx.scene.layout.Pane) {
+            javafx.scene.layout.Pane pane = (javafx.scene.layout.Pane) root;
+            pane.getChildren().add(overlay);
+            overlay.toFront();
+            cancelBtn.setOnAction(ev -> pane.getChildren().remove(overlay));
+            placeOrderBtn.setOnAction(ev -> {
+                pane.getChildren().remove(overlay);
+                showCheckoutSuccessPopup();
+                clearCart();
+                prescriptionFilled = false;
+            });
+            overlay.setOnMouseClicked(ev -> {
+                if (ev.getTarget() == overlay) pane.getChildren().remove(overlay);
+            });
+        } else {
+            javafx.scene.layout.StackPane stackPane = new javafx.scene.layout.StackPane();
+            stackPane.getChildren().add(root);
+            stackPane.getChildren().add(overlay);
+            scene.setRoot(stackPane);
+            overlay.toFront();
+            cancelBtn.setOnAction(ev -> stackPane.getChildren().remove(overlay));
+            placeOrderBtn.setOnAction(ev -> {
+                stackPane.getChildren().remove(overlay);
+                showCheckoutSuccessPopup();
+                clearCart();
+                prescriptionFilled = false;
+            });
+            overlay.setOnMouseClicked(ev -> {
+                if (ev.getTarget() == overlay) stackPane.getChildren().remove(overlay);
+            });
+        }
+    }
+
+    private void showCheckoutSuccessPopup() {
+        javafx.scene.Scene scene = buttonContainer.getScene();
+        if (scene == null) return;
+
+        VBox overlay = new VBox();
+        overlay.setStyle("-fx-background-color: rgba(0,0,0,0.3);");
+        overlay.setAlignment(javafx.geometry.Pos.CENTER);
+        overlay.setPrefWidth(scene.getWidth());
+        overlay.setPrefHeight(scene.getHeight());
+
+        VBox popup = new VBox(24);
+        popup.setStyle(
+            "-fx-background-color: white;" +
+            "-fx-padding: 56px 48px;" +
+            "-fx-background-radius: 32;" +
+            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 28, 0, 0, 14);"
+        );
+        popup.setMaxWidth(500); 
+        popup.setMinWidth(380);
+        popup.setAlignment(javafx.geometry.Pos.CENTER);
+
+        Label title = new Label("Checkout Complete");
+        title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #222;");
+
+        Label message = new Label("Your order has been processed successfully!");
+        message.setStyle("-fx-font-size: 18px; -fx-text-fill: #444;");
+
+        Button okBtn = new Button("OK");
+        okBtn.setPrefWidth(180);
+        okBtn.setPrefHeight(52);
+        okBtn.setStyle(
+            "-fx-background-color: #7B61FF; " +
+            "-fx-text-fill: white; " +
+            "-fx-font-weight: bold; " +
+            "-fx-background-radius: 10; " +
+            "-fx-border-radius: 10; " +
+            "-fx-font-size: 17px;"
+        );
+
+        popup.getChildren().addAll(title, message, okBtn);
+        overlay.getChildren().add(popup);
+
+        javafx.scene.Parent root = scene.getRoot();
+        if (root instanceof javafx.scene.layout.Pane) {
+            javafx.scene.layout.Pane pane = (javafx.scene.layout.Pane) root;
+            pane.getChildren().add(overlay);
+            overlay.toFront();
+            okBtn.setOnAction(ev -> pane.getChildren().remove(overlay));
+            overlay.setOnMouseClicked(ev -> {
+                if (ev.getTarget() == overlay) pane.getChildren().remove(overlay);
+            });
+        } else {
+            javafx.scene.layout.StackPane stackPane = new javafx.scene.layout.StackPane();
+            stackPane.getChildren().add(root);
+            stackPane.getChildren().add(overlay);
+            scene.setRoot(stackPane);
+            overlay.toFront();
+            okBtn.setOnAction(ev -> stackPane.getChildren().remove(overlay));
+            overlay.setOnMouseClicked(ev -> {
+                if (ev.getTarget() == overlay) stackPane.getChildren().remove(overlay);
+            });
+        }
+    }
+
+    public void setUser(com.pekaboo.entities.User user) {
+        this.user = user;
+    }
+
+    public void setPesanan(Pesanan pesanan) {
+        this.pesanan = pesanan;
     }
 }

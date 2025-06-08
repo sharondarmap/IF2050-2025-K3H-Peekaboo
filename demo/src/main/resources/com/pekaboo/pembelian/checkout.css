@@ -163,7 +163,7 @@
     -fx-arc-width: 8px;
     -fx-arc-height: 8px;
     -fx-stroke: #ccc;
-    -fx-stroke-width: 2px;
+    -fx-stroke-width: 0px;
     -fx-fill: #e0e0e0;
 }
 

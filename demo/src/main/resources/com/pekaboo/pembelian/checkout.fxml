@@ -5,11 +5,10 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.image.*?>
 
-<!-- Ganti root VBox dengan StackPane agar overlay bisa menimpa seluruh halaman -->
 <StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.pembelian.CheckoutController" stylesheets="@checkout.css" prefWidth="800" prefHeight="600">
     <VBox spacing="10" alignment="TOP_LEFT" style="-fx-background-color: #F5F6FA;">
         <Region minHeight="120"/>
-        <HBox fx:id="mainContainer" styleClass="main-container" spacing="20" alignment="CENTER" style="-fx-background-color: #E3E6F3;">
+        <HBox fx:id="mainContainer" styleClass="main-container" spacing="20" alignment="CENTER">
             <!-- IMAGE -->
             <VBox fx:id="imageContainer" styleClass="image-container" prefWidth="610" prefHeight="537" style="-fx-background-color: #FFF;">
                 <StackPane prefWidth="610" prefHeight="537">
