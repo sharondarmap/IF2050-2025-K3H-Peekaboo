@@ -25,7 +25,7 @@ public class PostgresReservasiRepository implements ReservasiRepository {
         try (Connection conn = DatabaseConnector.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, reservasi.getStatusReservasi().name());
+            stmt.setObject(1, reservasi.getStatusReservasi(), java.sql.Types.OTHER);
             stmt.setInt(2, reservasi.getOptometris().getIdUser());
             stmt.setInt(3, reservasi.getPelanggan().getIdUser());
             stmt.setInt(4, reservasi.getJadwal().getIdJadwal());
