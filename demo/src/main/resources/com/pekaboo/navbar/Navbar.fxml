@@ -53,6 +53,12 @@
                 
                 <ImageView fx:id="profileImageView" onMouseClicked="#handleProfileClick" fitHeight="40.0" pickOnBounds="true" preserveRatio="true">
                     <cursor><Cursor fx:constant="HAND" /></cursor>
+                    <userData>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="/com/pekaboo/profile/Profile.fxml" />
+                            <String fx:value="/com/pekaboo/profile/profile.css" />
+                        </FXCollections>
+                    </userData>
                 </ImageView>
             </children>
         </HBox>

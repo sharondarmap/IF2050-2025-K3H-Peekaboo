@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<VBox fx:id="profilePageContainer" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.profile.ProfileController">
+   <children>
+      <!-- Personal Information Header Section -->
+      <HBox fx:id="sectionHeader" alignment="CENTER_LEFT">
+         <children>
+            <Label fx:id="sectionTitle" text="Personal Information" />
+            <HBox HBox.hgrow="ALWAYS" />
+            <!-- Edit Button -->
+            <ImageView fx:id="editButton" onMouseClicked="#handleEditProfile" pickOnBounds="true" preserveRatio="true">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <image>
+                  <!-- Edit icon -->
+                  <Image url="@../../../profile/assets/icon_edit.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      
+      <!-- Personal Information Container -->
+      <VBox fx:id="infoContainer">
+         <children>
+            <GridPane fx:id="infoGrid" hgap="160.0" vgap="48.0" >
+               <children>
+                  <!-- Row 1: Name and Gender -->
+                  <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="12">
+                     <children>
+                        <Label fx:id="nameLabelText" text="Name" />
+                        <Label fx:id="nameLabel" text="Loading..." />
+                     </children>
+                  </VBox>
+                  
+                  <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="12">
+                     <children>
+                        <Label fx:id="genderLabelText" text="Gender" />
+                        <Label fx:id="genderLabel" text="Loading..." />
+                     </children>
+                  </VBox>
+                  
+                  <!-- Row 2: Email and Phone -->
+                  <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="12">
+                     <children>
+                        <Label fx:id="emailLabelText" text="Email Address" />
+                        <Label fx:id="emailLabel" text="Loading..." />
+                     </children>
+                  </VBox>
+                  
+                  <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="12">
+                     <children>
+                        <Label fx:id="phoneLabelText" text="Phone Number" />
+                        <Label fx:id="phoneLabel" text="Loading..." />
+                     </children>
+                  </VBox>
+                  
+                  <!-- Row 3: Date of Birth and Address -->
+                  <VBox GridPane.columnIndex="0" GridPane.rowIndex="2" spacing="12">
+                     <children>
+                        <Label fx:id="dobLabelText" text="Date of Birth" />
+                        <Label fx:id="dobLabel" text="Loading..." />
+                     </children>
+                  </VBox>
+                  
+                  <VBox GridPane.columnIndex="1" GridPane.rowIndex="2" spacing="12">
+                     <children>
+                        <Label fx:id="addressLabelText" text="Address" />
+                        <Label fx:id="addressLabel" text="Loading..." wrapText="true" maxWidth="626.0" />
+                     </children>
+                  </VBox>
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
+      
+      <!-- Prescription Section -->
+      <VBox spacing="32">
+         <VBox.margin>
+            <Insets top="44.0" />
+         </VBox.margin>
+         <children>
+            <!-- Prescription Header -->
+            <Label fx:id="prescriptionTitle" text="Prescription" />
+            
+            <!-- Prescription Container -->
+            <VBox fx:id="prescriptionContainer">
+               <children>
+                  <Label fx:id="prescriptionMessage" text="No prescriptions available." />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</VBox>

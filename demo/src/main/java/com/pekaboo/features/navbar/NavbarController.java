@@ -10,11 +10,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.image.Image;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import com.pekaboo.features.home.MainController;
+
+//import com.pekaboo.entities.User;
+//import com.pekaboo.util.Session;
 
 public class NavbarController implements Initializable {
     private MainController mainController;
+    private boolean isProfileActive = false;
 
     @FXML
     private Button homeButton;
@@ -37,11 +40,10 @@ public class NavbarController implements Initializable {
             Image logo = new Image(getClass().getResourceAsStream("/com/pekaboo/navbar/assets/logo.png"));
             logoImageView.setImage(logo);
 
-            Image profileIcon = new Image(getClass().getResourceAsStream("/com/pekaboo/navbar/assets/ProfileIcon.png"));
-            profileImageView.setImage(profileIcon);
+            updateProfileIcon();
             
         } catch (Exception e) {
-            System.err.println("FATAL: Gagal memuat gambar logo atau profile. Pastikan file ada di resources/com/pekaboo/images/");
+            System.err.println("FATAL: Gagal memuat gambar logo atau profile. Pastikan file ada di resources/com/pekaboo/navbar/assets/");
             e.printStackTrace();
         }
     }    
@@ -77,54 +79,50 @@ public class NavbarController implements Initializable {
 
             setActiveButton(clickedButton);
         }
+        
+        // Reset profile state jika navigasi bukan dari profile
+        isProfileActive = false;
+        updateProfileIcon();
     } 
 
-/* 
-    @FXML
-    void handleHomeClick(ActionEvent event) {
-        System.out.println("Tombol Home diklik!");
-        mainController.loadPage("/com/pekaboo/features/home/Home.fxml");
-        setActiveButton(homeButton);
-
-    }
-
-    @FXML
-    void handleReservationClick(ActionEvent event) {
-        System.out.println("Tombol Reservation diklik!");
-        // mainController.loadPage("/com/pekaboo/features/pembelian/Reservation.fxml");
-        // setActiveButton("Reservation");
-    }
-
-    @FXML
-    void handleCatalogClick(ActionEvent event) {
-        System.out.println("Tombol Catalog diklik!");
-        mainController.loadPage("/com/pekaboo/features/pembelian/CatalogProduct.fxml");
-        setActiveButton(catalogButton);
-    }
-
-    @FXML
-    void handleLoginClick(ActionEvent event) {
-        System.out.println("Tombol Login diklik!");
-        // mainController.loadPage("/com/pekaboo/features/auth/Login.fxml");
-        // setActiveButton("Login");
-    }
-
-    @FXML
-    void handleHistoryClick(ActionEvent event) {
-        System.out.println("Tombol History diklik!");
-        // mainController.loadPage("/com/pekaboo/features/pembelian/History.fxml");
-        // setActiveButton("History");
-    }
-
-
-*/
     @FXML
     void handleProfileClick(MouseEvent event) {
         System.out.println("Tombol Profile diklik!");
-        mainController.loadPage(null, null);
+        
+        // Toggle profile state
+        isProfileActive = true;
+        
+        // Load profile page
+        mainController.loadPage("/com/pekaboo/profile/Profile.fxml", null);
+        
+        // Clear active button karena profile bukan button
         setActiveButton(null);
-        // mainController.loadPage("/com/pekaboo/features/profile/Profile.fxml");
-        // setActiveButton("Profile");
+        
+        // Update profile icon ke clicked state
+        updateProfileIcon();
+    }
+
+    public void updateProfileIcon() {
+        try {
+            //User currentUser = Session.getCurrentUser();
+            String profileIconPath;
+
+            // Tentukan icon berdasarkan status login dan apakah profile sedang aktif
+            if (isProfileActive) {
+                // Jika profile page sedang aktif, gunakan icon clicked
+                profileIconPath = "/com/pekaboo/navbar/assets/profile_icon_clicked.png";
+            } else {
+                // Default icon (baik user login maupun belum login)
+                profileIconPath = "/com/pekaboo/navbar/assets/ProfileIcon.png";
+            }
+
+            Image profileIcon = new Image(getClass().getResourceAsStream(profileIconPath));
+            profileImageView.setImage(profileIcon);
+            
+        } catch (Exception e) {
+            System.err.println("FATAL: Gagal memuat gambar ikon profil. Pastikan file ada di resources/com/pekaboo/navbar/assets/");
+            e.printStackTrace();
+        }
     }
     
     public void setActiveButton(Button activeButton) {
@@ -135,6 +133,11 @@ public class NavbarController implements Initializable {
         
         if (activeButton != null) {
             activeButton.getStyleClass().add("active");
+        }
+        
+        // Reset profile state jika button lain diklik
+        if (activeButton != null) {
+            isProfileActive = false;
         }
     }
 }
