@@ -66,11 +66,9 @@ public class NavbarController implements Initializable {
             String fxmlPath = (String) userData.get(0);
             String cssPath = (userData.size() > 1) ? (String) userData.get(1) : "null";
             
-            // Cek jika path adalah placeholder, maka kirim null untuk kosongkan halaman
             if ("placeholder".equalsIgnoreCase(fxmlPath)) {
                 mainController.loadPage(null, null);
             } else {
-                 // Jika path CSS adalah string "null", ubah menjadi null sungguhan
                 if ("null".equalsIgnoreCase(cssPath)) {
                     cssPath = null;
                 }
@@ -80,7 +78,6 @@ public class NavbarController implements Initializable {
             setActiveButton(clickedButton);
         }
         
-        // Reset profile state jika navigasi bukan dari profile
         isProfileActive = false;
         updateProfileIcon();
     } 
@@ -89,16 +86,12 @@ public class NavbarController implements Initializable {
     void handleProfileClick(MouseEvent event) {
         System.out.println("Tombol Profile diklik!");
         
-        // Toggle profile state
         isProfileActive = true;
         
-        // Load profile page
         mainController.loadPage("/com/pekaboo/profile/Profile.fxml", null);
         
-        // Clear active button karena profile bukan button
         setActiveButton(null);
         
-        // Update profile icon ke clicked state
         updateProfileIcon();
     }
 
@@ -107,12 +100,9 @@ public class NavbarController implements Initializable {
             //User currentUser = Session.getCurrentUser();
             String profileIconPath;
 
-            // Tentukan icon berdasarkan status login dan apakah profile sedang aktif
             if (isProfileActive) {
-                // Jika profile page sedang aktif, gunakan icon clicked
                 profileIconPath = "/com/pekaboo/navbar/assets/profile_icon_clicked.png";
             } else {
-                // Default icon (baik user login maupun belum login)
                 profileIconPath = "/com/pekaboo/navbar/assets/ProfileIcon.png";
             }
 
