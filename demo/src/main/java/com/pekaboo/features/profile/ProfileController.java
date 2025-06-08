@@ -75,32 +75,25 @@ public class ProfileController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Terapkan styling
         applyStyles();
         
-        // Membuat data dummy user
         createDummyUser();
         
-        // Load edit icon
         loadEditIcon();
         
-        // Populate data
         populateUserData();
     }
 
     private void applyStyles() {
-        // Style untuk container utama halaman profil
         if (profilePageContainer != null) {
             profilePageContainer.setStyle("-fx-background-color: #FAFAFA;");
             profilePageContainer.setPadding(new Insets(44, 72, 44, 72));
         }
 
-        // Style untuk header section
         if (sectionHeader != null) {
             sectionHeader.setPadding(new Insets(0, 0, 32, 0));
         }
 
-        // Style untuk judul section
         if (sectionTitle != null) {
             sectionTitle.setStyle(
                 "-fx-font-family: 'Nunito Sans';" +
@@ -110,7 +103,6 @@ public class ProfileController implements Initializable {
             );
         }
 
-        // Style untuk prescription title
         if (prescriptionTitle != null) {
             prescriptionTitle.setStyle(
                 "-fx-font-family: 'Nunito Sans';" +
@@ -120,7 +112,6 @@ public class ProfileController implements Initializable {
             );
         }
 
-        // Style untuk tombol edit (ImageView)
         if (editButton != null) {
             editButton.setCursor(Cursor.HAND);
             
@@ -129,7 +120,6 @@ public class ProfileController implements Initializable {
             editButton.setOnMouseExited(e -> editButton.setOpacity(1.0));
         }
 
-        // Style untuk kotak informasi utama
         if (infoContainer != null) {
             infoContainer.setStyle(
                 "-fx-background-color: white;" +
@@ -141,7 +131,6 @@ public class ProfileController implements Initializable {
             infoContainer.setPadding(new Insets(44));
         }
 
-        // Style untuk prescription container
         if (prescriptionContainer != null) {
             prescriptionContainer.setStyle(
                 "-fx-background-color: white;" +
@@ -153,7 +142,6 @@ public class ProfileController implements Initializable {
             prescriptionContainer.setPadding(new Insets(44));
         }
 
-        // Style untuk prescription message
         if (prescriptionMessage != null) {
             prescriptionMessage.setStyle(
                 "-fx-font-family: 'Violet Sans';" +
@@ -162,13 +150,11 @@ public class ProfileController implements Initializable {
             );
         }
 
-        // Style untuk GridPane
         if (infoGrid != null) {
             infoGrid.setHgap(160.0); // Increased horizontal gap for better spacing
             infoGrid.setVgap(48.0); // Increased vertical gap
         }
 
-        // Style untuk label informasi (kiri - nama field)
         applyInfoLabelStyle(nameLabelText);
         applyInfoLabelStyle(genderLabelText);
         applyInfoLabelStyle(emailLabelText);
@@ -176,7 +162,6 @@ public class ProfileController implements Initializable {
         applyInfoLabelStyle(dobLabelText);
         applyInfoLabelStyle(addressLabelText);
 
-        // Style untuk data pengguna (kanan - nilai field)
         applyInfoDataStyle(nameLabel);
         applyInfoDataStyle(genderLabel);
         applyInfoDataStyle(emailLabel);
@@ -184,7 +169,6 @@ public class ProfileController implements Initializable {
         applyInfoDataStyle(dobLabel);
         applyInfoDataStyle(addressLabel);
 
-        // Style khusus untuk alamat yang panjang
         applyAddressStyle();
     }
 
@@ -206,14 +190,12 @@ public class ProfileController implements Initializable {
                 "-fx-text-fill: #364C84;"
             );
             
-            // Default setting untuk semua label (nama, email, dll)
             label.setWrapText(true);
             label.setMaxWidth(524); // Lebar maksimum untuk label
             //label.setPrefWidth(-1);
         }
     }
 
-    // Method khusus untuk styling alamat yang panjang
     private void applyAddressStyle() {
         if (addressLabel != null) {
             addressLabel.setStyle(
@@ -221,14 +203,12 @@ public class ProfileController implements Initializable {
                 "-fx-font-size: 24px;" + 
                 "-fx-text-fill: #364C84;"
             );
-            // Khusus alamat: enable wrapping dan batasi width
             addressLabel.setWrapText(true);
             addressLabel.setMaxWidth(524.0);
             addressLabel.setPrefWidth(524.0);
         }
     }
 
-    // Method untuk mengubah style secara individual
     public void setProfilePageBackgroundColor(String color) {
         if (profilePageContainer != null) {
             profilePageContainer.setStyle("-fx-background-color: " + color + ";");
@@ -305,13 +285,11 @@ public class ProfileController implements Initializable {
     }
 
     private void populateUserData() {
-        // Check if we have a current user in session, otherwise use dummy data
         User currentUser = Session.getCurrentUser();
         if (currentUser == null) {
             currentUser = dummyUser;
         }
-
-        // Populate labels with user data
+        
         nameLabel.setText(currentUser.getUsername() != null ? currentUser.getUsername() : "N/A");
         emailLabel.setText(currentUser.getEmail() != null ? currentUser.getEmail() : "N/A");
         addressLabel.setText(currentUser.getAlamat() != null ? currentUser.getAlamat() : "N/A");
@@ -339,13 +317,11 @@ public class ProfileController implements Initializable {
         populateUserData();
     }
 
-    // Method untuk set MainController reference (diperlukan oleh MainController)
     public void setMainController(Object mainController) {
         this.mainController = mainController;
         System.out.println("MainController reference set to ProfileController");
     }
     
-    // Method untuk mendapatkan MainController reference jika diperlukan
     public Object getMainController() {
         return this.mainController;
     }
