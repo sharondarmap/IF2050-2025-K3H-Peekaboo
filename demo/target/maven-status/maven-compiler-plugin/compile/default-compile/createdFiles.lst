@@ -8,8 +8,8 @@ com\pekaboo\features\home\MainDriver.class
 com\pekaboo\features\navbar\NavbarController.class
 com\pekaboo\features\reservasi\ReservasiController.class
 com\pekaboo\SecondaryController.class
-module-info.class
 com\pekaboo\features\home\HomeController.class
+com\pekaboo\features\profile\ProfileController.class
 com\pekaboo\util\Session.class
 com\pekaboo\features\pembelian\CatalogProduct.class
 com\pekaboo\repositories\MockProductRepo.class
