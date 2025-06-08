@@ -1,6 +1,7 @@
 package com.pekaboo.features.jadwal;
 
 import com.pekaboo.entities.Jadwal;
+import com.pekaboo.entities.Resep;
 import com.pekaboo.entities.Reservasi;
 import com.pekaboo.entities.StatusJadwal;
 import com.pekaboo.entities.StatusReservasi;
@@ -378,9 +379,12 @@ public class CalendarJadwalView extends VBox {
 
             infoContainer.getChildren().addAll(customerInfo, statusInfo, dateInfo);
             
+            ResepRepository resepRepo = new PostgresResepRepository();
+            Resep existingResep = resepRepo.getResepByJadwal(reservasi.getJadwal());
+
             // prescription button
-            Button addPrescriptionBtn = new Button("+ Add Prescription");
-            addPrescriptionBtn.setPrefWidth(350); // 🔧 Increase to match container width
+            Button addPrescriptionBtn = new Button(existingResep != null ? "Update Prescription" : "Add Prescription");
+            addPrescriptionBtn.setPrefWidth(350);
             addPrescriptionBtn.setPrefHeight(45);
             addPrescriptionBtn.setStyle(
                 "-fx-background-color: rgba(91, 54, 201, 1); " +
@@ -393,7 +397,13 @@ public class CalendarJadwalView extends VBox {
 
             addPrescriptionBtn.setOnAction(e -> {
                 rootStack.getChildren().removeIf(node -> node.getStyle().contains("rgba(0,0,0,0.5)"));
-                resepController.showAddPrescriptionOverlay(reservasi, rootStack, currentOptometris);
+                Resep resepInAction = resepRepo.getResepByJadwal(reservasi.getJadwal());
+                
+                if (resepInAction != null) {
+                    resepController.showUpdatePrescriptionOverlay(reservasi, rootStack, currentOptometris, resepInAction);
+                } else {
+                    resepController.showAddPrescriptionOverlay(reservasi, rootStack, currentOptometris);
+                }
             });
 
             HBox buttonContainer = new HBox();

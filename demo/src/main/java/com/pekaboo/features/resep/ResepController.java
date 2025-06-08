@@ -23,6 +23,9 @@ public class ResepController {
     private TextField rightAxisField, leftAxisField;
     private TextField pdField;
 
+    private boolean isUpdateMode = false;
+    private Resep existingResep = null;
+
     public ResepController() {
     }
 
@@ -33,6 +36,18 @@ public class ResepController {
      */
 
     public void showAddPrescriptionOverlay(Reservasi reservasi, StackPane rootStack, User currentOptometris) {
+        showPrescriptionOverlay(reservasi, rootStack, currentOptometris, null);
+    }
+
+    // ini kalo udah pernah ngisi & mau update resepnya
+    public void showUpdatePrescriptionOverlay(Reservasi reservasi, StackPane rootStack, User currentOptometris, Resep existingResep) {
+        showPrescriptionOverlay(reservasi, rootStack, currentOptometris, existingResep);
+    }
+
+    public void showPrescriptionOverlay(Reservasi reservasi, StackPane rootStack, User currentOptometris, Resep existingResep) {
+        this.isUpdateMode = (existingResep != null);
+        this.existingResep = existingResep;
+        
         VBox overlay = new VBox();
         overlay.setStyle("-fx-background-color: rgba(0,0,0,0.3);");
         overlay.setAlignment(Pos.CENTER);
@@ -49,7 +64,7 @@ public class ResepController {
         popup.setMaxWidth(600); 
         popup.setMinWidth(400);
 
-        Label title = new Label("Add Prescription");
+        Label title = new Label(isUpdateMode ? "Update Prescription" : "Add Prescription");
         title.setMaxWidth(Double.MAX_VALUE);
         title.setAlignment(Pos.CENTER);
         title.setStyle("-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: rgba(91, 54, 201, 1); -fx-alignment: center;");
@@ -75,7 +90,7 @@ public class ResepController {
         buttonBox.setFillHeight(true);
 
         Button cancelBtn = new Button("Cancel");
-        Button saveBtn = new Button("Save");
+        Button saveBtn = new Button(isUpdateMode ? "Update" : "Save");
 
         cancelBtn.setMaxWidth(Double.MAX_VALUE);
         saveBtn.setMaxWidth(Double.MAX_VALUE);
@@ -156,11 +171,17 @@ public class ResepController {
 
             // Save to database
             try {
-                savePrescriptionToDatabase(reservasi, currentOptometris);
-                rootStack.getChildren().remove(overlay);
-                showSuccessAlert(reservasi.getPelanggan().getUsername());
+                if (isUpdateMode) {
+                    updatePrescriptionInDatabase(reservasi, currentOptometris);
+                    rootStack.getChildren().remove(overlay);
+                    showSuccessAlert(reservasi.getPelanggan().getUsername(), "updated");
+                } else {
+                    savePrescriptionToDatabase(reservasi, currentOptometris);
+                    rootStack.getChildren().remove(overlay);
+                    showSuccessAlert(reservasi.getPelanggan().getUsername(), "saved");
+                }
             } catch (Exception ex) {
-                errorLabel.setText("Failed to save: " + ex.getMessage());
+                errorLabel.setText("Failed to " + (isUpdateMode ? "update" : "save") + ": " + ex.getMessage());
                 errorLabel.setVisible(true);
                 ex.printStackTrace();
             }
@@ -182,7 +203,8 @@ public class ResepController {
             VBox rightPlusBox = new VBox(2);
             Label rightPlusLabel = new Label("Right +");
             rightPlusLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #444;");
-            rightPlusField = new TextField("0");
+            String rightPlusValue = isUpdateMode ? String.valueOf(existingResep.getPlusKanan()) : "0";
+            rightPlusField = new TextField(rightPlusValue);
             rightPlusField.setPrefWidth(boxWidth);
             rightPlusField.setPrefHeight(28);
             styleTextField(rightPlusField);
@@ -192,7 +214,8 @@ public class ResepController {
             VBox leftPlusBox = new VBox(2);
             Label leftPlusLabel = new Label("Left +");
             leftPlusLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #444;");
-            leftPlusField = new TextField("0");
+            String leftPlusValue = isUpdateMode ? String.valueOf(existingResep.getPlusKiri()) : "0";
+            leftPlusField = new TextField(leftPlusValue);
             leftPlusField.setPrefWidth(boxWidth);
             leftPlusField.setPrefHeight(28);
             styleTextField(leftPlusField);
@@ -202,7 +225,8 @@ public class ResepController {
             VBox rightMinusBox = new VBox(2);
             Label rightMinusLabel = new Label("Right -");
             rightMinusLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #444;");
-            rightMinusField = new TextField("0");
+            String rightMinusValue = isUpdateMode ? String.valueOf(existingResep.getMinusKanan()) : "0";
+            rightMinusField = new TextField(rightMinusValue);
             rightMinusField.setPrefWidth(boxWidth);
             rightMinusField.setPrefHeight(28);
             styleTextField(rightMinusField);
@@ -212,7 +236,8 @@ public class ResepController {
             VBox leftMinusBox = new VBox(2);
             Label leftMinusLabel = new Label("Left -");
             leftMinusLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #444;");
-            leftMinusField = new TextField("0");
+            String leftMinusValue = isUpdateMode ? String.valueOf(existingResep.getMinusKiri()) : "0";
+            leftMinusField = new TextField(leftMinusValue);
             leftMinusField.setPrefWidth(boxWidth);
             leftMinusField.setPrefHeight(28);
             styleTextField(leftMinusField);
@@ -230,7 +255,8 @@ public class ResepController {
             VBox rightBox = new VBox(2);
             Label rightLabel = new Label("Right");
             rightLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #444;");
-            rightCylField = new TextField("0");
+            String rightCylValue = isUpdateMode ? String.valueOf(existingResep.getCylKanan()) : "0";
+            rightCylField = new TextField(rightCylValue);
             rightCylField.setPrefWidth(inputWidth);
             rightCylField.setPrefHeight(28);
             styleTextField(rightCylField);
@@ -240,7 +266,8 @@ public class ResepController {
             VBox leftBox = new VBox(2);
             Label leftLabel = new Label("Left");
             leftLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #444;");
-            leftCylField = new TextField("0");
+            String leftCylValue = isUpdateMode ? String.valueOf(existingResep.getCylKiri()) : "0";
+            leftCylField = new TextField(leftCylValue);
             leftCylField.setPrefWidth(inputWidth);
             leftCylField.setPrefHeight(28);
             styleTextField(leftCylField);
@@ -256,7 +283,8 @@ public class ResepController {
             VBox rightBox = new VBox(2);
             Label rightLabel = new Label("Right");
             rightLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #444;");
-            rightAxisField = new TextField("0");
+            String rightAxisValue = isUpdateMode ? String.valueOf(existingResep.getAxisKanan()) : "0";
+            rightAxisField = new TextField(rightAxisValue);
             rightAxisField.setPrefWidth(inputWidth);
             rightAxisField.setPrefHeight(28);
             styleTextField(rightAxisField);
@@ -266,7 +294,8 @@ public class ResepController {
             VBox leftBox = new VBox(2);
             Label leftLabel = new Label("Left");
             leftLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #444;");
-            leftAxisField = new TextField("0");
+            String leftAxisValue = isUpdateMode ? String.valueOf(existingResep.getAxisKiri()) : "0";
+            leftAxisField = new TextField(leftAxisValue);
             leftAxisField.setPrefWidth(inputWidth);
             leftAxisField.setPrefHeight(28);
             styleTextField(leftAxisField);
@@ -287,8 +316,9 @@ public class ResepController {
         VBox section = new VBox(4);
         Label sectionLabel = new Label(label);
         sectionLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: rgba(36, 22, 80, 1);");
-        
-        pdField = new TextField("63");
+
+        String pdValue = isUpdateMode ? String.valueOf(existingResep.getPd()) : "63";
+        pdField = new TextField(pdValue);
         pdField.setPrefWidth(inputWidth);
         pdField.setPrefHeight(28);
         pdField.setAlignment(Pos.CENTER);
@@ -366,11 +396,29 @@ public class ResepController {
         resepRepo.addResep(resep);
     }
 
-    private void showSuccessAlert(String patientName) {
+    private void updatePrescriptionInDatabase(Reservasi reservasi, User currentOptometris) throws Exception {
+        // Update resep yang udah ada
+        existingResep.setPlusKanan(Double.parseDouble(rightPlusField.getText()));
+        existingResep.setPlusKiri(Double.parseDouble(leftPlusField.getText()));
+        existingResep.setMinusKanan(Double.parseDouble(rightMinusField.getText()));
+        existingResep.setMinusKiri(Double.parseDouble(leftMinusField.getText()));
+        
+        existingResep.setCylKanan(Double.parseDouble(rightCylField.getText()));
+        existingResep.setCylKiri(Double.parseDouble(leftCylField.getText()));
+        
+        existingResep.setAxisKanan(Double.parseDouble(rightAxisField.getText()));
+        existingResep.setAxisKiri(Double.parseDouble(leftAxisField.getText()));
+        
+        existingResep.setPd(Double.parseDouble(pdField.getText()));
+
+        resepRepo.updateResep(existingResep);
+    }
+
+    private void showSuccessAlert(String patientName, String action) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Success");
         alert.setHeaderText(null);
-        alert.setContentText("Prescription for " + patientName + " has been saved successfully!");
+        alert.setContentText("Prescription for " + patientName + " has been " + action + " successfully!");
         alert.showAndWait();
     }
 }

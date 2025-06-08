@@ -61,6 +61,29 @@ public class PostgresResepRepository implements ResepRepository {
     }
 
     @Override
+    public Resep getResepByJadwal(Jadwal jadwal) {
+        String sql = "SELECT * FROM resep WHERE idjadwal = ?";
+
+        try (Connection conn = DatabaseConnector.connect();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, jadwal.getIdJadwal());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToResep(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error fetching resep by jadwal: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
     public void addResep(Resep resep) {
         String sql =
             "INSERT INTO resep (pluskanan, pluskiri, minuskanan, minuskiri," + 
