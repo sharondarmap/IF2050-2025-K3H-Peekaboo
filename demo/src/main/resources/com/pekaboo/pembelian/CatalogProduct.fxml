@@ -17,7 +17,7 @@
    <left>
       <VBox spacing="15.0" BorderPane.alignment="CENTER">
          <padding>
-            <Insets left="72.0" top="98.0" />
+            <Insets left="72.0" top="50.0" />
          </padding>
          <children>
             <Label style="-fx-font-size: 20.0; -fx-font-weight: bold; -fx-text-fill: black;" text="Filter">
@@ -35,19 +35,19 @@
                         <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Price" />
                         <HBox spacing="16.0">
                            <children>
-                              <TextField fx:id="minPriceTextField" prefHeight="30.0" prefWidth="110.0" promptText="0" />
-                              <TextField fx:id="maxPriceTextField" prefHeight="30.0" prefWidth="110.0" promptText="1.000.000" />
+                              <TextField fx:id="minPriceTextField" prefHeight="30.0" prefWidth="110.0" promptText="0" style="-fx-border-color: #E2E2E2; -fx-border-width: 1px; -fx-border-radius: 4;" />
+                              <TextField fx:id="maxPriceTextField" prefHeight="30.0" prefWidth="110.0" promptText="1.000.000" style="-fx-border-color: #E2E2E2; -fx-border-width: 1px; -fx-border-radius: 4;" />
                            </children>
                         </HBox>
                         <HBox spacing="16.0">
                            <children>
-                              <Button fx:id="cancelFilterButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="110.0" text="Cancel" />
-                              <Button fx:id="applyfilterButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="110.0" style="-fx-background-color: #5B36C9; -fx-text-fill: white;" text="Apply" />
+                              <Button fx:id="cancelFilterButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="110.0" style="-fx-border-color: #939698; -fx-border-radius: 4; -fx-background-color: white ; -fx-text-fill: #5B36C9;" text="Cancel" />
+                              <Button fx:id="applyfilterButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="110.0" style="-fx-background-color: #5B36C9; -fx-background-radius: 4; -fx-text-fill: white;" text="Apply" />
                            </children>
                         </HBox>
                      </children>
                   </VBox>
-                  <Separator prefWidth="200.0" style="-fx-background-color: #E2E2E2;" />
+                  <HBox prefWidth="200.0" prefHeight="1.0" style="-fx-background-color: #E2E2E2;" />
                   <VBox spacing="10.0">
                      <children>
                         <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Brands" />
@@ -57,7 +57,7 @@
                         <CheckBox fx:id="brandCheckBoxSTI" mnemonicParsing="false" style="-fx-text-fill: black;" text="STI" />
                      </children>
                   </VBox>
-                  <Separator prefWidth="200.0" style="-fx-background-color: #E2E2E2;" />
+                  <HBox prefWidth="200.0" prefHeight="1.0" style="-fx-background-color: #E2E2E2;" />
                   <VBox spacing="10.0">
                      <children>
                         <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Colors" />
@@ -75,7 +75,7 @@
                         </FlowPane>
                      </children>
                   </VBox>
-                  <Separator prefWidth="200.0" style="-fx-background-color: #E2E2E2;" />
+                 <HBox prefWidth="200.0" prefHeight="1.0" style="-fx-background-color: #E2E2E2;" />
                   <VBox spacing="10.0">
                      <children>
                         <Label style="-fx-font-size: 14.0; -fx-font-weight: bold; -fx-text-fill: #000000;" text="Size" />
@@ -96,7 +96,7 @@
    <center>
       <VBox spacing="20.0" BorderPane.alignment="CENTER">
          <padding>
-            <Insets bottom="40.0" left="57.0" right="72.0" top="40.0" />
+            <Insets bottom="40.0" left="24.0" right="72.0" top="40.0" />
          </padding>
          <children>
             <Label style="-fx-font-size: 24.0; -fx-font-weight: bold; -fx-text-fill: black;" text="Catalog" />
@@ -108,7 +108,7 @@
             </HBox>
             <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;">
                <content>
-                  <GridPane fx:id="gridPane" alignment="CENTER" hgap="63.5" vgap="32.0" />
+                  <GridPane fx:id="gridPane" alignment="CENTER" hgap="12" vgap="12.0" />
                </content>
             </ScrollPane>
          </children>

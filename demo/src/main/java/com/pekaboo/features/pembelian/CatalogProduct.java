@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -19,7 +20,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 
 public class CatalogProduct implements Initializable {
     
@@ -166,21 +170,38 @@ public class CatalogProduct implements Initializable {
             ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(product.getImagePath())));
             imageView.setFitWidth(280);
             imageView.setPreserveRatio(true);
+            imageView.setFitHeight(160);
             imageView.getStyleClass().add("card-image");
+            StackPane imageContainer = new StackPane(imageView);
+            imageContainer.setPrefHeight(160);
+            imageContainer.setStyle(
+                "-fx-background-radius: 12 12 0 0;"
+            );
+            Rectangle clip = new Rectangle(280, 160); 
+            clip.setArcWidth(12);
+            clip.setArcHeight(12);
+            imageView.setClip(clip);
 
             VBox cardBody = new VBox();
             cardBody.getStyleClass().add("card-body");
 
             Label nameLabel = new Label(product.getName());
             nameLabel.getStyleClass().add("card-title");
+            nameLabel.setAlignment(Pos.CENTER_LEFT); // Align text to left
 
             Label brandLabel = new Label(product.getBrand());
             brandLabel.getStyleClass().add("card-subtitle");
+            brandLabel.setAlignment(Pos.CENTER_LEFT); // Align text to left
 
             Label priceLabel = new Label("Rp" + product.getPrice());
             priceLabel.getStyleClass().add("card-price");
+            
+            // Create HBox to position price label to the right
+            HBox priceContainer = new HBox();
+            priceContainer.setAlignment(Pos.CENTER_RIGHT);
+            priceContainer.getChildren().add(priceLabel);
 
-            cardBody.getChildren().addAll(nameLabel, brandLabel, priceLabel);
+            cardBody.getChildren().addAll(nameLabel, brandLabel, priceContainer);
             card.getChildren().addAll(imageView, cardBody);
 
             Button productButton = new Button();
@@ -279,7 +300,7 @@ public class CatalogProduct implements Initializable {
         colorBlackButton.setStyle(colorBlackButton.getStyle().replaceAll("-fx-border-color: #5B36C9; -fx-border-width: 2;", ""));
         
         // Terapkan style aktif pada yang dipilih
-        String activeStyle = "-fx-border-color: #5B36C9; -fx-border-width: 2;";
+        String activeStyle = "-fx-border-color: #5B36C9; -fx-border-width: 2; -fx-border-radius: 2;";
         if ("Merah".equals(selectedColor)) colorRedButton.setStyle(colorRedButton.getStyle() + activeStyle);
         if ("Oranye".equals(selectedColor)) colorOrangeButton.setStyle(colorOrangeButton.getStyle() + activeStyle);
         if ("Kuning".equals(selectedColor)) colorYellowButton.setStyle(colorYellowButton.getStyle() + activeStyle);
