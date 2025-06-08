@@ -13,25 +13,21 @@
 
 <VBox fx:id="profilePageContainer" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.profile.ProfileController">
    <children>
-      <!-- Personal Information Header Section -->
       <HBox fx:id="sectionHeader" alignment="CENTER_LEFT">
          <children>
             <Label fx:id="sectionTitle" text="Personal Information" />
             <HBox HBox.hgrow="ALWAYS" />
-            <!-- Edit Button -->
             <ImageView fx:id="editButton" onMouseClicked="#handleEditProfile" pickOnBounds="true" preserveRatio="true">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
                <image>
-                  <!-- Edit icon -->
                   <Image url="@../../../profile/assets/icon_edit.png" />
                </image>
             </ImageView>
          </children>
       </HBox>
-      
-      <!-- Personal Information Container -->
+
       <VBox fx:id="infoContainer">
          <children>
             <GridPane fx:id="infoGrid" hgap="160.0" vgap="48.0" >
@@ -51,7 +47,6 @@
                      </children>
                   </VBox>
                   
-                  <!-- Row 2: Email and Phone -->
                   <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="12">
                      <children>
                         <Label fx:id="emailLabelText" text="Email Address" />
@@ -66,7 +61,6 @@
                      </children>
                   </VBox>
                   
-                  <!-- Row 3: Date of Birth and Address -->
                   <VBox GridPane.columnIndex="0" GridPane.rowIndex="2" spacing="12">
                      <children>
                         <Label fx:id="dobLabelText" text="Date of Birth" />
@@ -85,16 +79,13 @@
          </children>
       </VBox>
       
-      <!-- Prescription Section -->
       <VBox spacing="32">
          <VBox.margin>
             <Insets top="44.0" />
          </VBox.margin>
          <children>
-            <!-- Prescription Header -->
             <Label fx:id="prescriptionTitle" text="Prescription" />
             
-            <!-- Prescription Container -->
             <VBox fx:id="prescriptionContainer">
                <children>
                   <Label fx:id="prescriptionMessage" text="No prescriptions available." />
