@@ -27,7 +27,6 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        // Menghubungkan dirinya ke NavbarController
         navbarController.setMainController(this);
     }
     
@@ -42,31 +41,28 @@ public class MainController {
                 return;
             }
 
-            // Hapus CSS dari halaman sebelumnya
             if (currentPageCss != null && !currentPageCss.isEmpty()) {
                 URL oldCssUrl = getClass().getResource(currentPageCss);
                 if (oldCssUrl != null) scene.getStylesheets().remove(oldCssUrl.toExternalForm());
                 currentPageCss = null;
             }
             
-            // Kosongkan area konten
             contentArea.getChildren().clear();
 
             if (fxmlPath == null || "placeholder".equalsIgnoreCase(fxmlPath)) {
-                return; // Jika placeholder, biarkan kosong
+                return; 
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent page = loader.load();
             
-            // Logika untuk menghubungkan controller
+            // buat hubungin controller
             Object controller = loader.getController();
             if (controller instanceof ProfileController) {
                 ((ProfileController) controller).setMainController(this);
             }
-            // Tambahkan controller lain di sini jika diperlukan di masa depan
+            // Tambahkan controller lain di sini kalo nanti perlu
 
-            // Muat CSS baru jika ada
             if (cssPath != null && !"null".equalsIgnoreCase(cssPath)) {
                 URL newCssUrl = getClass().getResource(cssPath);
                 if (newCssUrl != null) {
@@ -75,7 +71,6 @@ public class MainController {
                 }
             }
             
-            // Tampilkan halaman baru
             contentArea.getChildren().add(page);
             AnchorPane.setTopAnchor(page, 0.0);
             AnchorPane.setBottomAnchor(page, 0.0);
