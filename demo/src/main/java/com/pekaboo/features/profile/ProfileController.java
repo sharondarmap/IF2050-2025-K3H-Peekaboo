@@ -2,8 +2,11 @@ package com.pekaboo.features.profile;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.image.Image;
@@ -12,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import java.net.URL;
 import java.util.List;
@@ -19,6 +23,7 @@ import java.util.ResourceBundle;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 
 import com.pekaboo.entities.Resep;
 import com.pekaboo.entities.User;
@@ -73,13 +78,14 @@ public class ProfileController implements Initializable {
     @FXML
     private Label prescriptionMessage;
 
+    private StackPane rootStack;
     private final ResepRepository resepRepo = new PostgresResepRepository();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         applyStyles();
 
-        //loadEditIcon();
+        loadEditIcon();
 
         populateUserData();
         loadPrescriptionData();
@@ -260,19 +266,19 @@ public class ProfileController implements Initializable {
     }
 
     // TODO : ini edit blm ya
-    // private void loadEditIcon() {
-    //     try {
-    //         Image editImage = new Image(getClass().getResourceAsStream("/com/pekaboo/profile/assets/icon_edit.png"));
-    //         editButton.setImage(editImage);
-    //         editButton.setFitHeight(44.0);
-    //         editButton.setFitWidth(44.0);
-    //         editButton.setPreserveRatio(true);
-    //         editButton.setPickOnBounds(true);
-    //     } catch (Exception e) {
-    //         System.err.println("Warning: Gagal memuat icon edit. Pastikan file ada di resources/com/pekaboo/profile/assets/icon_edit.png");
-    //         e.printStackTrace();
-    //     }
-    // }
+    private void loadEditIcon() {
+        try {
+            Image editImage = new Image(getClass().getResourceAsStream("/com/pekaboo/profile/assets/icon_edit.png"));
+            editButton.setImage(editImage);
+            editButton.setFitHeight(44.0);
+            editButton.setFitWidth(44.0);
+            editButton.setPreserveRatio(true);
+            editButton.setPickOnBounds(true);
+        } catch (Exception e) {
+            System.err.println("Warning: Gagal memuat icon edit. Pastikan file ada di resources/com/pekaboo/profile/assets/icon_edit.png");
+            e.printStackTrace();
+        }
+    }
 
     private void populateUserData() {
         User currentUser = Session.getCurrentUser();
@@ -420,9 +426,72 @@ public class ProfileController implements Initializable {
         return String.format("%.0f°", axis);
     }
 
+
+    private void openEditOverlay() {
+        if (rootStack == null) {
+            System.err.println("❌ rootStack is null. Harus di-set dari MainController!");
+            return;
+        }
+
+        User currentUser = Session.getCurrentUser();
+
+        VBox overlay = new VBox(20);
+        overlay.setPadding(new Insets(40));
+        overlay.setAlignment(Pos.CENTER);
+        overlay.setStyle("-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #ccc; -fx-border-width: 2;");
+        overlay.setMaxWidth(400);
+        overlay.setMaxHeight(500);
+
+        Label title = new Label("Edit Profile");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+
+        TextField emailField = new TextField(currentUser.getEmail());
+        emailField.setPromptText("Email");
+
+        TextField phoneField = new TextField(currentUser.getNoTelepon());
+        phoneField.setPromptText("Phone Number");
+
+        TextField alamatField = new TextField(currentUser.getAlamat());
+        alamatField.setPromptText("Alamat");
+
+        ComboBox<String> genderCombo = new ComboBox<>();
+        genderCombo.getItems().addAll("Laki-laki", "Perempuan", "Lainnya");
+        genderCombo.setValue(currentUser.getJenisKelamin());
+
+        Button saveBtn = new Button("Simpan");
+        Button cancelBtn = new Button("Batal");
+
+        HBox buttonBox = new HBox(10, saveBtn, cancelBtn);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        overlay.getChildren().addAll(title, emailField, phoneField, alamatField, genderCombo, buttonBox);
+
+        StackPane overlayWrapper = new StackPane(overlay);
+        overlayWrapper.setStyle("-fx-background-color: rgba(0,0,0,0.4);");
+        overlayWrapper.setPrefSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        overlayWrapper.setAlignment(Pos.CENTER);
+
+        rootStack.getChildren().add(overlayWrapper);
+
+        cancelBtn.setOnAction(e -> rootStack.getChildren().remove(overlayWrapper));
+
+        saveBtn.setOnAction(e -> {
+            currentUser.setEmail(emailField.getText());
+            currentUser.setNoTelepon(phoneField.getText());
+            currentUser.setAlamat(alamatField.getText());
+            currentUser.setJenisKelamin(genderCombo.getValue());
+
+            new com.pekaboo.repositories.postgres.PostgresUserRepository().updateUser(currentUser);
+
+            refreshUserData();
+            rootStack.getChildren().remove(overlayWrapper);
+        });
+    }
+
     @FXML
     private void handleEditProfile(MouseEvent event) {
         System.out.println("Edit button clicked!");
+        openEditOverlay();
         // Implementasi untuk edit profile bisa ditambahkan di sini
         // Misalnya membuka dialog edit atau navigasi ke halaman edit
     }
@@ -432,4 +501,9 @@ public class ProfileController implements Initializable {
         populateUserData();
         loadPrescriptionData();
     }
+
+    public void setRootStack(StackPane rootStack) {
+        this.rootStack = rootStack;
+    }
+
 }

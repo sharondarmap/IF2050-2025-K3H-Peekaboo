@@ -17,6 +17,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 
 /**
  * Controller ini HANYA BERTUGAS sebagai pemuat halaman.
@@ -26,6 +27,9 @@ public class MainController {
 
     @FXML
     private AnchorPane contentArea;
+
+    @FXML
+    private StackPane rootStack;
 
     @FXML 
     private AnchorPane navbarContainer;
@@ -86,6 +90,10 @@ public class MainController {
                 ((PrimaryController) controller).setMainController(this);
             }
 
+            if (controller instanceof ProfileController) {
+                ((ProfileController) controller).setRootStack(rootStack);
+            }
+
             if (cssPath != null && !"null".equalsIgnoreCase(cssPath)) {
                 URL newCssUrl = getClass().getResource(cssPath);
                 if (newCssUrl != null) {
@@ -131,7 +139,6 @@ public class MainController {
                 navbarOptoController.setMainController(this);
             }
 
-
             navbarContainer.getChildren().setAll(navbar);
             AnchorPane.setTopAnchor(navbar, 0.0);
             AnchorPane.setLeftAnchor(navbar, 0.0);
@@ -141,7 +148,5 @@ public class MainController {
             System.err.println("Gagal memuat navbar: " + e.getMessage());
         }
     }
-
-
 
 }
