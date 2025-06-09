@@ -435,10 +435,15 @@ public class ProfileController implements Initializable {
 
         User currentUser = Session.getCurrentUser();
 
-        VBox overlay = new VBox(20);
+        VBox overlay = new VBox(8);
         overlay.setPadding(new Insets(40));
         overlay.setAlignment(Pos.CENTER);
-        overlay.setStyle("-fx-background-color: white; -fx-background-radius: 16; -fx-border-color: #ccc; -fx-border-width: 2;");
+        overlay.setStyle(
+            "-fx-background-color: white; " +
+            "-fx-border-radius: 12; " +
+            "-fx-background-radius: 12; " +
+            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 12, 0, 0, 8);"
+        );
         overlay.setMaxWidth(400);
         overlay.setMaxHeight(500);
 
@@ -447,19 +452,72 @@ public class ProfileController implements Initializable {
 
         TextField emailField = new TextField(currentUser.getEmail());
         emailField.setPromptText("Email");
+        emailField.setStyle(
+            "-fx-font-size: 14px; " +
+            "-fx-text-fill: rgba(36, 22, 80, 1); " +
+            "-fx-padding: 10 12; " + 
+            "-fx-min-height: 36px; " + 
+            "-fx-background-color: #F8FAFC; " +
+            "-fx-border-color: #E2E8F0; " +
+            "-fx-border-width: 1; " +
+            "-fx-border-radius: 6; " +
+            "-fx-background-radius: 6;"
+        );
 
         TextField phoneField = new TextField(currentUser.getNoTelepon());
         phoneField.setPromptText("Phone Number");
+        phoneField.setStyle(
+            "-fx-font-size: 14px; " +
+            "-fx-text-fill: rgba(36, 22, 80, 1); " +
+            "-fx-padding: 10 12; " + 
+            "-fx-min-height: 36px; " + 
+            "-fx-background-color: #F8FAFC; " +
+            "-fx-border-color: #E2E8F0; " +
+            "-fx-border-width: 1; " +
+            "-fx-border-radius: 6; " +
+            "-fx-background-radius: 6;"
+        );
 
         TextField alamatField = new TextField(currentUser.getAlamat());
         alamatField.setPromptText("Alamat");
+        alamatField.setStyle(
+            "-fx-font-size: 14px; " +
+            "-fx-text-fill: rgba(36, 22, 80, 1); " +
+            "-fx-padding: 10 12; " + 
+            "-fx-min-height: 36px; " + 
+            "-fx-background-color: #F8FAFC; " +
+            "-fx-border-color: #E2E8F0; " +
+            "-fx-border-width: 1; " +
+            "-fx-border-radius: 6; " +
+            "-fx-background-radius: 6;"
+        );
 
         ComboBox<String> genderCombo = new ComboBox<>();
         genderCombo.getItems().addAll("Laki-laki", "Perempuan", "Lainnya");
         genderCombo.setValue(currentUser.getJenisKelamin());
 
+        genderCombo.setStyle(  
+            "-fx-background-color: rgb(255, 255, 255);" +
+            "-fx-mark-color: #5a29e4;");
+
         Button saveBtn = new Button("Simpan");
         Button cancelBtn = new Button("Batal");
+
+        saveBtn.setStyle(
+            "-fx-background-color: rgba(91, 54, 201, 1); " +
+            "-fx-text-fill: rgba(255, 255, 255, 1); " +
+            "-fx-padding: 8 24; " +
+            "-fx-background-radius: 10; " +
+            "-fx-font-weight: 700; " +
+             "-fx-font-size: 14px; ");
+
+        cancelBtn.setStyle(
+            "-fx-background-color: #9CA3AF; " +
+            "-fx-text-fill: rgb(0, 0, 0); " +
+            "-fx-padding: 8 24; " +
+            "-fx-background-radius: 10; " +
+            "-fx-font-weight: 700; " +
+             "-fx-font-size: 14px; ");
 
         HBox buttonBox = new HBox(10, saveBtn, cancelBtn);
         buttonBox.setAlignment(Pos.CENTER);
