@@ -86,7 +86,7 @@
          <children>
             <Label fx:id="prescriptionTitle" text="Prescription" />
             
-            <VBox fx:id="prescriptionContainer">
+            <VBox fx:id="prescriptionContainer" spacing="32">
                <children>
                   <Label fx:id="prescriptionMessage" text="No prescriptions available." />
                </children>

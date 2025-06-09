@@ -9,15 +9,21 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import javafx.scene.layout.Region;
 
+import com.pekaboo.entities.Resep;
 import com.pekaboo.entities.User;
+import com.pekaboo.repositories.ResepRepository;
+import com.pekaboo.repositories.postgres.PostgresResepRepository;
 import com.pekaboo.util.Session;
 
 public class ProfileController implements Initializable {
@@ -67,21 +73,16 @@ public class ProfileController implements Initializable {
     @FXML
     private Label prescriptionMessage;
 
-    // Data dummy untuk demonstrasi
-    private User dummyUser;
-    
-    // Reference ke MainController jika diperlukan
-    private Object mainController;
+    private final ResepRepository resepRepo = new PostgresResepRepository();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         applyStyles();
-        
-        createDummyUser();
-        
-        loadEditIcon();
-        
+
+        //loadEditIcon();
+
         populateUserData();
+        loadPrescriptionData();
     }
 
     private void applyStyles() {
@@ -133,13 +134,14 @@ public class ProfileController implements Initializable {
 
         if (prescriptionContainer != null) {
             prescriptionContainer.setStyle(
-                "-fx-background-color: white;" +
-                "-fx-background-radius: 32px;" +
-                "-fx-border-color: #E2E2E2;" +
-                "-fx-border-width: 2px;" +
-                "-fx-border-radius: 32px;"
+                "-fx-background-color: transparent;" +
+                "-fx-background-radius: 32px;"
+                // "-fx-border-color: #E2E2E2;" +
+                // "-fx-border-width: 2px;" +
+                // "-fx-border-radius: 32px;"
             );
-            prescriptionContainer.setPadding(new Insets(44));
+            //prescriptionContainer.setPadding(new Insets(44));
+            prescriptionContainer.setSpacing(32);
         }
 
         if (prescriptionMessage != null) {
@@ -257,38 +259,23 @@ public class ProfileController implements Initializable {
         if (addressLabel != null) addressLabel.setStyle(newStyle);
     }
 
-    private void createDummyUser() {
-        dummyUser = new User();
-        dummyUser.setIdUser(1);
-        dummyUser.setUsername("Nathania Ammara Salsabilla");
-        dummyUser.setEmail("scenesbynath@gmail.com");
-        dummyUser.setAlamat("Jl. Garuda No. 25, RT 01/RW 05, Kemayoran, Jakarta Pusat 10620");
-        dummyUser.setTanggalLahir(LocalDate.of(2004, 1, 25));
-        dummyUser.setJenisKelamin("Female");
-        dummyUser.setNoTelepon("(+62) 821-2504-4378");
-        dummyUser.setUserStatus("Customer");
-        dummyUser.setPassword("password123");
-    }
-
-    private void loadEditIcon() {
-        try {
-            Image editImage = new Image(getClass().getResourceAsStream("/com/pekaboo/profile/assets/icon_edit.png"));
-            editButton.setImage(editImage);
-            editButton.setFitHeight(44.0);
-            editButton.setFitWidth(44.0);
-            editButton.setPreserveRatio(true);
-            editButton.setPickOnBounds(true);
-        } catch (Exception e) {
-            System.err.println("Warning: Gagal memuat icon edit. Pastikan file ada di resources/com/pekaboo/profile/assets/icon_edit.png");
-            e.printStackTrace();
-        }
-    }
+    // TODO : ini edit blm ya
+    // private void loadEditIcon() {
+    //     try {
+    //         Image editImage = new Image(getClass().getResourceAsStream("/com/pekaboo/profile/assets/icon_edit.png"));
+    //         editButton.setImage(editImage);
+    //         editButton.setFitHeight(44.0);
+    //         editButton.setFitWidth(44.0);
+    //         editButton.setPreserveRatio(true);
+    //         editButton.setPickOnBounds(true);
+    //     } catch (Exception e) {
+    //         System.err.println("Warning: Gagal memuat icon edit. Pastikan file ada di resources/com/pekaboo/profile/assets/icon_edit.png");
+    //         e.printStackTrace();
+    //     }
+    // }
 
     private void populateUserData() {
         User currentUser = Session.getCurrentUser();
-        if (currentUser == null) {
-            currentUser = dummyUser;
-        }
         
         nameLabel.setText(currentUser.getUsername() != null ? currentUser.getUsername() : "N/A");
         emailLabel.setText(currentUser.getEmail() != null ? currentUser.getEmail() : "N/A");
@@ -305,6 +292,134 @@ public class ProfileController implements Initializable {
         }
     }
 
+    private void loadPrescriptionData() {
+        User currentUser = Session.getCurrentUser();
+        
+        if (currentUser == null) {
+            prescriptionMessage.setText("Please log in to view prescriptions.");
+            prescriptionMessage.setVisible(true);
+            return;
+        }
+
+        try {
+            List<Resep> prescriptions = resepRepo.getResepByPelanggan(currentUser);
+            
+            if (prescriptions.isEmpty()) {
+                prescriptionMessage.setText("No prescriptions available.");
+                prescriptionMessage.setVisible(true);
+            } else {
+                prescriptionMessage.setVisible(false);
+                prescriptionContainer.getChildren().clear();
+                
+                for (Resep resep : prescriptions) {
+                    VBox prescriptionCard = createPrescriptionCard(resep);
+                    prescriptionContainer.getChildren().add(prescriptionCard);
+                }
+            }
+            
+        } catch (Exception e) {
+            prescriptionMessage.setText("Error loading prescriptions: " + e.getMessage());
+            prescriptionMessage.setVisible(true);
+            e.printStackTrace();
+        }
+    }
+
+   private VBox createPrescriptionCard(Resep resep) {
+        VBox card = new VBox();
+        card.setStyle(
+            "-fx-background-color: white;" +
+            "-fx-background-radius: 32px;" +
+            "-fx-border-color: #E2E2E2;" +
+            "-fx-border-width: 2px;" +
+            "-fx-border-radius: 32px;"
+        );
+        card.setPadding(new Insets(44));
+        card.setSpacing(0);
+
+        GridPane prescriptionGrid = new GridPane();
+        prescriptionGrid.setHgap(80.0);
+        prescriptionGrid.setVgap(48.0);
+        
+        ColumnConstraints col1 = new ColumnConstraints(400);
+        ColumnConstraints col2 = new ColumnConstraints(400);
+        prescriptionGrid.getColumnConstraints().addAll(col1, col2);
+        
+        createFixedPrescriptionField(prescriptionGrid, "Examination Date", resep.getJadwal().getTanggal().format(DateTimeFormatter.ofPattern("dd MMMM yyyy")), 0, 0);
+        createFixedPrescriptionField(prescriptionGrid, "Issued by", (resep.getOptometris() != null ? resep.getOptometris().getUsername() : "Unknown"), 1, 0);
+        
+        String rightEyeData = String.format("Sphere: %s\nCyl: %s\nAxis: %s", 
+            formatSphere(resep.getPlusKanan(), resep.getMinusKanan()),
+            formatCylinder(resep.getCylKanan()),
+            formatAxis(resep.getAxisKanan())
+        );
+        createFixedPrescriptionField(prescriptionGrid, "Right Eye", rightEyeData, 0, 1);
+        
+        String leftEyeData = String.format("Sphere: %s\nCyl: %s\nAxis: %s", 
+            formatSphere(resep.getPlusKiri(), resep.getMinusKiri()),
+            formatCylinder(resep.getCylKiri()),
+            formatAxis(resep.getAxisKiri())
+        );
+        createFixedPrescriptionField(prescriptionGrid, "Left Eye", leftEyeData, 1, 1);
+        
+        createFixedPrescriptionField(prescriptionGrid, "PD (Pupillary Distance)", resep.getPd() + " mm", 0, 2);
+        
+        card.getChildren().add(prescriptionGrid);
+        return card;
+    }
+
+    private void createFixedPrescriptionField(GridPane grid, String labelText, String valueText, int col, int row) {
+        VBox fieldBox = new VBox();
+        fieldBox.setSpacing(8);
+        
+        Label label = new Label(labelText);
+        label.setStyle(
+            "-fx-font-family: 'Violet Sans';" +
+            "-fx-font-size: 20px;" + 
+            "-fx-text-fill: #939698;"
+        );
+        
+        Label value = new Label(valueText);
+        value.setStyle(
+            "-fx-font-family: 'Violet Sans';" +
+            "-fx-font-size: 24px;" + 
+            "-fx-text-fill: #364C84;"
+        );
+        
+        value.setWrapText(true);
+        value.setPrefWidth(380);
+        value.setMaxWidth(380);
+        value.setMinHeight(Region.USE_PREF_SIZE);
+        
+        fieldBox.getChildren().addAll(label, value);
+        grid.add(fieldBox, col, row);
+    }
+
+    private String formatSphere(double plus, double minus) {
+        if (plus == 0 && minus == 0) {
+            return "0.00";
+        } else if (plus != 0 && minus == 0) {
+            return String.format("+%.2f", plus);
+        } else if (plus == 0 && minus != 0) {
+            return String.format("%.2f", minus);
+        } else {
+            return String.format("+%.2f/%.2f", plus, minus);
+        }
+    }
+
+    private String formatCylinder(double cyl) {
+        if (cyl == 0) {
+            return "0.00";
+        }
+        return String.format("%+.2f", cyl);
+    }
+
+    private String formatAxis(double axis) {
+        if (axis == 0) {
+            return "0°";
+        }
+        return String.format("%.0f°", axis);
+    }
+
     @FXML
     private void handleEditProfile(MouseEvent event) {
         System.out.println("Edit button clicked!");
@@ -315,14 +430,6 @@ public class ProfileController implements Initializable {
     // Method untuk refresh data jika diperlukan
     public void refreshUserData() {
         populateUserData();
-    }
-
-    public void setMainController(Object mainController) {
-        this.mainController = mainController;
-        System.out.println("MainController reference set to ProfileController");
-    }
-    
-    public Object getMainController() {
-        return this.mainController;
+        loadPrescriptionData();
     }
 }
