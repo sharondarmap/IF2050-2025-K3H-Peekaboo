@@ -1,6 +1,5 @@
 package com.pekaboo.features.navbar;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,19 +12,14 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import com.pekaboo.features.home.MainController;
 
-//import com.pekaboo.entities.User;
-//import com.pekaboo.util.Session;
-
-public class NavbarController implements Initializable {
+public class NavbarOptoController implements Initializable{
     private MainController mainController;
     private boolean isProfileActive = false;
 
     @FXML
     private Button homeButton;
     @FXML
-    private Button reservationButton;
-    @FXML
-    private Button catalogButton;
+    private Button jadwalButton;
     @FXML
     private Button loginButton;
     @FXML
@@ -51,14 +45,7 @@ public class NavbarController implements Initializable {
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
-        Platform.runLater(() -> {
-        if (homeButton != null) {
-            homeButton.fire(); // atau panggil handleNavigation secara aman
-        } else {
-            System.err.println("⚠️ homeButton belum siap di-inject!");
-        }
-});
-
+        handleNavigation(new ActionEvent(homeButton, null));
     }
 
     /**
@@ -70,25 +57,44 @@ public class NavbarController implements Initializable {
         Button clickedButton = (Button) event.getSource();
         ObservableList<?> userData = (ObservableList<?>) clickedButton.getUserData();
 
+        String fxmlPath = null;
+        String cssPath = null;
+
         if (userData != null && !userData.isEmpty()) {
-            String fxmlPath = (String) userData.get(0);
-            String cssPath = (userData.size() > 1) ? (String) userData.get(1) : "null";
-            
-            if ("placeholder".equalsIgnoreCase(fxmlPath)) {
-                mainController.loadPage(null, null);
-            } else {
-                if ("null".equalsIgnoreCase(cssPath)) {
-                    cssPath = null;
-                }
-                mainController.loadPage(fxmlPath, cssPath);
+            try {
+                fxmlPath = (String) userData.get(0);
+                cssPath = (userData.size() > 1) ? (String) userData.get(1) : "null";
+
+                System.out.println(">> fxmlPath = " + fxmlPath);
+                System.out.println(">> cssPath = " + cssPath);
+
+            } catch (Exception e) {
+                System.err.println("⚠️ Gagal membaca fxmlPath atau cssPath dari userData.");
+                e.printStackTrace();
             }
 
-            setActiveButton(clickedButton);
+            try {
+                if ("placeholder".equalsIgnoreCase(fxmlPath)) {
+                    mainController.loadPage(null, null);
+                } else {
+                    if ("null".equalsIgnoreCase(cssPath)) {
+                        cssPath = null;
+                    }
+                    mainController.loadPage(fxmlPath, cssPath);
+                }
+
+                setActiveButton(clickedButton);
+            } catch (Exception e) {
+                System.err.println("⚠️ Gagal memuat halaman: " + fxmlPath);
+                e.printStackTrace();
+            }
+        } else {
+            System.err.println("⚠️ userData kosong atau null untuk tombol: " + clickedButton.getText());
         }
-        
+
         isProfileActive = false;
         updateProfileIcon();
-    } 
+    }
 
     @FXML
     void handleProfileClick(MouseEvent event) {
@@ -125,8 +131,7 @@ public class NavbarController implements Initializable {
     
     public void setActiveButton(Button activeButton) {
         homeButton.getStyleClass().remove("active");
-        reservationButton.getStyleClass().remove("active");
-        catalogButton.getStyleClass().remove("active");
+        jadwalButton.getStyleClass().remove("active");
         historyButton.getStyleClass().remove("active");
         
         if (activeButton != null) {

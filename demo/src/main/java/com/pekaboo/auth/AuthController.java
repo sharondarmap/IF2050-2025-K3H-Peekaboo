@@ -43,20 +43,26 @@ public class AuthController {
         if (user != null) {
             Session.setCurrentUser(user);
             showAlert("Success", "Login successful!");
-            if(Session.getCurrentUser().getUserStatus().equals("PELANGGAN")){
-                try {
-                App.navigateToMain("/com/pekaboo/primary.fxml");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } //kalau dashboard ada scenenya kalo gaada langsung ke page apa aja
+            try{
+                App.navigateToMain("/com/pekaboo/home/home.fxml");
+            } catch  (IOException e) {
+                e.printStackTrace();
             }
-            else if (Session.getCurrentUser().getUserStatus().equals("OPTOMETRIS")){
-                try {
-                App.navigateToMain("/com/pekaboo/secondary.fxml");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } //kalau dashboard ada scenenya kalo gaada langsung ke page apa aja
-            }
+
+            // if(Session.getCurrentUser().getUserStatus().equals("PELANGGAN")){
+            //     try {
+            //     App.navigateToMain("/com/pekaboo/primary.fxml");
+            //     } catch (IOException e) {
+            //         e.printStackTrace();
+            //     } //kalau dashboard ada scenenya kalo gaada langsung ke page apa aja
+            // }
+            // else if (Session.getCurrentUser().getUserStatus().equals("OPTOMETRIS")){
+            //     try {
+            //     App.navigateToMain("/com/pekaboo/secondary.fxml");
+            //     } catch (IOException e) {
+            //         e.printStackTrace();
+            //     } //kalau dashboard ada scenenya kalo gaada langsung ke page apa aja
+            // }
 
         } else {
             showAlert("Login failed", "Username or password incorrect");

@@ -1,11 +1,14 @@
 package com.pekaboo.features.home;
 
+import java.io.IOException;
 //import java.io.IOException;
 import java.net.URL;
 
 import com.pekaboo.PrimaryController;
 import com.pekaboo.features.navbar.NavbarController;
+import com.pekaboo.features.navbar.NavbarOptoController;
 import com.pekaboo.features.profile.ProfileController;
+import com.pekaboo.util.Session;
 
 import java.net.URL;
 import javafx.application.Platform;
@@ -23,15 +26,15 @@ public class MainController {
 
     @FXML
     private AnchorPane contentArea;
-    
-    @FXML
-    private NavbarController navbarController; 
+
+    @FXML 
+    private AnchorPane navbarContainer;
 
     private String currentPageCss = null;
 
     @FXML
     public void initialize() {
-        navbarController.setMainController(this);
+        loadNavbar(Session.getCurrentUser().getUserStatus().equals("OPTOMETRIS"));
 
         // Add global navbar CSS once
         Scene scene = contentArea.getScene();
@@ -108,4 +111,37 @@ public class MainController {
             e.printStackTrace();
         }
     }
+
+    public void loadNavbar(boolean isOptometris) {
+        try {
+            String path = isOptometris
+                ? "/com/pekaboo/navbar/NavbarOpto.fxml"
+                : "/com/pekaboo/navbar/Navbar.fxml";
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+            Parent navbar = loader.load();
+
+            Object controller = loader.getController();
+
+            if (controller instanceof NavbarController) {
+                NavbarController navbarController = (NavbarController) controller;
+                navbarController.setMainController(this);
+            } else if (controller instanceof NavbarOptoController) {
+                NavbarOptoController navbarOptoController = (NavbarOptoController) controller;
+                navbarOptoController.setMainController(this);
+            }
+
+
+            navbarContainer.getChildren().setAll(navbar);
+            AnchorPane.setTopAnchor(navbar, 0.0);
+            AnchorPane.setLeftAnchor(navbar, 0.0);
+            AnchorPane.setRightAnchor(navbar, 0.0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Gagal memuat navbar: " + e.getMessage());
+        }
+    }
+
+
+
 }

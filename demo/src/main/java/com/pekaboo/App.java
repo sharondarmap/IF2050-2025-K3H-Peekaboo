@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 
 import com.pekaboo.auth.*;
 import com.pekaboo.features.home.MainController;
+import com.pekaboo.util.Session;
 
 import java.io.IOException;
 
@@ -33,12 +34,16 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }
-    public static void navigateToMain(String homePageFxml) throws IOException {
+    //navigate to main
+    public static void navigateToMain(String fxmlPath) throws IOException {
+        boolean isOptometris = Session.getCurrentUser().getUserStatus().equals("OPTOMETRIS");
+
         FXMLLoader loader = new FXMLLoader(App.class.getResource("/com/pekaboo/home/main.fxml"));
         Parent root = loader.load();
-
         MainController controller = loader.getController();
-        controller.loadPage(homePageFxml, null);
+
+        controller.loadNavbar(isOptometris);
+        controller.loadPage(fxmlPath, null);
 
         scene.setRoot(root);
     }
