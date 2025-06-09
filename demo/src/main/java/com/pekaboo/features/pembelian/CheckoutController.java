@@ -19,6 +19,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.control.TextField;
 
 public class CheckoutController {
     @FXML private Label totalAmountLabel;
@@ -329,10 +332,50 @@ public class CheckoutController {
                 errorLabel.setVisible(false);
                 prescriptionFilled = true;
 
-                if (root instanceof javafx.scene.layout.Pane) {
-                    ((javafx.scene.layout.Pane) root).getChildren().remove(overlay);
-                } else if (root instanceof javafx.scene.layout.StackPane) {
-                    ((javafx.scene.layout.StackPane) root).getChildren().remove(overlay);
+                try (Connection conn = DatabaseConnector.connect()) {
+                    String sql = "INSERT INTO resep "
+                               + "(pluskanan, pluskiri, minuskanan, minuskiri, "
+                               + "cylkanan, cylkiri, axiskanan, axiskiri, pd, idpelanggan, idoptometris, idjadwal) "
+                               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    PreparedStatement ps = conn.prepareStatement(sql);
+                    HBox sph = (HBox) sphereSection.getChildren().get(1);
+                    double plusR  = Double.parseDouble(((TextField)((VBox)sph.getChildren().get(0)).getChildren().get(1)).getText());
+                    double plusL  = Double.parseDouble(((TextField)((VBox)sph.getChildren().get(1)).getChildren().get(1)).getText());
+                    double minR   = Double.parseDouble(((TextField)((VBox)sph.getChildren().get(2)).getChildren().get(1)).getText());
+                    double minL   = Double.parseDouble(((TextField)((VBox)sph.getChildren().get(3)).getChildren().get(1)).getText());
+
+                    HBox cyl      = (HBox) cylinderSection.getChildren().get(1);
+                    double cylR   = Double.parseDouble(((TextField)((VBox)cyl.getChildren().get(0)).getChildren().get(1)).getText());
+                    double cylL   = Double.parseDouble(((TextField)((VBox)cyl.getChildren().get(1)).getChildren().get(1)).getText());
+
+                    HBox ax       = (HBox) axisSection.getChildren().get(1);
+                    double axR    = Double.parseDouble(((TextField)((VBox)ax.getChildren().get(0)).getChildren().get(1)).getText());
+                    double axL    = Double.parseDouble(((TextField)((VBox)ax.getChildren().get(1)).getChildren().get(1)).getText());
+                    double pdVal  = Double.parseDouble(((TextField)pdSection.getChildren().get(1)).getText());
+                    ps.setDouble(1, plusR);
+                    ps.setDouble(2, plusL);
+                    ps.setDouble(3, minR);
+                    ps.setDouble(4, minL);
+                    ps.setDouble(5, cylR);
+                    ps.setDouble(6, cylL);
+                    ps.setDouble(7, axR);
+                    ps.setDouble(8, axL);
+                    ps.setDouble(9, pdVal);
+                    ps.setInt   (10, user != null ? user.getIdUser() : 0);
+                    ps.setNull  (11, java.sql.Types.INTEGER); // idoptometris null krn input resep manual dr web
+                    ps.setNull  (12, java.sql.Types.INTEGER); // idjadwal null krn input resep manual dr web
+                    ps.executeUpdate();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    errorLabel.setText("Gagal menyimpan prescription: " + ex.getMessage());
+                    errorLabel.setVisible(true);
+                    return;
+                }
+
+                if (root instanceof Pane) {
+                    ((Pane) root).getChildren().remove(overlay);
+                } else if (root instanceof StackPane) {
+                    ((StackPane) root).getChildren().remove(overlay);
                 }
             });
             overlay.setOnMouseClicked(ev -> {

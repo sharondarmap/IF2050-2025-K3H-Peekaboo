@@ -7,4 +7,7 @@ com\pekaboo\SecondaryController.class
 module-info.class
 com\pekaboo\entities\Pesanan.class
 com\pekaboo\features\pembelian\CheckoutDriver.class
+com\pekaboo\entities\Jadwal.class
+com\pekaboo\entities\Resep.class
 com\pekaboo\util\DatabaseConnector.class
+com\pekaboo\entities\StatusJadwal.class
