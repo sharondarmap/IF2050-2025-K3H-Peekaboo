@@ -1,17 +1,23 @@
 package com.pekaboo.features.pembelian;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import com.pekaboo.entities.Pesanan;
 import com.pekaboo.entities.Product;
+import com.pekaboo.util.DatabaseConnector;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 
 public class CheckoutController {
@@ -30,6 +36,8 @@ public class CheckoutController {
     @FXML private ImageView productImageView;
     @FXML private Rectangle productColorRectangle;
     @FXML private HBox mainContainer; 
+
+    private static final int SHIPPING_COST = 20000;
 
     private int totalAmount = 0;
     private int prescriptionQuantity = 1;
@@ -128,21 +136,19 @@ public class CheckoutController {
         }
     }
 
-    private void calculateTotalAmount() {
+    private int calculateTotalAmount() {
+        int subtotal = 0;
         if (activeProduct != null) {
-            totalAmount = activeProduct.getPrice() * prescriptionQuantity;
-        } else {
-            totalAmount = 0;
+            subtotal = activeProduct.getPrice() * prescriptionQuantity;
         }
+        totalAmount = subtotal + SHIPPING_COST;
         if (pesanan != null) {
             pesanan.setTotalPesanan(totalAmount);
         }
-    }
-
-    private void updateTotalAmountLabel() {
         if (totalAmountLabel != null) {
-            totalAmountLabel.setText(String.format("Total: Rp %d", totalAmount));
+            totalAmountLabel.setText(String.format("Total: Rp %,d", totalAmount).replace(',', '.'));
         }
+        return totalAmount;
     }
 
     @FXML
@@ -166,7 +172,7 @@ public class CheckoutController {
 
     private void clearCart() {
         totalAmount = 0;
-        updateTotalAmountLabel();
+        calculateTotalAmount();
     }
 
     @FXML
@@ -180,11 +186,11 @@ public class CheckoutController {
         }
     }
 
-    public void setActiveProduct(Product product) {
+    public void setActiveProduct(Product product) { //ini method waktu ngasi tau kalo sekarang tuh tampilannya lagi di catalog produk tertentu (yg dipilih di page lidya) 
         this.activeProduct = product;
         prescriptionQuantity = 1;
         updatePrescriptionQuantityLabel();
-
+        
         if (productNameLabel != null) productNameLabel.setText(product.getName());
         if (productBrandLabel != null) productBrandLabel.setText(product.getBrand());
         if (productPriceLabel != null) productPriceLabel.setText(String.format("Rp %d", product.getPrice()));
@@ -202,8 +208,7 @@ public class CheckoutController {
                 productImageView.setImage(null);
             }
         }
-        calculateTotalAmount();
-        updateTotalAmountLabel();
+        calculateTotalAmount(); 
     }
 
     private String mapColor(String color) {
@@ -510,12 +515,6 @@ public class CheckoutController {
         Label shippingType = new Label("Regular shipping");
         shippingType.setStyle("-fx-font-size: 18px; -fx-text-fill: #7B61FF; -fx-font-weight: bold;");
         Label shippingPrice = new Label("Rp20.000");
-        shippingPrice.setStyle("-fx-font-size: 18px; -fx-text-fill: #7B61FF; -fx-font-weight: bold;");
-        shippingPrice.setMaxWidth(Double.MAX_VALUE);
-        shippingPrice.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
-        shippingRow.getChildren().addAll(shippingType, new Label(), shippingPrice);
-        javafx.scene.layout.HBox.setHgrow(shippingType, javafx.scene.layout.Priority.ALWAYS);
-        javafx.scene.layout.HBox.setHgrow(shippingPrice, javafx.scene.layout.Priority.ALWAYS);
 
         javafx.scene.layout.HBox etaRow = new javafx.scene.layout.HBox(8);
         javafx.scene.control.Label etaIcon = new javafx.scene.control.Label("\u25CF");
@@ -616,6 +615,23 @@ public class CheckoutController {
             overlay.toFront();
             cancelBtn.setOnAction(ev -> pane.getChildren().remove(overlay));
             placeOrderBtn.setOnAction(ev -> {
+                calculateTotalAmount();
+                try (Connection conn = DatabaseConnector.connect()) {
+                    String sql = "INSERT INTO pesanan (total, tanggalpesanan, alamat, idpelanggan, idproduk) VALUES (?, ?, ?, ?, ?)";
+                    PreparedStatement stmt = conn.prepareStatement(sql);
+                    stmt.setInt(1, pesanan != null ? pesanan.getTotalPesanan() : 0);
+                    stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+                    stmt.setString(3, pesanan != null ? pesanan.getAlamatPesanan() : "");
+                    stmt.setInt(4, user != null ? user.getIdUser() : 0);
+                    stmt.setInt(5, activeProduct != null ? activeProduct.getId() : 0);
+                    stmt.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    checkoutErrorLabel.setText("Gagal menyimpan pesanan ke database: " + e.getMessage());
+                    checkoutErrorLabel.setVisible(true);
+                    return;
+                }
+
                 pane.getChildren().remove(overlay);
                 showCheckoutSuccessPopup();
                 clearCart();
