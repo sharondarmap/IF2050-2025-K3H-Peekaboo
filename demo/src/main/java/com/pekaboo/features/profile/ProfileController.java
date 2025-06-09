@@ -1,6 +1,7 @@
 package com.pekaboo.features.profile;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -17,6 +18,9 @@ import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Scene;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -25,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
+import com.pekaboo.App;
 import com.pekaboo.entities.Resep;
 import com.pekaboo.entities.User;
 import com.pekaboo.repositories.ResepRepository;
@@ -69,6 +74,9 @@ public class ProfileController implements Initializable {
     private Label dobLabelText;
     @FXML
     private Label addressLabelText;
+    @FXML
+    private Button logoutButton;
+
     
     // Prescription section elements
     @FXML
@@ -563,5 +571,18 @@ public class ProfileController implements Initializable {
     public void setRootStack(StackPane rootStack) {
         this.rootStack = rootStack;
     }
+
+    //untuk logout
+    @FXML
+    private void handleLogout() {
+        Session.clear(); // clear session
+        try {
+            App.setRoot("auth/login"); // navigate to login
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("❌ Failed to load login page.");
+        }
+    }
+
 
 }
