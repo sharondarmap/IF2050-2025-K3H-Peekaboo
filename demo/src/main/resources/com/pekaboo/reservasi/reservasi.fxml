@@ -4,11 +4,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToWidth="true" prefWidth="1100.0" prefHeight="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.reservasi.ReservasiController">
+<ScrollPane fitToWidth="true" prefWidth="1100.0" prefHeight="800.0" style="-fx-background-color: white;"  xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.reservasi.ReservasiController">
    <content>
       <VBox alignment="TOP_CENTER" spacing="15.0">
          <children>
-            <Label text="Reservasi" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+            <Label text="Reservasi" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: rgba(36, 22, 80, 1);" />
             <VBox fx:id="calendarContainer" alignment="CENTER" spacing="10.0"/>
             <Button text="Back" onAction="#switchToPrimary"/>
          </children>

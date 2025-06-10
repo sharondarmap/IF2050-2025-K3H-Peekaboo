@@ -29,6 +29,7 @@ public class CalendarView extends VBox {
         this.jadwalRepo = jadwalRepo;
         this.controller = controller;
         this.currentYearMonth = YearMonth.now();
+        this.getStylesheets().add(getClass().getResource("/com/pekaboo/reservasi/reservasi.css").toExternalForm());
 
         mainContainer = new StackPane();
         VBox calendarContainer = createCalendar();
@@ -48,13 +49,12 @@ public class CalendarView extends VBox {
         container.setAlignment(Pos.CENTER);
         
         container.setStyle(
-            "-fx-background-color: #F5F5F5; " +
+            "-fx-background-color: #FAFAFA; " +
             "-fx-padding: 12; " +
             "-fx-background-radius: 12; " +
-            "-fx-border-color: #DDDDDD; " +
+            "-fx-border-color: #C7CCCF; " +
             "-fx-border-width: 1; " +
-            "-fx-border-radius: 12; " +
-            "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);" // Subtle shadow
+            "-fx-border-radius: 20; "
             );
             HBox header = new HBox(15);
             Button prev = new Button("<");

@@ -30,3 +30,13 @@
     -fx-padding: 8 16;
     -fx-background-radius: 5;
 }
+
+.button:focused {
+    -fx-focus-color: transparent !important;
+    -fx-faint-focus-color: transparent !important;
+}
+
+* {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
