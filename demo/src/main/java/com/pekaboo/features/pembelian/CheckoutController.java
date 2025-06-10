@@ -2,6 +2,8 @@ package com.pekaboo.features.pembelian;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import com.pekaboo.entities.Pesanan;
 import com.pekaboo.entities.Product;
 import com.pekaboo.entities.Resep;
@@ -9,6 +11,7 @@ import com.pekaboo.repositories.PesananRepository;
 import com.pekaboo.repositories.ResepRepository;
 import com.pekaboo.repositories.postgres.PostgresPesananRepository;
 import com.pekaboo.repositories.postgres.PostgresResepRepository;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -55,7 +58,8 @@ public class CheckoutController {
     private void initialize() {
         if (user == null) {
             user = com.pekaboo.util.Session.getCurrentUser();
-        }        
+        }
+        pesanan = new Pesanan(0, totalAmount, LocalDateTime.now().toString(), user != null ? user.getAlamat() : "", user != null ? user.getIdUser() : 0, activeProduct != null ? activeProduct.getId() : 0);
         // // --- BACK BUTTON ---
         // ImageView backIcon = new ImageView(
         //     new Image(getClass().getResourceAsStream("/com/pekaboo/pembelian/assets/back.png"))
@@ -165,6 +169,15 @@ public class CheckoutController {
             return;
         }
         checkoutErrorLabel.setVisible(false);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = LocalDateTime.now().format(formatter);
+        pesanan.setTanggalPesanan(formattedDate);
+        pesanan.setTotalPesanan(totalAmount);
+        pesanan.setAlamatPesanan(user != null ? user.getAlamat() : "");
+        pesanan.setIdPelangganPemesan(user != null ? user.getIdUser() : 0);
+        pesanan.setIdProdukPesanan(activeProduct != null ? activeProduct.getId() : 0);
+
         showOrderConfirmationPopup();
     }
 
@@ -339,9 +352,7 @@ public class CheckoutController {
                 errorLabel.setVisible(false);
                 prescriptionFilled = true;
 
-                // --- Ganti kode JDBC dengan repository ---
                 try {
-                    // Validasi user sebelum menyimpan resep
                     if (user == null || user.getIdUser() <= 0) {
                         errorLabel.setText("User tidak valid. Silakan login kembali.");
                         errorLabel.setVisible(true);
@@ -519,6 +530,10 @@ public class CheckoutController {
     }
 
     private void showOrderConfirmationPopup() {
+        if (pesanan == null) {
+            pesanan = new Pesanan(0, totalAmount, LocalDateTime.now().toString(), user != null ? user.getAlamat() : "", user != null ? user.getIdUser() : 0, activeProduct != null ? activeProduct.getId() : 0
+            );
+        }
         javafx.scene.Scene scene = buttonContainer.getScene();
         if (scene == null) return;
 
@@ -672,15 +687,9 @@ public class CheckoutController {
             cancelBtn.setOnAction(ev -> pane.getChildren().remove(overlay));
             placeOrderBtn.setOnAction(ev -> {
                 calculateTotalAmount();
-                Pesanan newPesanan = new Pesanan();
-                newPesanan.setTotalPesanan(pesanan != null ? pesanan.getTotalPesanan() : 0);
-                newPesanan.setTanggalPesanan(LocalDateTime.now().toString());
-                newPesanan.setAlamatPesanan(pesanan != null ? pesanan.getAlamatPesanan() : "");
-                newPesanan.setIdPelangganPemesan(user != null ? user.getIdUser() : 0);
-                newPesanan.setIdProdukPesanan(activeProduct != null ? activeProduct.getId() : 0);
 
                 try {
-                    pesananRepository.addPesanan(newPesanan);
+                    pesananRepository.addPesanan(pesanan); 
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkoutErrorLabel.setText("Gagal menyimpan pesanan ke database: " + e.getMessage());

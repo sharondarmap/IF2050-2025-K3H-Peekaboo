@@ -36,17 +36,15 @@ public class PostgresPesananRepository implements PesananRepository {
 
     @Override
     public void addPesanan(Pesanan pesanan) {
-        String sql = "INSERT INTO pesanan (tanggalpesanan, totalpesanan, alamatpesanan, idpelanggan, idproduk) " +
+        String sql = "INSERT INTO pesanan (tanggalpesanan, total, alamat, idpelanggan, idproduk) " +
                      "VALUES (?, ?, ?, ?, ?)";
         
         try (Connection conn = DatabaseConnector.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            // Convert String ke Timestamp
             if (pesanan.getTanggalPesanan() != null && !pesanan.getTanggalPesanan().isEmpty()) {
                 ps.setTimestamp(1, Timestamp.valueOf(pesanan.getTanggalPesanan()));
             } else {
-                // Set current timestamp jika tanggal null atau kosong
                 ps.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             }
             
@@ -77,13 +75,12 @@ public class PostgresPesananRepository implements PesananRepository {
 
     @Override
     public void updatePesanan(Pesanan pesanan) {
-        String sql = "UPDATE pesanan SET tanggalpesanan = ?, totalpesanan = ?, alamatpesanan = ?, " +
+        String sql = "UPDATE pesanan SET tanggalpesanan = ?, total = ?, alamat = ?, " +
                      "idpelanggan = ?, idproduk = ? WHERE idpesanan = ?";
         
         try (Connection conn = DatabaseConnector.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            // Convert String ke Timestamp
             if (pesanan.getTanggalPesanan() != null && !pesanan.getTanggalPesanan().isEmpty()) {
                 ps.setTimestamp(1, Timestamp.valueOf(pesanan.getTanggalPesanan()));
             } else {
@@ -170,24 +167,18 @@ public class PostgresPesananRepository implements PesananRepository {
         Pesanan pesanan = new Pesanan();
         pesanan.setIdPesanan(rs.getInt("idpesanan"));
         
-        // Convert Timestamp ke String
         java.sql.Timestamp timestamp = rs.getTimestamp("tanggalpesanan");
         if (timestamp != null) {
-            // Format timestamp ke string (sesuaikan format yang diinginkan)
-            pesanan.setTanggalPesanan(timestamp.toString()); // Format: yyyy-mm-dd hh:mm:ss.fffffffff
-            // Atau gunakan format khusus:
-            // pesanan.setTanggalPesanan(timestamp.toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            pesanan.setTanggalPesanan(timestamp.toString()); // format: yyyy-mm-dd hh:mm:ss.fffffffff
         } else {
             pesanan.setTanggalPesanan(null);
         }
         
-        pesanan.setTotalPesanan(rs.getInt("totalpesanan"));
+        pesanan.setTotalPesanan(rs.getInt("total"));
         
-        // Null safety untuk String
-        String alamat = rs.getString("alamatpesanan");
+        String alamat = rs.getString("alamat");
         pesanan.setAlamatPesanan(alamat != null ? alamat : "");
         
-        // Gunakan nama method yang sesuai dengan entity
         pesanan.setIdPelangganPemesan(rs.getInt("idpelanggan"));
         pesanan.setIdProdukPesanan(rs.getInt("idproduk"));
         
