@@ -1,27 +1,25 @@
 package com.pekaboo.features.pembelian;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-
 import com.pekaboo.entities.Pesanan;
 import com.pekaboo.entities.Product;
-import com.pekaboo.util.DatabaseConnector;
-
+import com.pekaboo.entities.Resep;
+import com.pekaboo.repositories.PesananRepository;
+import com.pekaboo.repositories.ResepRepository;
+import com.pekaboo.repositories.postgres.PostgresPesananRepository;
+import com.pekaboo.repositories.postgres.PostgresResepRepository;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 
 public class CheckoutController {
     @FXML private Label totalAmountLabel;
@@ -40,7 +38,7 @@ public class CheckoutController {
     @FXML private Rectangle productColorRectangle;
     @FXML private HBox mainContainer; 
 
-    private static final int SHIPPING_COST = 20000;
+    private static final int SHIPPING_COST = 20000; //selalu segini
 
     private int totalAmount = 0;
     private int prescriptionQuantity = 1;
@@ -50,8 +48,14 @@ public class CheckoutController {
     private com.pekaboo.entities.User user;
     private Pesanan pesanan;
 
+    private PesananRepository pesananRepository = new PostgresPesananRepository();
+    private ResepRepository resepRepository = new PostgresResepRepository();
+
     @FXML
     private void initialize() {
+        if (user == null) {
+            user = com.pekaboo.util.Session.getCurrentUser();
+        }        
         // // --- BACK BUTTON ---
         // ImageView backIcon = new ImageView(
         //     new Image(getClass().getResourceAsStream("/com/pekaboo/pembelian/assets/back.png"))
@@ -100,7 +104,7 @@ public class CheckoutController {
         }
         updatePrescriptionQuantityLabel();
         if (activeProduct != null) {
-            setActiveProduct(activeProduct);
+            setProduct(activeProduct);
         }
 
         javafx.scene.layout.HBox infoRow = new javafx.scene.layout.HBox(12);
@@ -189,7 +193,7 @@ public class CheckoutController {
         }
     }
 
-    public void setActiveProduct(Product product) { //ini method waktu ngasi tau kalo sekarang tuh tampilannya lagi di catalog produk tertentu (yg dipilih di page lidya) 
+    public void setProduct(Product product) { //ini method waktu ngasi tau kalo sekarang tuh tampilannya lagi di catalog produk tertentu (yg dipilih di page lidya) 
         this.activeProduct = product;
         prescriptionQuantity = 1;
         updatePrescriptionQuantityLabel();
@@ -202,13 +206,16 @@ public class CheckoutController {
             String fill = mapColor(product.getColor());
             productColorRectangle.setStyle("-fx-fill: " + fill + ";");
         }
-        if (productImageView != null && product.getImagePath() != null) {
-            java.io.InputStream imgStream = getClass().getResourceAsStream(product.getImagePath());
+        if (productImageView != null) {
+            String path = "/com/pekaboo/pembelian/assets/" + product.getId() + ".jpg";
+            java.io.InputStream imgStream = getClass().getResourceAsStream(path);
             if (imgStream != null) {
-                Image img = new Image(imgStream);
-                productImageView.setImage(img);
+                productImageView.setImage(new Image(imgStream));
             } else {
-                productImageView.setImage(null);
+                java.io.InputStream fallback = getClass().getResourceAsStream("/com/pekaboo/pembelian/assets/5.jpg");
+                if (fallback != null) {
+                    productImageView.setImage(new Image(fallback));
+                }
             }
         }
         calculateTotalAmount(); 
@@ -332,12 +339,15 @@ public class CheckoutController {
                 errorLabel.setVisible(false);
                 prescriptionFilled = true;
 
-                try (Connection conn = DatabaseConnector.connect()) {
-                    String sql = "INSERT INTO resep "
-                               + "(pluskanan, pluskiri, minuskanan, minuskiri, "
-                               + "cylkanan, cylkiri, axiskanan, axiskiri, pd, idpelanggan, idoptometris, idjadwal) "
-                               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                    PreparedStatement ps = conn.prepareStatement(sql);
+                // --- Ganti kode JDBC dengan repository ---
+                try {
+                    // Validasi user sebelum menyimpan resep
+                    if (user == null || user.getIdUser() <= 0) {
+                        errorLabel.setText("User tidak valid. Silakan login kembali.");
+                        errorLabel.setVisible(true);
+                        return;
+                    }
+
                     HBox sph = (HBox) sphereSection.getChildren().get(1);
                     double plusR  = Double.parseDouble(((TextField)((VBox)sph.getChildren().get(0)).getChildren().get(1)).getText());
                     double plusL  = Double.parseDouble(((TextField)((VBox)sph.getChildren().get(1)).getChildren().get(1)).getText());
@@ -352,20 +362,23 @@ public class CheckoutController {
                     double axR    = Double.parseDouble(((TextField)((VBox)ax.getChildren().get(0)).getChildren().get(1)).getText());
                     double axL    = Double.parseDouble(((TextField)((VBox)ax.getChildren().get(1)).getChildren().get(1)).getText());
                     double pdVal  = Double.parseDouble(((TextField)pdSection.getChildren().get(1)).getText());
-                    ps.setDouble(1, plusR);
-                    ps.setDouble(2, plusL);
-                    ps.setDouble(3, minR);
-                    ps.setDouble(4, minL);
-                    ps.setDouble(5, cylR);
-                    ps.setDouble(6, cylL);
-                    ps.setDouble(7, axR);
-                    ps.setDouble(8, axL);
-                    ps.setDouble(9, pdVal);
-                    ps.setInt   (10, user != null ? user.getIdUser() : 0);
-                    ps.setNull  (11, java.sql.Types.INTEGER); // idoptometris null krn input resep manual dr web
-                    ps.setNull  (12, java.sql.Types.INTEGER); // idjadwal null krn input resep manual dr web
-                    ps.executeUpdate();
-                } catch (SQLException ex) {
+                    
+                    Resep newResep = new Resep();
+                    newResep.setPlusKanan(plusR);
+                    newResep.setPlusKiri(plusL);
+                    newResep.setMinusKanan(minR);
+                    newResep.setMinusKiri(minL);
+                    newResep.setCylKanan(cylR);
+                    newResep.setCylKiri(cylL);
+                    newResep.setAxisKanan(axR);
+                    newResep.setAxisKiri(axL);
+                    newResep.setPd(pdVal);
+                    newResep.setPelanggan(user);
+                    newResep.setOptometris(null);
+                    newResep.setJadwal(null);
+
+                    resepRepository.addResep(newResep);
+                } catch (Exception ex) {
                     ex.printStackTrace();
                     errorLabel.setText("Gagal menyimpan prescription: " + ex.getMessage());
                     errorLabel.setVisible(true);
@@ -659,16 +672,16 @@ public class CheckoutController {
             cancelBtn.setOnAction(ev -> pane.getChildren().remove(overlay));
             placeOrderBtn.setOnAction(ev -> {
                 calculateTotalAmount();
-                try (Connection conn = DatabaseConnector.connect()) {
-                    String sql = "INSERT INTO pesanan (total, tanggalpesanan, alamat, idpelanggan, idproduk) VALUES (?, ?, ?, ?, ?)";
-                    PreparedStatement stmt = conn.prepareStatement(sql);
-                    stmt.setInt(1, pesanan != null ? pesanan.getTotalPesanan() : 0);
-                    stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
-                    stmt.setString(3, pesanan != null ? pesanan.getAlamatPesanan() : "");
-                    stmt.setInt(4, user != null ? user.getIdUser() : 0);
-                    stmt.setInt(5, activeProduct != null ? activeProduct.getId() : 0);
-                    stmt.executeUpdate();
-                } catch (SQLException e) {
+                Pesanan newPesanan = new Pesanan();
+                newPesanan.setTotalPesanan(pesanan != null ? pesanan.getTotalPesanan() : 0);
+                newPesanan.setTanggalPesanan(LocalDateTime.now().toString());
+                newPesanan.setAlamatPesanan(pesanan != null ? pesanan.getAlamatPesanan() : "");
+                newPesanan.setIdPelangganPemesan(user != null ? user.getIdUser() : 0);
+                newPesanan.setIdProdukPesanan(activeProduct != null ? activeProduct.getId() : 0);
+
+                try {
+                    pesananRepository.addPesanan(newPesanan);
+                } catch (Exception e) {
                     e.printStackTrace();
                     checkoutErrorLabel.setText("Gagal menyimpan pesanan ke database: " + e.getMessage());
                     checkoutErrorLabel.setVisible(true);
@@ -770,7 +783,4 @@ public class CheckoutController {
         this.user = user;
     }
 
-    public void setPesanan(Pesanan pesanan) {
-        this.pesanan = pesanan;
-    }
 }

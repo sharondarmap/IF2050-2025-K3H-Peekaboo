@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 com\pekaboo\features\pembelian\CheckoutController.class
 com\pekaboo\entities\Product.class
 com\pekaboo\App.class
@@ -11,3 +12,5 @@ com\pekaboo\entities\Jadwal.class
 com\pekaboo\entities\Resep.class
 com\pekaboo\util\DatabaseConnector.class
 com\pekaboo\entities\StatusJadwal.class
+=======
+>>>>>>> 5af0591 (feat : change database prescription)

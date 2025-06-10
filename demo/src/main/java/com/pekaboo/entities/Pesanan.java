@@ -43,6 +43,10 @@ public class Pesanan {
         return idProdukPesanan;
     }
 
+    public void setIdPesanan(int idPesanan) {
+        this.idPesanan = idPesanan;
+    }
+
     public void setTotalPesanan(int totalPesanan) {
         this.totalPesanan = totalPesanan;
     }
