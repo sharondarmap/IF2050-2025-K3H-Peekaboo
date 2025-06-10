@@ -1,19 +1,24 @@
 package com.pekaboo;
+import com.pekaboo.features.home.MainController;
 
 import java.io.IOException;
-
 import javafx.fxml.FXML;
 
 public class PrimaryController {
 
-    @FXML
-    private void switchToSecondary() throws IOException {
-        App.setRoot("secondary");
+    private MainController mainController;
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 
     @FXML
-    private void switchToCheckout() throws IOException {
-        System.out.println("Switching to Checkout...");
-        App.setRoot("pembelian/checkout");
+    private void switchToSecondary() {
+        mainController.loadPage("/com/pekaboo/secondary/Secondary.fxml", null);
+    }
+
+    @FXML
+    private void switchToReservasi() {
+        mainController.loadPage("/com/pekaboo/features/reservasi/Reservasi.fxml", null);
     }
 }

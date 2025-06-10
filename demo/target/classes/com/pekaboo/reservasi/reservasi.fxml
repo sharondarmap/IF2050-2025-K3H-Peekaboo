@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToWidth="true" prefWidth="1100.0" prefHeight="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.reservasi.ReservasiController">
+   <content>
+      <VBox alignment="TOP_CENTER" spacing="15.0">
+         <children>
+            <Label text="Reservasi" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+            <VBox fx:id="calendarContainer" alignment="CENTER" spacing="10.0"/>
+            <Button text="Back" onAction="#switchToPrimary"/>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </VBox>
+   </content>
+</ScrollPane>

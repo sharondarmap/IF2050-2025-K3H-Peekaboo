@@ -10,10 +10,6 @@ public class Product {
     private String size;
     private String imagePath;
 
-    public Product() {
-        // Default constructor
-    }
-    
     public Product (int id, int stock, int price, String name, String brand, String color, String size, String imagePath) {
         this.id = id;
         this.stock = stock;
@@ -64,7 +60,6 @@ public class Product {
     public void setBrand(String brand) {
         this.brand = brand;
     }
-
 
     public String getColor() {
         return color;

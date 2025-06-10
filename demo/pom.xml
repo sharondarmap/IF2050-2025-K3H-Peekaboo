@@ -13,19 +13,17 @@
             <dependency>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-controls</artifactId>
-                <version>17.0.2</version>
-                <classifier>mac-aarch64</classifier>
+                <version>22</version>
             </dependency>
             <dependency>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-fxml</artifactId>
-                <version>17.0.2</version>
-                <classifier>mac-aarch64</classifier>
+                <version>22</version>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
-                <version>42.7.1</version> <!-- use latest -->
+                <version>42.7.6</version>
             </dependency>
         </dependencies>
     <build>
@@ -41,15 +39,14 @@
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.6</version>
+                <version>0.0.8</version>
                 <executions>
                     <execution>
                         <!-- Default configuration for running -->
                         <!-- Usage: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <!-- Ini di run pake driver sendiri jadi kalo pake main tinggal ubah aja ya -->
-                            <mainClass>com.pekaboo.features.pembelian.CheckoutDriver</mainClass>
+                            <mainClass>com.pekaboo.App</mainClass>
                         </configuration>
                     </execution>
                 </executions>

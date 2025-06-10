@@ -1,18 +1,3 @@
-<<<<<<< HEAD
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\PrimaryController.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\entities\User.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\module-info.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\entities\StatusJadwal.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\entities\Product.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\features\pembelian\CheckoutController.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\entities\Jadwal.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\entities\Pesanan.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\features\pembelian\CheckoutDriver.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\util\DatabaseConnector.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\SecondaryController.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\entities\Resep.java
-D:\Drive Kuliah\Repo Github\kei\bisaplsudhhopeless\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\App.java
-=======
 D:\Drive Kuliah\Repo Github\kei\mergemain\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\features\pembelian\CatalogProduct.java
 D:\Drive Kuliah\Repo Github\kei\mergemain\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\features\home\MainController.java
 D:\Drive Kuliah\Repo Github\kei\mergemain\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\features\home\MainDriver.java
@@ -55,4 +40,3 @@ D:\Drive Kuliah\Repo Github\kei\mergemain\RPL-Optik-Peekaboo\demo\src\main\java\
 D:\Drive Kuliah\Repo Github\kei\mergemain\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\PrimaryController.java
 D:\Drive Kuliah\Repo Github\kei\mergemain\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\features\pembelian\CheckoutController.java
 D:\Drive Kuliah\Repo Github\kei\mergemain\RPL-Optik-Peekaboo\demo\src\main\java\com\pekaboo\repositories\postgres\PostgresProdukRepository.java
->>>>>>> 5af0591 (feat : change database prescription)
