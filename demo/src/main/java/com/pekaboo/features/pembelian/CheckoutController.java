@@ -3,7 +3,6 @@ package com.pekaboo.features.pembelian;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-
 import com.pekaboo.entities.Pesanan;
 import com.pekaboo.entities.Product;
 import com.pekaboo.entities.Resep;
@@ -11,8 +10,10 @@ import com.pekaboo.repositories.PesananRepository;
 import com.pekaboo.repositories.ResepRepository;
 import com.pekaboo.repositories.postgres.PostgresPesananRepository;
 import com.pekaboo.repositories.postgres.PostgresResepRepository;
-
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -23,6 +24,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
 public class CheckoutController {
     @FXML private Label totalAmountLabel;
@@ -35,11 +37,12 @@ public class CheckoutController {
     @FXML private Label productNameLabel;
     @FXML private Label productBrandLabel;
     @FXML private Label productSizeLabel;
-    @FXML private VBox imageContainer;
     @FXML private VBox buttonContainer;
     @FXML private ImageView productImageView;
     @FXML private Rectangle productColorRectangle;
     @FXML private HBox mainContainer; 
+    @FXML private StackPane imageContainer;
+    @FXML private HBox backContainer;
 
     private static final int SHIPPING_COST = 20000; //selalu segini
 
@@ -60,36 +63,37 @@ public class CheckoutController {
             user = com.pekaboo.util.Session.getCurrentUser();
         }
         pesanan = new Pesanan(0, totalAmount, LocalDateTime.now().toString(), user != null ? user.getAlamat() : "", user != null ? user.getIdUser() : 0, activeProduct != null ? activeProduct.getId() : 0);
-        // // --- BACK BUTTON ---
-        // ImageView backIcon = new ImageView(
-        //     new Image(getClass().getResourceAsStream("/com/pekaboo/pembelian/assets/back.png"))
-        // );
-        // backIcon.setFitWidth(18);
-        // backIcon.setFitHeight(18);
 
-        // Label backLabel = new Label("Back");
-        // backLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #222;");
+        ImageView backIcon = new ImageView(
+            new Image(getClass().getResourceAsStream("/com/pekaboo/pembelian/assets/back.png"))
+        );
+        backIcon.setFitWidth(18);
+        backIcon.setFitHeight(18);
 
-        // javafx.scene.layout.HBox backBox = new javafx.scene.layout.HBox(8, backIcon, backLabel);
-        // backBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        // backBox.setStyle("-fx-cursor: hand; -fx-padding: 18 0 18 0;");
+        Label backLabel = new Label("Back");
+        backLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #222;");
 
-        // backBox.setOnMouseClicked(e -> {
-        //     try {
-        //         switchToMainMenu();
-        //     } catch (IOException ex) {
-        //         ex.printStackTrace();
-        //     }
-        // });
+        javafx.scene.layout.HBox backBox = new javafx.scene.layout.HBox(8, backIcon, backLabel);
+        backBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        backBox.setStyle("-fx-cursor: hand; -fx-padding: 18 0 18 0;");
 
-        // if (mainContainer != null) {
-        //     mainContainer.getChildren().add(0, backBox);
-        // }
-
+        backBox.setOnMouseClicked(e -> {
+            try {
+                switchToMainMenu();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        if (backContainer != null) {
+            backContainer.getChildren().clear();
+            backContainer.getChildren().add(backBox);
+        }
+        if (imageContainer != null) {
+            imageContainer.getChildren().remove(backBox);
+        }
         if (addPrescriptionButton != null) {
             addPrescriptionButton.setOnAction(e -> showPrescriptionPopup());
         }
-
         if (plusPrescriptionButton != null) {
             plusPrescriptionButton.setOnAction(e -> {
                 prescriptionQuantity++;
@@ -145,6 +149,16 @@ public class CheckoutController {
                 buttonContainer.getChildren().add(infoRow);
             }
         }
+
+        if (backContainer != null) {
+            backContainer.setOnMouseClicked(e -> {
+                try {
+                    switchToMainMenu();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            });
+        }
     }
 
     private int calculateTotalAmount() {
@@ -197,7 +211,11 @@ public class CheckoutController {
 
     @FXML
     private void switchToMainMenu() throws IOException {
-        //ini buat ke page menu back sebelumnya ntar diisi
+        Stage stage = (Stage) mainContainer.getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pekaboo/pembelian/CatalogProduct.fxml"));
+        Parent root = loader.load();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
     private void updatePrescriptionQuantityLabel() {
@@ -635,10 +653,8 @@ public class CheckoutController {
         totalRow.getChildren().addAll(totalLabel, totalValue);
         javafx.scene.layout.HBox.setHgrow(totalLabel, javafx.scene.layout.Priority.ALWAYS);
         javafx.scene.layout.HBox.setHgrow(totalValue, javafx.scene.layout.Priority.ALWAYS);
-
         javafx.scene.layout.HBox buttonRow = new javafx.scene.layout.HBox(10);
         buttonRow.setAlignment(javafx.geometry.Pos.CENTER);
-
         javafx.scene.layout.Region spacer = new javafx.scene.layout.Region();
         spacer.setMaxWidth(48); 
         javafx.scene.layout.HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);

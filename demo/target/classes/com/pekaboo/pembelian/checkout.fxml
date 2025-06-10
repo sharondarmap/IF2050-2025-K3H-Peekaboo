@@ -6,22 +6,29 @@
 <?import javafx.scene.image.*?>
 
 <StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.pembelian.CheckoutController" stylesheets="@checkout.css" prefWidth="800" prefHeight="600">
-    <VBox spacing="10" alignment="TOP_LEFT" style="-fx-background-color: #F5F6FA;">
-        <Region minHeight="120"/>
+    <VBox spacing="10" alignment="TOP_LEFT">
+        <Region prefHeight="150"/> 
+        <!-- BACK CONTAINER -->
+        <HBox fx:id="backContainer" alignment="CENTER_LEFT">
+            <Label text="Back" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #222;"/>
+        </HBox>
+        <!-- MAIN CONTAINER -->
         <HBox fx:id="mainContainer" styleClass="main-container" spacing="20" alignment="CENTER">
             <!-- IMAGE -->
-            <VBox fx:id="imageContainer" styleClass="image-container" prefWidth="610" prefHeight="537" style="-fx-background-color: #FFF;">
-                <StackPane prefWidth="610" prefHeight="537">
-                    <ImageView fx:id="productImageView"
-                               fitWidth="610"
-                               fitHeight="537"
-                               preserveRatio="false"
-                               pickOnBounds="true"
-                               style="-fx-background-color: transparent;"/>
-                </StackPane>
-            </VBox>
+            <StackPane fx:id="imageContainer"
+                        styleClass="image-container"
+                        prefWidth="610"
+                        prefHeight="537"
+                        alignment="TOP_LEFT">
+                <ImageView fx:id="productImageView"
+                          fitWidth="610"
+                          fitHeight="537"
+                          preserveRatio="false"
+                          pickOnBounds="true"
+                          style="-fx-background-color: transparent;"/>
+            </StackPane>
             <!-- BUTTON -->
-            <VBox fx:id="buttonContainer" styleClass="button-container" prefWidth="640" spacing="24" alignment="CENTER_LEFT" style="-fx-background-color: #F8F5FF;">
+            <VBox fx:id="buttonContainer" styleClass="button-container" prefWidth="640" spacing="24" alignment="CENTER_LEFT">
                 <VBox spacing="0" alignment="CENTER_LEFT">
                     <Label fx:id="productBrandLabel" styleClass="product-brand-label" text="Brand"/>
                     <Label fx:id="productNameLabel" styleClass="product-name-label" text="Nama Produk"/>
