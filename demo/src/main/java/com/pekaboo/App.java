@@ -18,12 +18,17 @@ import java.io.IOException;
 public class App extends Application {
 
     private static Scene scene;
+    private static String lastMainPageFxml = "/com/pekaboo/features/home/main.fxml";
 
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("auth/login"), 640, 480);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public static Scene getScene() {
+        return scene;
     }
 
     public static void setRoot(String fxml) throws IOException {
@@ -48,6 +53,13 @@ public class App extends Application {
         scene.setRoot(root);
     }
 
+    public static void setLastMainPage(String fxml) {
+        lastMainPageFxml = fxml;
+    }
+
+    public static void backToLastMain() throws IOException {
+        navigateToMain(lastMainPageFxml);
+    }
 
     public static void main(String[] args) {
         launch();

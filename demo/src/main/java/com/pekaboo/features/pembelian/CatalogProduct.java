@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
+import com.pekaboo.App;
 import com.pekaboo.entities.Product;
 import com.pekaboo.repositories.ProductRepo;
 import com.pekaboo.repositories.postgres.PostgresProdukRepository;
@@ -311,16 +313,19 @@ public class CatalogProduct implements Initializable {
 
     private void handleProductClick(Product product) {
         try {
+            System.out.println("Product clicked: " + product.getName());
+            
+            // Set last page SEBELUM navigasi
+            App.setLastMainPage("/com/pekaboo/pembelian/CatalogProduct.fxml");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pekaboo/pembelian/checkout.fxml"));
             Parent checkoutRoot = loader.load();
 
             CheckoutController checkoutController = loader.getController();
             checkoutController.setProduct(product);
             checkoutController.setUser(currentUser);
-            
-            Stage stage = (Stage) gridPane.getScene().getWindow();
-            stage.setScene(new Scene(checkoutRoot));
-            stage.show();
+
+            // Ganti root langsung ke halaman checkout
+            App.getScene().setRoot(checkoutRoot); //load Root terakhir yaitu catalogproduct
         } catch (Exception e) {
             e.printStackTrace();
         }

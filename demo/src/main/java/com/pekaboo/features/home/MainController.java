@@ -35,6 +35,7 @@ public class MainController {
     private AnchorPane navbarContainer;
 
     private String currentPageCss = null;
+    private boolean cssLoadAttempted = false;
 
     @FXML
     public void initialize() {
@@ -43,20 +44,22 @@ public class MainController {
         // Add global navbar CSS once
         Scene scene = contentArea.getScene();
         if (scene != null) {
-            URL navbarCss = getClass().getResource("/com/pekaboo/navbar/navbar.css");
-            if (navbarCss != null) {
-                scene.getStylesheets().add(navbarCss.toExternalForm());
-            }
-        } else {
+            loadNavbarCss(scene);
+        } else if (!cssLoadAttempted) {
+            cssLoadAttempted = true;
             Platform.runLater(() -> {
                 Scene laterScene = contentArea.getScene();
                 if (laterScene != null) {
-                    URL navbarCss = getClass().getResource("/com/pekaboo/navbar/navbar.css");
-                    if (navbarCss != null) {
-                        laterScene.getStylesheets().add(navbarCss.toExternalForm());
-                    }
+                    loadNavbarCss(laterScene);
                 }
             });
+        }
+    }
+
+    private void loadNavbarCss(Scene scene) {
+        URL navbarCss = getClass().getResource("/com/pekaboo/navbar/navbar.css");
+        if (navbarCss != null) {
+            scene.getStylesheets().add(navbarCss.toExternalForm());
         }
     }
 

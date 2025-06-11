@@ -51,13 +51,13 @@ public class NavbarController implements Initializable {
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
-        Platform.runLater(() -> {
-        if (homeButton != null) {
-            homeButton.fire(); // atau panggil handleNavigation secara aman
-        } else {
-            System.err.println("⚠️ homeButton belum siap di-inject!");
-        }
-});
+        // Platform.runLater(() -> {
+        // if (homeButton != null) {
+        //     homeButton.fire(); // atau panggil handleNavigation secara aman
+        // } else {
+        //     System.err.println("⚠️ homeButton belum siap di-inject!");
+        // }
+        // });
 
     }
 
