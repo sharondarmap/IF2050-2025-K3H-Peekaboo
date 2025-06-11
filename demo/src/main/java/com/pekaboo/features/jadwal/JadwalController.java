@@ -2,7 +2,6 @@ package com.pekaboo.features.jadwal;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 
 import com.pekaboo.entities.User;
 import com.pekaboo.repositories.JadwalRepository;

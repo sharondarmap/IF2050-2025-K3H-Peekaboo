@@ -1,6 +1,4 @@
 package com.pekaboo.features.home;
-
-import java.io.IOException;
 //import java.io.IOException;
 import java.net.URL;
 
@@ -10,7 +8,6 @@ import com.pekaboo.features.navbar.NavbarOptoController;
 import com.pekaboo.features.profile.ProfileController;
 import com.pekaboo.util.Session;
 
-import java.net.URL;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +33,7 @@ public class MainController {
 
     private String currentPageCss = null;
     private boolean cssLoadAttempted = false;
+    private Object currentNavbarController;
 
     @FXML
     public void initialize() {
@@ -117,6 +115,10 @@ public class MainController {
             AnchorPane.setLeftAnchor(page, 0.0);
             AnchorPane.setRightAnchor(page, 0.0);
 
+            if (currentNavbarController instanceof NavbarController) {
+                ((NavbarController) currentNavbarController).setActiveByPath(fxmlPath);
+            }
+
         } catch (Exception e) {
             System.err.println("Gagal memuat halaman: " + fxmlPath);
             e.printStackTrace();
@@ -146,6 +148,12 @@ public class MainController {
             AnchorPane.setTopAnchor(navbar, 0.0);
             AnchorPane.setLeftAnchor(navbar, 0.0);
             AnchorPane.setRightAnchor(navbar, 0.0);
+
+            if (controller instanceof NavbarController) {
+                NavbarController navbarController = (NavbarController) controller;
+                navbarController.setMainController(this);
+                this.currentNavbarController = navbarController; // Tambahkan ini
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Gagal memuat navbar: " + e.getMessage());

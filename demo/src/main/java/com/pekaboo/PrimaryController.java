@@ -1,7 +1,6 @@
 package com.pekaboo;
 import com.pekaboo.features.home.MainController;
-
-import java.io.IOException;
+// import java.io.IOException;
 import javafx.fxml.FXML;
 
 public class PrimaryController {

@@ -11,7 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.Parent;
 import javafx.scene.Node;
-import javafx.scene.text.TextAlignment;
+// import javafx.scene.text.TextAlignment;
 import java.util.ArrayList;
 import java.util.List;
 

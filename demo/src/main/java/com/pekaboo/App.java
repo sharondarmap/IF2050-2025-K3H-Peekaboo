@@ -6,7 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import com.pekaboo.auth.*;
 import com.pekaboo.features.home.MainController;
 import com.pekaboo.util.Session;
 

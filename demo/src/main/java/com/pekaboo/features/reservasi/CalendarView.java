@@ -317,7 +317,6 @@ public class CalendarView extends VBox {
                     String optometristName = jadwal.getOptometristName();
                     optometristLabel.setText(optometristName);
                     try {
-                        String imageName = optometristName.toLowerCase().replaceAll("[^a-z]", "") + ".png";
                         Image doctorImage = new Image(getClass().getResourceAsStream("/com/pekaboo/reservasi/assets/profilecircle.png"));
                         profileImage.setImage(doctorImage);
                     } catch (Exception e) {

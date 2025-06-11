@@ -13,9 +13,6 @@ import com.pekaboo.repositories.ResepRepository;
 import com.pekaboo.repositories.postgres.PostgresPesananRepository;
 import com.pekaboo.repositories.postgres.PostgresResepRepository;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -26,7 +23,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 
 public class CheckoutController {
     @FXML private Label totalAmountLabel;
@@ -611,7 +607,6 @@ public class CheckoutController {
         javafx.scene.layout.HBox shippingRow = new javafx.scene.layout.HBox(10);
         Label shippingType = new Label("Regular shipping");
         shippingType.setStyle("-fx-font-size: 18px; -fx-text-fill: #7B61FF; -fx-font-weight: bold;");
-        Label shippingPrice = new Label("Rp20.000");
 
         javafx.scene.layout.HBox etaRow = new javafx.scene.layout.HBox(8);
         javafx.scene.control.Label etaIcon = new javafx.scene.control.Label("\u25CF");

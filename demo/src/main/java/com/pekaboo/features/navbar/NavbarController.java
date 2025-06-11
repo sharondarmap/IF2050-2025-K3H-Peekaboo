@@ -1,6 +1,5 @@
 package com.pekaboo.features.navbar;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -137,5 +136,31 @@ public class NavbarController implements Initializable {
         if (activeButton != null) {
             isProfileActive = false;
         }
+    }
+
+
+    /*Method untuk mengambil page yang sedang active (ini untuk back dari product dan ngambil navbar
+     * yang active di dalam main appnya*/
+    public void setActiveByPath(String fxmlPath) {
+        if (fxmlPath == null) return;
+        
+        // Reset semua button
+        homeButton.getStyleClass().remove("active");
+        reservationButton.getStyleClass().remove("active");
+        catalogButton.getStyleClass().remove("active");
+        historyButton.getStyleClass().remove("active");
+        
+        // Set active berdasarkan path
+        if (fxmlPath.contains("Home.fxml")) {
+            homeButton.getStyleClass().add("active");
+        } else if (fxmlPath.contains("CatalogProduct.fxml")) {
+            catalogButton.getStyleClass().add("active");
+        } else if (fxmlPath.contains("reservasi.fxml")) {
+            reservationButton.getStyleClass().add("active");
+        }
+        
+        // Reset profile state
+        isProfileActive = false;
+        updateProfileIcon();
     }
 }
