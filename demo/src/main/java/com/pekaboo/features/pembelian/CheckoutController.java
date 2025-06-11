@@ -3,6 +3,8 @@ package com.pekaboo.features.pembelian;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import com.pekaboo.App;
 import com.pekaboo.entities.Pesanan;
 import com.pekaboo.entities.Product;
 import com.pekaboo.entities.Resep;
@@ -79,7 +81,7 @@ public class CheckoutController {
 
         backBox.setOnMouseClicked(e -> {
             try {
-                switchToMainMenu();
+                handleBackNavigation();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -150,15 +152,25 @@ public class CheckoutController {
             }
         }
 
-        if (backContainer != null) {
-            backContainer.setOnMouseClicked(e -> {
-                try {
-                    switchToMainMenu();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            });
-        }
+        // if (backContainer != null) {
+        //     backContainer.setOnMouseClicked(e -> {
+        //         try {
+        //             App.backToLastMain();
+        //         } catch (IOException ex) {
+        //             ex.printStackTrace();
+        //         }
+        //     });
+        // }
+    }
+
+    private void handleBackNavigation() throws IOException {
+        System.out.println("Navigating back to catalog...");
+        App.navigateToMain("/com/pekaboo/pembelian/CatalogProduct.fxml");
+    }
+
+    @FXML
+    private void handleBackClick() throws IOException {
+        handleBackNavigation();
     }
 
     private int calculateTotalAmount() {
@@ -198,7 +210,7 @@ public class CheckoutController {
     @FXML
     private void handleCancel() {
         try {
-            switchToMainMenu();
+            App.backToLastMain();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -211,11 +223,7 @@ public class CheckoutController {
 
     @FXML
     private void switchToMainMenu() throws IOException {
-        Stage stage = (Stage) mainContainer.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pekaboo/pembelian/CatalogProduct.fxml"));
-        Parent root = loader.load();
-        stage.setScene(new Scene(root));
-        stage.show();
+        handleBackNavigation();
     }
 
     private void updatePrescriptionQuantityLabel() {
@@ -807,5 +815,4 @@ public class CheckoutController {
     public void setUser(com.pekaboo.entities.User user) {
         this.user = user;
     }
-
 }
