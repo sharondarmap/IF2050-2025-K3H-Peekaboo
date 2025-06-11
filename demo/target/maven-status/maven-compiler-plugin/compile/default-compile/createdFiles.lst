@@ -1,11 +1,22 @@
 com\pekaboo\features\home\MainController.class
 com\pekaboo\App.class
 com\pekaboo\features\jadwal\JadwalController.class
+<<<<<<< HEAD
 com\pekaboo\features\navbar\NavbarController.class
 com\pekaboo\repositories\JadwalRepository.class
 com\pekaboo\features\profile\ProfileController.class
 com\pekaboo\features\jadwal\CalendarJadwalView$1.class
 com\pekaboo\repositories\postgres\PostgresProdukRepository.class
+=======
+com\pekaboo\repositories\PesananRepository.class
+com\pekaboo\features\navbar\NavbarController.class
+com\pekaboo\repositories\JadwalRepository.class
+com\pekaboo\features\profile\ProfileController.class
+com\pekaboo\repositories\postgres\PostgresPesananRepository.class
+com\pekaboo\features\jadwal\CalendarJadwalView$1.class
+com\pekaboo\repositories\postgres\PostgresProdukRepository.class
+com\pekaboo\features\pembelian\CheckoutController.class
+>>>>>>> nakei
 com\pekaboo\features\pembelian\CatalogProduct.class
 com\pekaboo\entities\User.class
 com\pekaboo\repositories\ProductRepo.class
@@ -20,6 +31,10 @@ com\pekaboo\features\home\MainDriver.class
 com\pekaboo\features\reservasi\ReservasiController.class
 com\pekaboo\SecondaryController.class
 com\pekaboo\features\home\HomeController.class
+<<<<<<< HEAD
+=======
+com\pekaboo\entities\Pesanan.class
+>>>>>>> nakei
 com\pekaboo\util\Session.class
 com\pekaboo\repositories\ReservasiRepository.class
 com\pekaboo\repositories\ResepRepository.class

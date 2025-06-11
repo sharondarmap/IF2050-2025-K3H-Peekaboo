@@ -1,19 +1,21 @@
 package com.pekaboo.features.pembelian;
 
-import com.pekaboo.entities.Product;
-import com.pekaboo.repositories.ProductRepo;
-import com.pekaboo.repositories.postgres.PostgresProdukRepository;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-
+import com.pekaboo.entities.Product;
+import com.pekaboo.repositories.ProductRepo;
+import com.pekaboo.repositories.postgres.PostgresProdukRepository;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -24,7 +26,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.control.Button;
+import javafx.stage.Stage;
 
 public class CatalogProduct implements Initializable {
     @FXML private GridPane gridPane;
@@ -54,9 +56,11 @@ public class CatalogProduct implements Initializable {
     private List<Product> allProducts;
     private String selectedColor = null;
     private String selectedSize = null;
+    private com.pekaboo.entities.User currentUser;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.currentUser = com.pekaboo.util.Session.getCurrentUser();
         allProducts = productRepo.getAllProduct();
         showCatalogProduct(allProducts);
 
@@ -306,8 +310,19 @@ public class CatalogProduct implements Initializable {
     }
 
     private void handleProductClick(Product product) {
-        // Handle product click - navigate to detail page or show popup
-        System.out.println("Clicked on product: " + product.getName());
-        // TODO: Implement product detail navigation
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/pekaboo/pembelian/checkout.fxml"));
+            Parent checkoutRoot = loader.load();
+
+            CheckoutController checkoutController = loader.getController();
+            checkoutController.setProduct(product);
+            checkoutController.setUser(currentUser);
+            
+            Stage stage = (Stage) gridPane.getScene().getWindow();
+            stage.setScene(new Scene(checkoutRoot));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -105,8 +105,18 @@ public class PostgresResepRepository implements ResepRepository {
             stmt.setDouble(9, resep.getPd());
 
             stmt.setInt(10, resep.getIdPelanggan());
-            stmt.setInt(11, resep.getIdOptometris());
-            stmt.setInt(12, resep.getIdJadwal());
+
+            if (resep.getOptometris() != null) {
+                stmt.setInt(11, resep.getIdOptometris());
+            } else {
+                stmt.setNull(11, java.sql.Types.INTEGER);
+            }
+
+            if (resep.getJadwal() != null) {
+                stmt.setInt(12, resep.getIdJadwal());
+            } else {
+                stmt.setNull(12, java.sql.Types.INTEGER);
+            }
 
             int rowsAffected = stmt.executeUpdate();
 
@@ -148,8 +158,18 @@ public class PostgresResepRepository implements ResepRepository {
             stmt.setDouble(9, resep.getPd());
 
             stmt.setInt(10, resep.getIdPelanggan());
-            stmt.setInt(11, resep.getIdOptometris());
-            stmt.setInt(12, resep.getIdJadwal());
+
+            if (resep.getOptometris() != null) {
+                stmt.setInt(11, resep.getIdOptometris());
+            } else {
+                stmt.setNull(11, java.sql.Types.INTEGER);
+            }
+
+            if (resep.getJadwal() != null) {
+                stmt.setInt(12, resep.getIdJadwal());
+            } else {
+                stmt.setNull(12, java.sql.Types.INTEGER);
+            }
 
             stmt.setInt(13, resep.getIdResep());
 
