@@ -9,8 +9,10 @@ import com.pekaboo.entities.Pesanan;
 import com.pekaboo.entities.Product;
 import com.pekaboo.entities.Resep;
 import com.pekaboo.repositories.PesananRepository;
+import com.pekaboo.repositories.ProductRepo;
 import com.pekaboo.repositories.ResepRepository;
 import com.pekaboo.repositories.postgres.PostgresPesananRepository;
+import com.pekaboo.repositories.postgres.PostgresProdukRepository;
 import com.pekaboo.repositories.postgres.PostgresResepRepository;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -54,6 +56,7 @@ public class CheckoutController {
 
     private PesananRepository pesananRepository = new PostgresPesananRepository();
     private ResepRepository resepRepository = new PostgresResepRepository();
+    private ProductRepo productRepository = new PostgresProdukRepository();
 
     @FXML
     private void initialize() {
@@ -94,9 +97,12 @@ public class CheckoutController {
         }
         if (plusPrescriptionButton != null) {
             plusPrescriptionButton.setOnAction(e -> {
-                prescriptionQuantity++;
-                updatePrescriptionQuantityLabel();
-                calculateTotalAmount();
+                if (activeProduct != null && prescriptionQuantity < activeProduct.getStock()) {
+                    prescriptionQuantity++;
+                    updatePrescriptionQuantityLabel();
+                    calculateTotalAmount();
+                    updatePrescriptionButtons();
+                }
             });
         }
         if (minusPrescriptionButton != null) {
@@ -105,6 +111,7 @@ public class CheckoutController {
                     prescriptionQuantity--;
                     updatePrescriptionQuantityLabel();
                     calculateTotalAmount();
+                    updatePrescriptionButtons();
                 }
             });
         }
@@ -187,6 +194,12 @@ public class CheckoutController {
     @FXML
     private void handleCheckout() {
         if (!prescriptionFilled) {
+            checkoutErrorLabel.setText("Silakan isi prescription terlebih dahulu sebelum checkout.");
+            checkoutErrorLabel.setVisible(true);
+            return;
+        }
+        if (activeProduct != null && prescriptionQuantity > activeProduct.getStock()) {
+            checkoutErrorLabel.setText("Jumlah pesanan melebihi stock yang tersedia.");
             checkoutErrorLabel.setVisible(true);
             return;
         }
@@ -222,16 +235,27 @@ public class CheckoutController {
         handleBackNavigation();
     }
 
+    private void updatePrescriptionButtons() {
+        if (plusPrescriptionButton != null && activeProduct != null) {
+            plusPrescriptionButton.setDisable(prescriptionQuantity >= activeProduct.getStock());
+        }
+        if (minusPrescriptionButton != null) {
+            minusPrescriptionButton.setDisable(prescriptionQuantity <= 1);
+        }
+    }
+
     private void updatePrescriptionQuantityLabel() {
         if (prescriptionQuantityLabel != null) {
             prescriptionQuantityLabel.setText(String.valueOf(prescriptionQuantity));
         }
+        updatePrescriptionButtons();
     }
 
-    public void setProduct(Product product) { //ini method waktu ngasi tau kalo sekarang tuh tampilannya lagi di catalog produk tertentu (yg dipilih di page lidya) 
+    public void setProduct(Product product) {
         this.activeProduct = product;
         prescriptionQuantity = 1;
         updatePrescriptionQuantityLabel();
+        updatePrescriptionButtons();
         
         if (productNameLabel != null) productNameLabel.setText(product.getName());
         if (productBrandLabel != null) productBrandLabel.setText(product.getBrand());
@@ -709,6 +733,11 @@ public class CheckoutController {
 
                 try {
                     pesananRepository.addPesanan(pesanan); 
+                    if (activeProduct != null) {
+                        int newStock = activeProduct.getStock() - prescriptionQuantity;
+                        activeProduct.setStock(newStock);
+                        productRepository.updateProduct(activeProduct);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     checkoutErrorLabel.setText("Gagal menyimpan pesanan ke database: " + e.getMessage());
