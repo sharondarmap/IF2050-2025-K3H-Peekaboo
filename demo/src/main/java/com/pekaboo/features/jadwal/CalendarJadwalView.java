@@ -324,6 +324,18 @@ public class CalendarJadwalView extends VBox {
                     alert.showAndWait();
                     return;
                 }
+
+                List<Jadwal> existingJadwal = jadwalRepo.getJadwalByTanggal(tanggal);
+                for (Jadwal existing : existingJadwal) {
+                    if (startTime.isBefore(existing.getJamSelesai()) && endTime.isAfter(existing.getJamMulai())) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Schedule Conflict");
+                        alert.setHeaderText("Time Slot Conflict");
+                        alert.setContentText("Schedule overlaps with existing schedule: " + existing.getJamMulai() + " - " + existing.getJamSelesai());
+                        alert.showAndWait();
+                        return;
+                    }
+                }
                 Jadwal j = new Jadwal();
                 j.setTanggal(tanggal);
                 j.setJamMulai(LocalTime.parse(jamMulai.getText()));
@@ -599,9 +611,28 @@ public class CalendarJadwalView extends VBox {
                     alert.showAndWait();
                     return;
                 }
+                if (jadwal.getTanggal().isBefore(LocalDate.now())) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Invalid Date");
+                    alert.setHeaderText("Cannot Update Schedule");
+                    alert.setContentText("Cannot update schedule for past dates.");
+                    alert.showAndWait();
+                    return;
+                }
 
-                jadwal.setJamMulai(LocalTime.parse(startField.getText()));
-                jadwal.setJamSelesai(LocalTime.parse(endField.getText()));
+                LocalTime newStartTime = LocalTime.parse(startField.getText());
+                LocalTime newEndTime = LocalTime.parse(endField.getText());
+                if (newStartTime.isAfter(newEndTime) || newStartTime.equals(newEndTime)) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Invalid Time");
+                    alert.setHeaderText("Invalid Schedule Time");
+                    alert.setContentText("Start time must be before end time.");
+                    alert.showAndWait();
+                    return;
+                }
+
+                jadwal.setJamMulai(newStartTime);
+                jadwal.setJamSelesai(newEndTime);
                 jadwalRepo.updateJadwal(jadwal);
                 updateCalendar();
                 rootStack.getChildren().remove(dimmer);
@@ -611,6 +642,11 @@ public class CalendarJadwalView extends VBox {
         });
 
         hapusBtn.setOnAction(e -> {
+            if (jadwal.getTanggal().isBefore(LocalDate.now())) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Cannot delete schedule for past dates.", ButtonType.OK);
+                alert.showAndWait();
+                return;
+            }
             if (jadwal.isAvailable()) {
                 jadwalRepo.deleteJadwal(jadwal.getIdJadwal());
                 updateCalendar();
