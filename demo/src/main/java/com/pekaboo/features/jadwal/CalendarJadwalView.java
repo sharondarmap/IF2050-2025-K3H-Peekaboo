@@ -216,21 +216,83 @@ public class CalendarJadwalView extends VBox {
     }
 
     private void openAddJadwalOverlay(LocalDate tanggal) {
-        VBox overlay = new VBox(10);
+        VBox overlay = new VBox(12);
         overlay.setAlignment(Pos.CENTER);
-        overlay.setPadding(new Insets(20));
-        overlay.setStyle("-fx-background-color: white; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);");
+        overlay.setPadding(new Insets(24, 40, 24, 40));
+        overlay.setStyle("-fx-background-color: white; -fx-border-radius: 12; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 12, 0, 0, 8);");
 
-        Label title = new Label("Tambah Jadwal - " + tanggal);
+        overlay.setMaxWidth(400);
+        overlay.setPrefWidth(400);
+        overlay.setMinWidth(350);
+
+        Label title = new Label("Add new jadwal");
+        title.setStyle("-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: rgba(36, 22, 80, 1); -fx-alignment: center;");
+        Label dateInfo = new Label("Date: " + tanggal);
+        dateInfo.setStyle("-fx-font-size: 16px; -fx-font-weight: 500; -fx-text-fill: rgba(50, 30, 110, 1); -fx-alignment: center; -fx-padding: 0;");
+        Label startTimeLbl = new Label("Start Time:");
+        startTimeLbl.setStyle("-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: rgba(36, 22, 80, 1); -fx-padding: 4 0 2 0;");
+        Label endTimeLbl = new Label("End Time:");
+        endTimeLbl.setStyle("-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: rgba(36, 22, 80, 1); -fx-padding: 4 0 2 0;");
+        
         TextField jamMulai = new TextField("10:00");
         TextField jamSelesai = new TextField("11:00");
-        Button simpan = new Button("Simpan");
-        Button batal = new Button("Batal");
+        jamMulai.setStyle(
+            "-fx-font-size: 14px; " +
+            "-fx-padding: 10 12; " +
+            "-fx-background-color: #F8FAFC; " +
+            "-fx-border-color: #E2E8F0; " +
+            "-fx-border-width: 1; " +
+            "-fx-border-radius: 6; " +
+            "-fx-background-radius: 6; " +
+            "-fx-min-height: 36px;"
+        );
+        jamSelesai.setStyle(
+            "-fx-font-size: 14px; " +
+            "-fx-padding: 10 12; " +
+            "-fx-background-color: #F8FAFC; " +
+            "-fx-border-color: #E2E8F0; " +
+            "-fx-border-width: 1; " +
+            "-fx-border-radius: 6; " +
+            "-fx-background-radius: 6; " +
+            "-fx-min-height: 36px;"
+        );
 
-        HBox actions = new HBox(10, simpan, batal);
+        Button simpan = new Button("Save");
+        Button batal = new Button("Cancel");
+        simpan.setPrefWidth(150);
+        simpan.setPrefHeight(36);
+        simpan.setStyle(
+            "-fx-background-color: rgba(91, 54, 201, 1); " +
+            "-fx-text-fill: rgba(255, 255, 255, 1); " +
+            "-fx-padding: 10 20; " +
+            "-fx-background-radius: 8; " +
+            "-fx-font-weight: 700; " +
+            "-fx-font-size: 14px;"
+        );
+        
+        batal.setPrefWidth(150);
+        batal.setPrefHeight(36);
+        batal.setStyle(
+            "-fx-background-color: rgba(255, 255, 255, 1); " + 
+            "-fx-text-fill: rgba(91, 54, 201, 1); " +
+            "-fx-padding: 10 20; " +
+            "-fx-background-radius: 8; " +
+            "-fx-font-weight: 700; " +
+            "-fx-font-size: 14px; " +
+            "-fx-border-color: rgba(147, 150, 152, 1); " + 
+            "-fx-border-width: 1; " +
+            "-fx-border-radius: 8;"
+        );
+
+        HBox actions = new HBox(16);
         actions.setAlignment(Pos.CENTER);
+        actions.getChildren().addAll(batal, simpan);
+        HBox.setHgrow(batal, Priority.ALWAYS);
+        HBox.setHgrow(simpan, Priority.ALWAYS);
 
-        overlay.getChildren().addAll(title, new Label("Jam Mulai:"), jamMulai, new Label("Jam Selesai:"), jamSelesai, actions);
+        Region spacer = new Region();
+        spacer.setPrefHeight(16);
+        overlay.getChildren().addAll(title, dateInfo, startTimeLbl, jamMulai, endTimeLbl, jamSelesai, spacer, actions);
 
         VBox dimmer = new VBox(overlay);
         dimmer.setAlignment(Pos.CENTER);
