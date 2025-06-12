@@ -2,6 +2,7 @@ package com.pekaboo.features.reservasi;
 
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -66,22 +67,23 @@ public class CalendarView extends VBox {
                 "-fx-text-fill: rgba(36, 22, 80, 1); " +  
                 "-fx-font-weight: bold; " +
                 "-fx-font-size: 20px; " +
+                "-fx-font-family: 'Nunito Sans'; " +
                 "-fx-border-color: transparent; " +
                 "-fx-pref-width: 30px; " +
-                "-fx-pref-height: 30px; " +
                 "-fx-cursor: hand;"
             );
             next.setStyle(
                 "-fx-background-color: transparent; " + 
                 "-fx-text-fill: rgba(36, 22, 80, 1); " + 
                 "-fx-font-weight: bold; " +
-                "-fx-font-size: 20px; " + 
+                "-fx-font-size: 20px; " +
+                "-fx-font-family: 'Nunito Sans'; " +
                 "-fx-border-color: transparent; " + 
                 "-fx-pref-width: 30px; " +
-                "-fx-pref-height: 30px; " +
                 "-fx-cursor: hand;" 
             );
             monthLabel.setStyle(
+                "-fx-font-family: 'Violet Sans'; " +
                 "-fx-font-size: 20px; " +
                 "-fx-font-weight: bold; " +
                 "-fx-text-fill: rgba(36, 22, 80, 1);"
@@ -209,6 +211,7 @@ public class CalendarView extends VBox {
             "-fx-border-color: rgba(147, 150, 152, 1); " +
             "-fx-border-width: 1; " +
             "-fx-border-radius: 8; " +
+            "-fx-font-family: 'Nunito Sans'; " +
             "-fx-font-size: 14px; " +
             "-fx-font-weight: 700; " +
             "-fx-cursor: hand; " +
@@ -224,6 +227,7 @@ public class CalendarView extends VBox {
             "-fx-border-color: rgba(91, 54, 201, 1); " +
             "-fx-border-width: 1; " +
             "-fx-border-radius: 8; " +
+            "-fx-font-family: 'Nunito Sans'; " +
             "-fx-font-size: 14px; " +
             "-fx-font-weight: 700; " +
             "-fx-cursor: hand; " +
@@ -332,12 +336,16 @@ public class CalendarView extends VBox {
         slotTersedia = jadwalRepo.getSlotTersediaBulan(currentYearMonth);
 
         calendarGrid.getChildren().clear();
-        monthLabel.setText(currentYearMonth.getMonth().toString() + " " + currentYearMonth.getYear());
+
+        String monthName = currentYearMonth.getMonth().toString();
+        String formattedMonth = monthName.charAt(0) + monthName.substring(1).toLowerCase();
+        monthLabel.setText(formattedMonth + " " + currentYearMonth.getYear());
 
         String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
         for (int i = 0; i < days.length; i++) {
             Label dayLabel = new Label(days[i]);
             dayLabel.setStyle(
+                "-fx-font-family: 'Violet Sans'; " +
                 "-fx-font-weight: bold; " +
                 "-fx-font-size: 14px; " +
                 "-fx-text-fill: #666666; " +
@@ -378,7 +386,8 @@ public class CalendarView extends VBox {
                     "-fx-background-color: rgba(37, 208, 65, 1); " +
                     "-fx-text-fill: white; " +
                     "-fx-padding: 2 6 2 6; " +      
-                    "-fx-background-radius: 4; " +  
+                    "-fx-background-radius: 4; " + 
+                    "-fx-font-family: 'Violet Sans'; " +
                     "-fx-font-size: 10px; " +       
                     "-fx-border-color: #C8F7C5; " +   
                     "-fx-border-radius: 4;"
@@ -387,6 +396,7 @@ public class CalendarView extends VBox {
                 reserveBtn.setStyle(
                     "-fx-background-color: rgba(54, 76, 132, 1); " +
                     "-fx-text-fill: white; " +
+                    "-fx-font-family: 'Violet Sans'; " +
                     "-fx-font-size: 9px; " +  
                     "-fx-padding: 3 8 3 8; " +    
                     "-fx-background-radius: 4; " + 
