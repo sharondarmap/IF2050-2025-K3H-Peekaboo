@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.pekaboo.auth.AuthController"
+            stylesheets="@/com/pekaboo/auth/auth.css"
+            minWidth="600" minHeight="400">
+
+    <!-- Center: Image + Auth Section -->
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED">
+            <HBox spacing="0" alignment="TOP_LEFT">
+                <!-- Left Image as Background -->
+                <StackPane minWidth="400" maxWidth="800" HBox.hgrow="ALWAYS"
+                        style="-fx-background-image: url('/com/pekaboo/auth/assets/showroom.png');
+                                -fx-background-size: cover;
+                                -fx-background-position: center;
+                                -fx-background-repeat: no-repeat;">
+                </StackPane>
+                <!-- Right Auth Form -->
+                <VBox spacing="40" alignment="TOP_LEFT" styleClass="auth-container" HBox.hgrow="ALWAYS" minWidth="300" maxWidth="450">
+                    <padding>
+                        <Insets top="40" right="40" bottom="40" left="40"/>
+                    </padding>
+
+                    <Label text="Sign In" styleClass="auth-title"/>
+                    <TextField fx:id="loginUsernameField" promptText="Username"/>
+                    <PasswordField fx:id="loginPasswordField" promptText="Password"/>
+                    <Button fx:id="loginButton" text="Sign In" onAction="#handleLogin" styleClass="primary-button"/>
+                    <Hyperlink text="Sign Up" onAction="#switchToRegister"/>
+                </VBox>
+
+            </HBox>
+        </ScrollPane>
+    </center>
+
+    <!-- Bottom: Footer -->
+    <bottom>
+        <VBox alignment="CENTER" spacing="5">
+            <padding>
+                <Insets top="10" right="20" bottom="20" left="20" />
+            </padding>
+            <ImageView fitHeight="40" preserveRatio="true">
+                <image>
+                    <Image url="@/com/pekaboo/auth/assets/footerlogo.png"/>
+                </image>
+            </ImageView>
+            <Label text="Copyright © Peekaboo 2025"/>
+        </VBox>
+    </bottom>
+
+</BorderPane>
