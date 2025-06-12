@@ -304,6 +304,26 @@ public class CalendarJadwalView extends VBox {
         batal.setOnAction(e -> rootStack.getChildren().remove(dimmer));
         simpan.setOnAction(e -> {
             try {
+                if (tanggal.isBefore(LocalDate.now())) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Invalid Date");
+                    alert.setHeaderText("Cannot Create Schedule");
+                    alert.setContentText("Cannot create schedule for past dates.");
+                    alert.showAndWait();
+                    return;
+                }
+                    
+                LocalTime startTime = LocalTime.parse(jamMulai.getText());
+                LocalTime endTime = LocalTime.parse(jamSelesai.getText());
+                
+                if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Invalid Time");
+                    alert.setHeaderText("Invalid Schedule Time");
+                    alert.setContentText("Start time must be before end time.");
+                    alert.showAndWait();
+                    return;
+                }
                 Jadwal j = new Jadwal();
                 j.setTanggal(tanggal);
                 j.setJamMulai(LocalTime.parse(jamMulai.getText()));
