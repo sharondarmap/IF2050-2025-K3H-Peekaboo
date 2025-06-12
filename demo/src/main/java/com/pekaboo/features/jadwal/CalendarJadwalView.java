@@ -512,6 +512,12 @@ public class CalendarJadwalView extends VBox {
 
         simpanBtn.setOnAction(e -> {
             try {
+                if (!jadwal.isAvailable()) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot update jadwal that is already reserved.", ButtonType.OK);
+                    alert.showAndWait();
+                    return;
+                }
+
                 jadwal.setJamMulai(LocalTime.parse(startField.getText()));
                 jadwal.setJamSelesai(LocalTime.parse(endField.getText()));
                 jadwalRepo.updateJadwal(jadwal);
@@ -528,7 +534,7 @@ public class CalendarJadwalView extends VBox {
                 updateCalendar();
                 rootStack.getChildren().remove(dimmer);
             } else {
-                Alert alert = new Alert(Alert.AlertType.WARNING, "Jadwal sudah dipesan dan tidak bisa dihapus.", ButtonType.OK);
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot delete jadwal that is already reserved.", ButtonType.OK);
                 alert.showAndWait();
             }
         });

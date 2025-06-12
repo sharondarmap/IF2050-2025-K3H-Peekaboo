@@ -79,6 +79,11 @@ public class PostgresJadwalRepository implements JadwalRepository{
 
     @Override
     public void deleteJadwal(int idJadwal){
+        Jadwal jadwal = getJadwalById(idJadwal);
+        if (jadwal != null && jadwal.getStatusJadwal() == StatusJadwal.RESERVED) {
+            throw new IllegalStateException("Cannot delete jadwal that is already reserved");
+        }
+
         String sql = "DELETE FROM jadwal WHERE idjadwal = ?";
         try (Connection conn = DatabaseConnector.connect();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -93,6 +98,10 @@ public class PostgresJadwalRepository implements JadwalRepository{
 
     @Override
     public void updateJadwal(Jadwal jadwal) {
+        if (jadwal.getStatusJadwal() == StatusJadwal.RESERVED) {
+            throw new IllegalStateException("Cannot update jadwal that is already reserved");
+        }
+
         String sql = "UPDATE jadwal SET idoptometris = ?, tanggal = ?, jam_mulai = ?, jam_selesai = ?, statusjadwal = ? WHERE idjadwal = ?";
 
         try (Connection conn = DatabaseConnector.connect();
