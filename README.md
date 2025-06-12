@@ -56,45 +56,45 @@ Buka file:
 
 ## 🎯 Modul Implementation
 ### **Modul 1** : Sign Up / Sign In 
-![Registrasi](doc/signin.jpg)
-![Sign In](doc/register.jpg)
+![Registrasi](doc/signin.png)
+![Sign In](doc/register.png)
 
 ### **Modul 2** : Home / Beranda 
- ![Home Page](doc/homepage.jpg)
+ ![Home Page](doc/homepage.png)
 
 ### **Modul 3** : Tampilan Ketersediaan Jadwal 
 #### ➝ Tampilan Jadwal Optometris
-![Halaman Reservasi Optometris](doc/opto_halamanreservasi.jpg) 
-![Menambah Resep Optometris](doc/opto_menambahresep.jpg)
+![Halaman Reservasi Optometris](doc/opto_halamanreservasi.png) 
+![Menambah Resep Optometris](doc/opto_menambahresep.png)
 ![Menambah Jadwal Optometris](doc/opto_menambahjadwal.png)
 #### ➝ Tampilan Jadwal Pelanggan
 
 ### **Modul 4** : Tampilan Halaman Reservasi  
-![Halaman Reservasi Pelanggan](doc/pelanggan_halamanreservasi.jpg)
+![Halaman Reservasi Pelanggan](doc/pelanggan_halamanreservasi.png)
 
 ### **Modul 5** : Tampilan Mereservasi  
 #### ➝ Tampilan Jadwal Optometris
-![Jadwal Reserved Optometris](doc/opto_schedulreserved.jpg)
-![Reservasi Kosong Optometris](doc/opto_reservasikosong.jpg)
+![Jadwal Reserved Optometris](doc/opto_schedulreserved.png)
+![Reservasi Kosong Optometris](doc/opto_reservasikosong.png)
 #### ➝ Tampilan Jadwal Pelanggan
-![Mereservasi Pelanggan](doc/pelanggan_mereservasi.jpg)
+![Mereservasi Pelanggan](doc/pelanggan_mereservasi.png)
 
 ### **Modul 6** : Tampilan Katalog Produk  
 ![Melihat Katalog Produk](doc/pelanggan_melihatkatalog.png)
 ![Mencari Produk](doc/pelanggan_mencariproduk.png)
 
 ### **Modul 7** : Tampilan Membeli Produk  
-![Detail Produk](doc/pelanggan_detailproduk.jpg)
-![Resep Produk](doc/pelanggan_resepproduk.jpg)
-![Checkout Produk](doc/pelanggan_checkoutproduk.jpg)
-![Berhasil Membeli Produk](doc/pelanggan_berhasilmembeliproduk.jpg)
+![Detail Produk](doc/pelanggan_detailproduk.png)
+![Resep Produk](doc/pelanggan_resepproduk.png)
+![Checkout Produk](doc/pelanggan_checkoutproduk.png)
+![Berhasil Membeli Produk](doc/pelanggan_berhasilmembeliproduk.png)
 
 ### **Modul 8** : Tampilan Melihat Data Pribadi  
-![Tampilan Profil Pelanggan](doc/pelanggan_tampilanprofile.jpg)
-![Mengedit Profil Pelanggan](doc/pelanggan_mengeditprofile.jpg)
+![Tampilan Profil Pelanggan](doc/pelanggan_tampilanprofile.png)
+![Mengedit Profil Pelanggan](doc/pelanggan_mengeditprofile.png)
 
 ### **Modul 9** : Tampilan Melihat Resep
-![Melihat Resep Pelanggan](doc/pelanggan_melihatresep.jpg)
+![Melihat Resep Pelanggan](doc/pelanggan_melihatresep.png)
 
 ## 👩‍💻 Pembagian Tugas
 <table>
