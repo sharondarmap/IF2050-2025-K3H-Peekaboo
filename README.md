@@ -78,7 +78,7 @@ Buka file:
 ![Mereservasi Pelanggan](doc/pelanggan_mereservasi.png)
 
 ### **Modul 6** : Tampilan Katalog Produk  
-![Melihat Katalog Produk](doc/pelanggan_melihatkatalog.png)
+![Melihat Katalog Produk](doc/pelanggan_Halamankatalog.png)
 ![Mencari Produk](doc/pelanggan_mencariproduk.png)
 
 ### **Modul 7** : Tampilan Membeli Produk  
