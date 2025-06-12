@@ -60,14 +60,12 @@ Buka file:
 ![Sign In](doc/register.png)
 
 ### **Modul 2** : Home / Beranda 
- ![Home Page](doc/homepage.png)
+![Home Page](doc/homepage.png)
 
 ### **Modul 3** : Tampilan Ketersediaan Jadwal 
-#### ➝ Tampilan Jadwal Optometris
 ![Halaman Reservasi Optometris](doc/opto_halamanreservasi.png) 
 ![Menambah Resep Optometris](doc/opto_menambahresep.png)
 ![Menambah Jadwal Optometris](doc/opto_menambahjadwal.png)
-#### ➝ Tampilan Jadwal Pelanggan
 
 ### **Modul 4** : Tampilan Halaman Reservasi  
 ![Halaman Reservasi Pelanggan](doc/pelanggan_halamanreservasi.png)
