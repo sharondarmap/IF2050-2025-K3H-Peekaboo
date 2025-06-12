@@ -1,7 +1,12 @@
 package com.pekaboo.features.reservasi;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -24,6 +29,7 @@ import com.pekaboo.util.Session;
 
 public class ReservasiController {
     @FXML private VBox calendarContainer;
+    @FXML private HBox headerContainer;
 
     private final JadwalRepository jadwalRepo = new PostgresJadwalRepository();
     private final ReservasiRepository reservasiRepo = new PostgresReservasiRepository();
@@ -31,6 +37,8 @@ public class ReservasiController {
 
     @FXML
     private void initialize() {
+        addOperatingHours();
+        
         YearMonth currentMonth = YearMonth.now();
         Map<LocalDate, Integer> slotTersedia = jadwalRepo.getSlotTersediaBulan(currentMonth);
 
@@ -105,5 +113,24 @@ public class ReservasiController {
         }
         
         return true;
+    }
+
+    private void addOperatingHours() {
+        try {
+            Image operatingHoursImg = new Image(
+                getClass().getResourceAsStream("/com/pekaboo/reservasi/assets/operatinghours.png")
+            );
+            
+            ImageView imageView = new ImageView(operatingHoursImg);
+            imageView.setFitWidth(240);
+            imageView.setPreserveRatio(true);
+            
+            headerContainer.setAlignment(Pos.CENTER_LEFT);
+            headerContainer.setPadding(new Insets(0, 0, 20, 0));
+            headerContainer.getChildren().add(imageView);
+            
+        } catch (Exception e) {
+            System.err.println("Could not load operating hours image: " + e.getMessage());
+        }
     }
 }

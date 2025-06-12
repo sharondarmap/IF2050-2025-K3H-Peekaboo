@@ -6,13 +6,14 @@
 
 <ScrollPane fitToWidth="true" prefWidth="1100.0" prefHeight="800.0" style="-fx-background-color: white;"  xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pekaboo.features.reservasi.ReservasiController">
    <content>
-      <VBox alignment="TOP_CENTER" spacing="15.0">
+      <VBox alignment="TOP_CENTER" spacing="0.0">
          <children>
-            <Label text="Reservasi" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: rgba(36, 22, 80, 1);" />
+            <HBox fx:id="headerContainer" alignment="CENTER_LEFT" spacing="0.0">
+            </HBox>
             <VBox fx:id="calendarContainer" alignment="CENTER" spacing="10.0"/>
          </children>
          <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            <Insets bottom="20.0" left="72.0" right="72.0" top="0.0" />
          </padding>
       </VBox>
    </content>
