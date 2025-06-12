@@ -10,7 +10,6 @@
          <children>
             <Label text="Reservasi" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: rgba(36, 22, 80, 1);" />
             <VBox fx:id="calendarContainer" alignment="CENTER" spacing="10.0"/>
-            <Button text="Back" onAction="#switchToPrimary"/>
          </children>
          <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

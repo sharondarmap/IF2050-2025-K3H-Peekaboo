@@ -106,9 +106,4 @@ public class ReservasiController {
         
         return true;
     }
-
-    @FXML
-    private void switchToPrimary() throws IOException {
-        App.setRoot("primary");
-    }
 }
